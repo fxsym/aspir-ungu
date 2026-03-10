@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
 :root {
+  /* base */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1f1f1f;
+
+  /* primary purple */
+  --primary: #7c3aed;
+  --primary-hover: #6d28d9;
+  --primary-light: #ede9fe;
+
+  /* secondary purple */
+  --secondary: #a78bfa;
+  --secondary-hover: #8b5cf6;
+
+  /* accent */
+  --accent: #c4b5fd;
+
+  /* UI colors */
+  --border: #e5e7eb;
+  --card: #fafafa;
+  --muted: #6b7280;
+
+  /* state colors */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
 }
 
 @theme inline {
+  /* background system */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* main palette */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+
+  --color-accent: var(--accent);
+
+  /* UI */
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+
+  /* states */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  /* font */
+  --font-sans: var(--font-inter);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter);
 }
