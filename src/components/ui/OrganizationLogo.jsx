@@ -7,6 +7,9 @@ export default function OrganizationLogo() {
     const images = [
         "/images/LogoAmikom.png",
         "/images/LogoKabinet.png",
+        "/images/LogoAmikom.png",
+        "/images/LogoKabinet.png",
+
     ];
 
     const duplicatedImages = [...images, ...images];

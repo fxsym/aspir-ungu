@@ -33,7 +33,7 @@ export default function Hero({children}) {
         <div className="absolute inset-0 bg-accent/80"></div>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center gap-4">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 h-full flex flex-col items-center justify-center text-center gap-4">
           {children}
       </div>
     </section>
