@@ -37,7 +37,7 @@ export default function SectionThree({ next }) {
 
     return (
         <div>
-            <Title className={"text-background mb-2"}>
+            <Title className={"text-background mb-2 font-bold"}>
                 Pilih Jenis Pengaduan
             </Title>
 
@@ -70,15 +70,10 @@ export default function SectionThree({ next }) {
                             className="absolute inset-0 transition-all duration-500"
                             style={{
                                 background: hovered === i
-                                    ? "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)"
-                                    : "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)",
+                                    ? "linear-gradient(to top, rgba(124,58,237,0.85) 0%, rgba(124,58,237,0.2) 50%, transparent 100%)"
+                                    : "linear-gradient(to top, rgba(124,58,237,0.6) 0%, transparent 65%)",
                             }}
                         />
-
-                        {/* Index */}
-                        <span className="absolute top-4 right-4 text-white/30 text-xs font-mono tracking-widest">
-                            {String(i + 1).padStart(2, "0")}
-                        </span>
 
                         {/* Bottom content */}
                         <div
@@ -91,7 +86,7 @@ export default function SectionThree({ next }) {
                             />
                             <Text className={"font-bold text-background text-xs sm:text-sm md:text-xl mb-2"}>{data.name}</Text>
                             <Text
-                                className="text-background text-xs sm:text-sm md:text-xl  mt-2 transition-opacity duration-300"
+                                className="text-left text-background text-xs sm:text-sm md:text-xl  mt-2 transition-opacity duration-300"
                                 style={{ opacity: hovered === i ? 1 : 0 }}
                             >
                                 Lakukan Pengaduan→
