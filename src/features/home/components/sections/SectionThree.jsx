@@ -36,7 +36,7 @@ export default function SectionThree({ next }) {
 
 
     return (
-        <div>
+        <div className='flex flex-col items-center'>
             <Title className={"text-background mb-2 font-bold"}>
                 Pilih Jenis Pengaduan
             </Title>
@@ -47,7 +47,7 @@ export default function SectionThree({ next }) {
                         key={i}
                         onMouseEnter={() => setHovered(i)}
                         onMouseLeave={() => setHovered(null)}
-                        className="relative rounded overflow-hidden cursor-pointer aspect-[1/1] transition-all duration-500"
+                        className="relative rounded overflow-hidden cursor-pointer aspect-square transition-all duration-500"
                         style={{
                             transform: hovered === i ? "translateY(-8px)" : "translateY(0)",
                             boxShadow: hovered === i

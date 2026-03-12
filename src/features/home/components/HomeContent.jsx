@@ -28,6 +28,7 @@ export default function HomeContent() {
     return (
         <Hero>
             <motion.div
+                layout
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1 }}
@@ -35,20 +36,27 @@ export default function HomeContent() {
                 <HeroText>ASPIR UNGU</HeroText>
             </motion.div>
 
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={current}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.4 }}
-                    className="rounded"
-                >
-                    {steps[current]}
-                </motion.div>
-            </AnimatePresence>
+            <motion.div layout className="rounded">
+                {steps.map((step, i) => (
+                    <motion.div
+                        key={i}
+                        layout
+                        initial={{ opacity: 0, height: 0, scale: 0.8 }}
+                        animate={{
+                            opacity: i === current ? 1 : 0,
+                            height: i === current ? "auto" : 0,
+                            scale: i === current ? 1 : 0.8,
+                        }}
+                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        style={{ overflow: "hidden" }}
+                    >
+                        {step}
+                    </motion.div>
+                ))}
+            </motion.div>
 
             <motion.div
+                layout
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1 }}
