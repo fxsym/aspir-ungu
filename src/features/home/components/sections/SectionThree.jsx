@@ -1,36 +1,13 @@
 import MainButton from '@/components/ui/button/MainButton'
 import Text from '@/components/ui/typography/Text'
 import Title from '@/components/ui/typography/Title';
+import { aspirationCategories } from '@/lib/aspirationCategories';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react'
 
 export default function SectionThree({ next }) {
-    const datas = [
-        {
-            url: "/images/heroImage.jpg",
-            name: "Pencabulan"
-        },
-        {
-            url: "/images/heroImage.jpg",
-            name: "Pencabulan"
-        },
-        {
-            url: "/images/heroImage.jpg",
-            name: "Pencabulan"
-        },
-        {
-            url: "/images/heroImage.jpg",
-            name: "Pencabulan"
-        },
-        {
-            url: "/images/heroImage.jpg",
-            name: "Pencabulan"
-        },
-        {
-            url: "/images/heroImage.jpg",
-            name: "Pencabulan"
-        },
-    ]
+    const datas = aspirationCategories
 
     const [hovered, setHovered] = useState(null);
 
@@ -85,12 +62,13 @@ export default function SectionThree({ next }) {
                                 style={{ width: hovered === i ? "48px" : "32px" }}
                             />
                             <Text className={"font-bold text-background text-xs sm:text-sm md:text-xl mb-2"}>{data.name}</Text>
-                            <Text
+                            <Link
+                                href={`/pengaduan/${data.slug}`}
                                 className="text-left text-background text-xs sm:text-sm md:text-xl  mt-2 transition-opacity duration-300"
                                 style={{ opacity: hovered === i ? 1 : 0 }}
                             >
                                 Lakukan Pengaduan→
-                            </Text>
+                            </Link>
                         </div>
                     </div>
                 ))}

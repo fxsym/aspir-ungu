@@ -1,14 +1,12 @@
 "use client"
 import SectionOne from "./sections/SectionOne";
-import Hero from "./Hero";
 import OrganizationLogo from "@/components/ui/OrganizationLogo";
-import HeroText from "./HeroText";
-import Text from "@/components/ui/typography/Text";
-import MainButton from "@/components/ui/button/MainButton";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import SectionTwo from "./sections/SectionTwo";
 import SectionThree from "./sections/SectionThree";
+import Hero from "@/components/ui/layout/Hero";
+import HeroText from "@/components/ui/layout/HeroText";
 
 export default function HomeContent() {
     const [current, setCurrent] = useState(0)
