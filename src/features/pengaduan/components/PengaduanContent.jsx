@@ -1,6 +1,7 @@
 'use client'
 import MainButton from '@/components/ui/button/MainButton'
 import FormInput from '@/components/ui/form/FormInput'
+import FormTextArea from '@/components/ui/form/FormTextArea'
 import Hero from '@/components/ui/layout/Hero'
 import HeroText from '@/components/ui/layout/HeroText'
 import Image from 'next/image'
@@ -37,13 +38,13 @@ export default function PengaduanContent({ category }) {
                         placeholder='Masukan NIM Pelapor'
                     />
 
-                    <FormInput
+                    <FormTextArea
                         register={register}
                         name='content'
                         label='Isi Pengaduan'
                         placeholder='Isikan Pengaduan'
                         type='textarea'
-                        className='h-40'
+                        className='h-35 lg:h-30'
                     />
 
                     

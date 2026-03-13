@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function FormInput({
+export default function FormTextArea({
     register,
     errors,
     label = "",
@@ -13,12 +13,12 @@ export default function FormInput({
     return (
         <div className='flex flex-col'>
             <label htmlFor="name">{label}</label>
-            <input
+            <textarea
                 {...register(name)}
                 id={name}
                 type={type}
                 placeholder={placeholder}
-                className={`bg-none rounded-2xl border-2 border-primary p-2 focus:ring-0 outline-none ${className}`}
+                className={`bg-none rounded-2xl border-2 border-primary p-2 focus:ring-0 outline-none resize-none ${className}`}
 
             />
             {errorMessage && (
