@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
+import { redirect } from 'next/navigation';
 
 export default function LoginContent() {
 
@@ -26,12 +27,13 @@ export default function LoginContent() {
     const onSubmit = async (data) => {
         setError(null)
         const result = await loginAction(data)
-        
+
         if (!result.success) {
             setError(result.error);
+            return;
         }
         console.log(result)
-
+        redirect('/dashboard')
     }
 
     return (

@@ -1,3 +1,4 @@
+import { generateToken } from "@/lib/auth";
 import { users } from "@/lib/users";
 import { comparePassword } from "@/utils/encrypt";
 
@@ -24,9 +25,12 @@ export async function loginServices(credentials) {
         throw new Error("INVALID_CREDENTIALS");
     }
 
+    const token = generateToken({ id: user.id, name: user.name, email: user.email });
+
     return {
         id: user.id,
         name: user.name,
         email: user.email,
+        token
     };
 }
