@@ -7,20 +7,32 @@ import Link from 'next/link';
 import React, { useState } from 'react'
 
 export default function SectionThree({ next }) {
-    const datas = aspirationCategories
+    const menuOptions = [
+        {
+            menu: "pengaduan",
+            url: "/images/heroImage.jpg",
+            name: "Buat Pengaduan"
+        },
+        {
+            menu: "cek-pengaduan",
+            url: "/images/heroImage.jpg",
+            name: "Cek Pengaduan"
+        }
+    ]
 
     const [hovered, setHovered] = useState(null);
 
 
     return (
         <div className='flex flex-col items-center'>
-            <Title className={"text-background mb-2 font-bold"}>
+            {/* <Title className={"text-background mb-2 font-bold"}>
                 Pilih Jenis Pengaduan
-            </Title>
+            </Title> */}
 
-            <div className="grid grid-cols-3 sm:grid-cols-3 gap-6 w-80 sm:w-100 md:w-160 max-w-2xl">
-                {datas.map((data, i) => (
-                    <div
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-40 sm:w-100 md:w-160 max-w-2xl">
+                {menuOptions.map((data, i) => (
+                    <Link
+                        href={`/${data.menu}`}
                         key={i}
                         onMouseEnter={() => setHovered(i)}
                         onMouseLeave={() => setHovered(null)}
@@ -62,15 +74,8 @@ export default function SectionThree({ next }) {
                                 style={{ width: hovered === i ? "48px" : "32px" }}
                             />
                             <Text className={"font-bold text-background text-xs sm:text-sm md:text-xl mb-2"}>{data.name}</Text>
-                            <Link
-                                href={`/pengaduan/${data.slug}`}
-                                className="text-left text-background text-xs sm:text-sm md:text-xl  mt-2 transition-opacity duration-300"
-                                style={{ opacity: hovered === i ? 1 : 0 }}
-                            >
-                                Lakukan Pengaduan→
-                            </Link>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>
