@@ -1,18 +1,37 @@
 'use client'
+import { loginAction } from '@/actions/login.action';
 import MainButton from '@/components/ui/button/MainButton';
 import FormInput from '@/components/ui/form/FormInput';
 import Hero from '@/components/ui/layout/Hero'
 import HeroText from '@/components/ui/layout/HeroText';
+import { loginSchema } from '@/utils/validator';
 import { motion } from "framer-motion";
-import React from 'react'
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 
 export default function LoginContent() {
 
-    const { register, handleSubmit } = useForm()
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(loginSchema),
+    });
 
-    const onSubmit = (data) => {
-        console.log(data)
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const onSubmit = async (data) => {
+        setError(null)
+        const result = await loginAction(data)
+        
+        if (!result.success) {
+            setError(result.error);
+        }
+        console.log(result)
+
     }
 
     return (
@@ -35,9 +54,10 @@ export default function LoginContent() {
                     <div className='lg:w-120'>
                         <FormInput
                             register={register}
-                            name='user_info'
+                            name='identifier'
                             label='Username / Email'
                             placeholder='Masukan username / email'
+                            errors={errors}
                         />
 
                         <FormInput
@@ -46,9 +66,16 @@ export default function LoginContent() {
                             label='Password'
                             placeholder='Masukan password'
                             type='password'
+                            errors={errors}
                         />
                     </div>
                 </div>
+
+                {error && (
+                    <div className="bg-red-100 text-red-700 p-3 rounded-2xl">
+                        {error}
+                    </div>
+                )}
 
                 <MainButton type='submit' className='w-full'>Login</MainButton>
 
