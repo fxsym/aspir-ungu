@@ -5,6 +5,7 @@ import FormInput from '@/components/ui/form/FormInput'
 import FormTextArea from '@/components/ui/form/FormTextArea'
 import Hero from '@/components/ui/layout/Hero'
 import HeroText from '@/components/ui/layout/HeroText'
+import Text from '@/components/ui/typography/Text'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 
@@ -22,10 +23,10 @@ export default function PengaduanContent({ category }) {
 
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className='sm:w-90 md:w-100 lg:w-140 flex flex-col items-center text-left gap-2 bg-secondary/40 backdrop-blur-xs border-4 border-primary shadow-4xl px-4 py-8 rounded-4xl'
+                className='sm:w-90 md:w-100 lg:w-180 flex flex-col  text-left gap-2 bg-secondary/40 backdrop-blur-xs border-4 border-primary shadow-4xl px-4 py-8 rounded-4xl'
             >
-                <div className='w-full lg:flex lg:justify-around '>
-                    <div>
+                <div className='w-full lg:flex lg:justify-around lg:gap-4 '>
+                    <div className='lg:w-120'>
                         <FormInput
                             register={register}
                             name='name'
@@ -55,7 +56,11 @@ export default function PengaduanContent({ category }) {
                         name={'image_url'}
                     />
                 </div>
+                <Text className={"text-xs md:text-sm mt-2 font-bold"}>
+                    Note: Identitas pelapor diperlukan untuk follow up terkait pengaduan yang diberikan. Data identitas yang diberikan pelapor tidak akan berpengaruh terhadap nilai
+                </Text>
 
+                
                 <MainButton type='submit' className='w-full'>Kirim</MainButton>
 
             </form>
