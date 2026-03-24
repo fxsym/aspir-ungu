@@ -1,0 +1,80 @@
+export const aspirations = [
+    {
+        id: 1,
+        tracking_code: "ASP-2403-0001",
+        name: "Fatih Syamsudin",
+        nim: "22SA11A109",
+        content: "Dosen atas nama pak Anonim kurang bisa memadai dalam mengajar",
+        response: "Untuk masalah ini sedang di usut oleh pihak BEM",
+        aspiration_category_id: 1,
+        status: "Resolved",
+        image_url: "/images/heroImage.jpg",
+        createdAt: "2026-03-24T08:00:00Z",
+        updatedAt: "2026-03-24T08:10:00Z"
+    },
+    {
+        id: 2,
+        tracking_code: "ASP-2403-0002",
+        name: "Ahmad Rizki",
+        nim: "22SA11A110",
+        content: "Fasilitas WiFi di kampus sering tidak stabil",
+        response: "Tim IT sedang melakukan peningkatan jaringan",
+        aspiration_category_id: 2,
+        status: "In Progress",
+        image_url: "/images/heroImage.jpg",
+        createdAt: "2026-03-24T08:15:00Z",
+        updatedAt: "2026-03-24T08:20:00Z"
+    },
+    {
+        id: 3,
+        tracking_code: "ASP-2403-0003",
+        name: "Siti Aisyah",
+        nim: "22SA11A111",
+        content: "AC di ruang kelas 3A tidak berfungsi dengan baik",
+        response: "Sudah diajukan ke bagian sarana untuk perbaikan",
+        aspiration_category_id: 2,
+        status: "Verified",
+        image_url: "/images/heroImage.jpg",
+        createdAt: "2026-03-24T08:30:00Z",
+        updatedAt: "2026-03-24T08:35:00Z"
+    },
+    {
+        id: 4,
+        tracking_code: "ASP-2403-0004",
+        name: "Budi Santoso",
+        nim: "22SA11A112",
+        content: "Jadwal kuliah sering berubah mendadak tanpa pemberitahuan",
+        response: "Akan dilakukan koordinasi dengan pihak akademik",
+        aspiration_category_id: 1,
+        status: "Pending",
+        image_url: "/images/heroImage.jpg",
+        createdAt: "2026-03-24T08:40:00Z",
+        updatedAt: "2026-03-24T08:50:00Z"
+    },
+    {
+        id: 5,
+        tracking_code: "ASP-2403-0005",
+        name: "Dewi Lestari",
+        nim: "22SA11A113",
+        content: "Toilet kampus kurang bersih dan tidak terawat",
+        response: "Petugas kebersihan akan ditingkatkan jadwalnya",
+        aspiration_category_id: 3,
+        status: "Rejected",
+        image_url: "/images/heroImage.jpg",
+        createdAt: "2026-03-24T09:00:00Z",
+        updatedAt: "2026-03-24T09:10:00Z"
+    },
+    {
+        id: 6,
+        tracking_code: "ASP-2403-0006",
+        name: "Rizky Pratama",
+        nim: "22SA11A114",
+        content: "Kurangnya tempat parkir untuk mahasiswa",
+        response: "Sedang direncanakan perluasan area parkir",
+        aspiration_category_id: 3,
+        status: "In Progress",
+        image_url: "/images/heroImage.jpg",
+        createdAt: "2026-03-24T09:15:00Z",
+        updatedAt: "2026-03-24T09:20:00Z"
+    }
+]
