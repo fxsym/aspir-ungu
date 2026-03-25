@@ -37,8 +37,8 @@ export default function SearchInput({ className, onSearch }) {
                 />
                 <button
                     type="submit"
-                    className={`flex items-center justify-center transition-all duration-150 active:scale-95 px-4 h-full py-2 text-white
-                        ${errorMessage
+                    className={`flex items-center justify-center transition-all duration-150 active:scale-95 px-4 h-12 py-2 text-white shrink-0
+        ${errorMessage
                             ? 'bg-red-400 hover:bg-red-500'
                             : 'bg-primary hover:bg-primary/90'
                         }`}
