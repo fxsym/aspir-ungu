@@ -1,5 +1,6 @@
-import { generateToken } from "@/lib/auth";
+import { generateToken, verifyToken } from "@/lib/auth";
 import { users } from "@/lib/users";
+import { getToken } from "@/utils/cookies";
 import { comparePassword } from "@/utils/encrypt";
 
 export async function login(credentials) {
@@ -33,4 +34,19 @@ export async function login(credentials) {
         email: user.email,
         token
     };
+}
+
+export async function getCurrentUser() {
+    const token = await getToken()
+    if (!token) return null
+
+    const payload = verifyToken(token)
+    if (!payload) return null
+
+    const user = users.find((item) => item.id === payload.id) 
+
+    // Ambil data fresh dari database
+    // const user = await userRepository.findById(payload.id)
+
+    return user
 }
