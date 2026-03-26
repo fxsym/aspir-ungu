@@ -8,12 +8,13 @@ import React from 'react'
 
 export default async function Dashboard() {
     const user = await getCurrentUser()
-    
+    console.log(user)
+
     if (!user) {
         redirect('/login')
     }
 
     return (
-        <DashboardContent />
+        <DashboardContent user={user}/>
     )
 }
