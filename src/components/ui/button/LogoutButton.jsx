@@ -1,7 +1,7 @@
 'use client'
-import { logoutAction } from "@/actions/logout.action";
 import { useState } from "react";
 import Text from "../typography/Text";
+import { logoutAction } from "@/actions/auth.action";
 
 export default function LogoutButton({ children = "Logout", className }) {
     const [loading, setLoading] = useState(false);

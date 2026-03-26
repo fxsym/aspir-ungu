@@ -1,5 +1,4 @@
 'use client'
-import { loginAction } from '@/actions/login.action';
 import MainButton from '@/components/ui/button/MainButton';
 import FormInput from '@/components/ui/form/FormInput';
 import Hero from '@/components/ui/layout/Hero'
@@ -10,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { loginAction } from '@/actions/auth.action';
 
 export default function LoginContent() {
 

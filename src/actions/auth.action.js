@@ -1,11 +1,11 @@
 'use server'
-import { loginServices } from "@/services/login.service";
+import { login } from "@/services/auth.services";
 import { redirect } from "next/dist/server/api-utils";
 import { cookies } from "next/headers";
 
 export async function loginAction(data) {
     try {
-        const result = await loginServices(data)
+        const result = await login(data)
         const cookieStore = await cookies()
 
         cookieStore.set('token', result.token, {
@@ -30,4 +30,11 @@ export async function loginAction(data) {
         };
 
     }
+}
+
+export async function logoutAction() {
+    const cookieStore = await cookies();
+    cookieStore.delete('token');
+    
+    redirect('/login');
 }

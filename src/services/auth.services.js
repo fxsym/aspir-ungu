@@ -2,7 +2,7 @@ import { generateToken } from "@/lib/auth";
 import { users } from "@/lib/users";
 import { comparePassword } from "@/utils/encrypt";
 
-export async function loginServices(credentials) {
+export async function login(credentials) {
     const isEmail = credentials.identifier.includes("@");
     // const user = await prisma.user.findUnique({
     //     where: isEmail
