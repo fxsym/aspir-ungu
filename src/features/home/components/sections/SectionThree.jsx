@@ -9,7 +9,7 @@ import React, { useState } from 'react'
 export default function SectionThree({ next }) {
     const menuOptions = [
         {
-            menu: "pengaduan",
+            menu: "buat-pengaduan",
             url: "/images/heroImage.jpg",
             name: "Buat Pengaduan"
         },

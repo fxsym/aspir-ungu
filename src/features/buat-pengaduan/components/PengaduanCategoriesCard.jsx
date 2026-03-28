@@ -1,12 +1,10 @@
-import MainButton from '@/components/ui/button/MainButton'
 import Text from '@/components/ui/typography/Text'
-import Title from '@/components/ui/typography/Title';
 import { aspirationCategories } from '@/lib/aspirationCategories';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
 
-export default function PengaduanCategories({ next }) {
+export default function PengaduanCategoriesCard() {
     const pengaduanCategories = aspirationCategories
 
     const [hovered, setHovered] = useState(null);
@@ -15,10 +13,10 @@ export default function PengaduanCategories({ next }) {
     return (
         <div className='flex flex-col items-center'>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-40 sm:w-100 md:w-160 max-w-2xl">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-2xl">
                 {pengaduanCategories.map((data, i) => (
                     <Link
-                        href={`/${data.slug}`}
+                        href={`/buat-pengaduan/${data.slug}`}
                         key={i}
                         onMouseEnter={() => setHovered(i)}
                         onMouseLeave={() => setHovered(null)}
