@@ -1,70 +1,64 @@
 'use client'
-import MainButton from '@/components/ui/button/MainButton'
-import FormImage from '@/components/ui/form/FormImage'
-import FormInput from '@/components/ui/form/FormInput'
-import FormTextArea from '@/components/ui/form/FormTextArea'
-import Hero from '@/components/ui/layout/Hero'
-import HeroText from '@/components/ui/layout/HeroText'
-import Text from '@/components/ui/typography/Text'
-import Image from 'next/image'
-import { useForm } from 'react-hook-form'
+import React from 'react'
+import OrganizationLogo from "@/components/ui/OrganizationLogo";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import Hero from "@/components/ui/layout/Hero";
+import HeroText from "@/components/ui/layout/HeroText";
+import PengaduanCategories from './PengaduanCategories';
 
-// PengaduanContent.jsx
-export default function PengaduanContent({ category }) {
-    const { register, handleSubmit } = useForm()
 
-    const onSubmit = (data) => {
-        console.log(data)
+export default function PengaduanContent() {
+    const [current, setCurrent] = useState(0)
+
+    const next = () => {
+        if (current < steps.length - 1) {
+            setCurrent(current + 1)
+        }
     }
+
+    const steps = [
+        <PengaduanCategories next={next} />,
+    ]
 
     return (
         <Hero>
-            <HeroText>Pengaduan {category.name}</HeroText>
-
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className='sm:w-90 md:w-100 lg:w-180 flex flex-col  text-left gap-2 bg-secondary/40 backdrop-blur-xs border-4 border-primary shadow-4xl px-4 py-8 rounded-4xl'
+            <motion.div
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
             >
-                <div className='w-full lg:flex lg:justify-around lg:gap-4 '>
-                    <div className='lg:w-120'>
-                        <FormInput
-                            register={register}
-                            name='name'
-                            label='Nama Pelapor'
-                            placeholder='Masukan Nama Lengkap'
-                        />
+                <HeroText>Pilih Pengaduan</HeroText>
+            </motion.div>
 
-                        <FormInput
-                            register={register}
-                            name='nim'
-                            label='NIM Pelapor'
-                            placeholder='Masukan NIM Pelapor'
-                        />
+            <motion.div layout className="rounded">
+                {steps.map((step, i) => (
+                    <motion.div
+                        key={i}
+                        layout
+                        initial={{ opacity: 0, height: 0, scale: 0.8 }}
+                        animate={{
+                            opacity: i === current ? 1 : 0,
+                            height: i === current ? "auto" : 0,
+                            scale: i === current ? 1 : 0.8,
+                        }}
+                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        style={{ overflow: "hidden" }}
+                    >
+                        {step}
+                    </motion.div>
+                ))}
+            </motion.div>
 
-                        <FormTextArea
-                            register={register}
-                            name='content'
-                            label='Isi Pengaduan'
-                            placeholder='Isikan Pengaduan'
-                            type='textarea'
-                            className='h-25'
-                        />
-                    </div>
-
-                    <FormImage
-                        register={register}
-                        name={'image_url'}
-                    />
-                </div>
-                <Text className={"text-xs md:text-sm mt-2 font-bold"}>
-                    Note: Identitas pelapor diperlukan untuk follow up terkait pengaduan yang diberikan. Data identitas yang diberikan pelapor tidak akan berpengaruh terhadap nilai
-                </Text>
-
-                
-                <MainButton type='submit' className='w-full'>Kirim</MainButton>
-
-            </form>
-
+            <motion.div
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+            >
+                <OrganizationLogo></OrganizationLogo>
+            </motion.div>
         </Hero>
     )
 }
