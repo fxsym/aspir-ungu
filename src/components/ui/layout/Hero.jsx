@@ -1,7 +1,7 @@
 'use client'
 import Image from "next/image";
 
-export default function Hero({ children }) {
+export default function Hero({ children, className }) {
   return (
     <section className="relative min-h-screen w-full" id="home">
       {/* Background: fixed, full screen, di belakang segalanya */}
@@ -18,7 +18,7 @@ export default function Hero({ children }) {
       </div>
 
       {/* Konten: bisa scroll, background tetap di belakang */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 min-h-screen flex flex-col items-center justify-center text-center gap-4 py-16">
+      <div className={`relative z-10 max-w-6xl mx-auto px-4 min-h-screen flex flex-col items-center justify-center text-center gap-4 py-16 ${className}`}>
         {children}
       </div>
     </section>

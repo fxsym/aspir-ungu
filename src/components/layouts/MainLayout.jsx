@@ -12,7 +12,7 @@ export default function MainLayout({ children, user }) {
 
             <div className="w-full transition-all duration-500">
                 <Navbar showSidebar={showSidebar} setShowSidebar={setShowSidebar} user={user} />
-                <Hero>
+                <Hero className={'min-h-0!'}>
                     {children}
                 </Hero>
             </div>
