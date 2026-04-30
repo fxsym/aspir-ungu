@@ -14,6 +14,7 @@ export default function BuatPengaduanContent({ category }) {
 
     const onSubmit = (data) => {
         console.log(data)
+        
     }
 
     return (

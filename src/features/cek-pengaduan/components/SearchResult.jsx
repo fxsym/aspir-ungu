@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 
 const statusConfig = {
-    Pending: {
+    pending: {
         label: 'Diajukan',
         description: 'Laporan telah diterima sistem',
         bg: 'bg-slate-100',
@@ -15,7 +15,7 @@ const statusConfig = {
             </svg>
         ),
     },
-    Verified: {
+    verified: {
         label: 'Diverifikasi',
         description: 'Laporan telah diverifikasi admin BEM',
         bg: 'bg-sky-100',
@@ -28,7 +28,7 @@ const statusConfig = {
             </svg>
         ),
     },
-    'In Progress': {
+    in_progress: {
         label: 'Diproses',
         description: 'BEM sedang menindaklanjuti laporan',
         bg: 'bg-blue-100',
@@ -41,7 +41,7 @@ const statusConfig = {
             </svg>
         ),
     },
-    Resolved: {
+    resolved: {
         label: 'Selesai',
         description: 'Masalah telah terselesaikan',
         bg: 'bg-emerald-100',
@@ -54,7 +54,7 @@ const statusConfig = {
             </svg>
         ),
     },
-    Rejected: {
+    rejected: {
         label: 'Ditolak',
         description: 'Laporan tidak dapat diproses',
         bg: 'bg-red-100',
@@ -67,6 +67,12 @@ const statusConfig = {
             </svg>
         ),
     },
+}
+
+const sentimentConfig = {
+    positive: { label: 'Positif', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200' },
+    negative: { label: 'Negatif', bg: 'bg-red-50', text: 'text-red-600', border: 'border-red-200' },
+    neutral:  { label: 'Netral',  bg: 'bg-gray-100',  text: 'text-gray-500',  border: 'border-gray-200'  },
 }
 
 function formatDate(dateStr) {
@@ -82,6 +88,7 @@ function formatDate(dateStr) {
 export default function SearchResult({ data }) {
     if (!data) return null
 
+    // Sesuai enum Prisma: pending | verified | in_progress | resolved | rejected
     const status = statusConfig[data.status] ?? {
         label: data.status,
         description: '',
@@ -92,6 +99,8 @@ export default function SearchResult({ data }) {
         icon: null,
     }
 
+    const sentiment = data.sentiment ? sentimentConfig[data.sentiment] ?? null : null
+
     return (
         <div className="w-full max-w-2xl mx-auto mt-6 animate-fadeUp">
             <div className="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
@@ -100,14 +109,18 @@ export default function SearchResult({ data }) {
                 <div className="h-1.5 w-full bg-linear-to-r from-primary via-primary/70 to-primary/30" />
 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:justify-between px-6 pt-5 pb-4 items-center ">
-                    <div className=''>
+                <div className="flex flex-col md:flex-row md:justify-between px-6 pt-5 pb-4 items-start md:items-center gap-3">
+                    <div>
                         <p className="text-xs font-semibold tracking-widest text-primary/60 uppercase mb-1">
                             Tracking Code
                         </p>
                         <h2 className="text-base md:text-lg font-bold text-gray-800 leading-tight">
                             {data.tracking_code}
                         </h2>
+                        {/* Kategori */}
+                        {data.category?.name && (
+                            <p className="text-xs text-gray-400 mt-1">{data.category.name}</p>
+                        )}
                     </div>
 
                     {/* Status Badge */}
@@ -117,7 +130,9 @@ export default function SearchResult({ data }) {
                             {status.label}
                         </span>
                         {status.description && (
-                            <p className="text-[10px] text-gray-400 text-right max-w-35 leading-tight">{status.description}</p>
+                            <p className="text-[10px] text-gray-400 text-right max-w-[9rem] leading-tight">
+                                {status.description}
+                            </p>
                         )}
                     </div>
                 </div>
@@ -125,7 +140,7 @@ export default function SearchResult({ data }) {
                 {/* Divider */}
                 <div className="mx-6 border-t border-dashed border-gray-200" />
 
-                {/* Identity */}
+                {/* Identity — tampilkan nama asli kecuali anonim */}
                 <div className="px-6 py-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -133,13 +148,24 @@ export default function SearchResult({ data }) {
                             <circle cx="12" cy="7" r="4" />
                         </svg>
                     </div>
-                    <div className='flex flex-col items-start'>
-                        <p className="text-sm font-semibold text-gray-800">{data.name}</p>
-                        <p className="text-xs text-gray-400">{data.nim}</p>
+                    <div className="flex flex-col items-start">
+                        <p className="text-sm font-semibold text-gray-800">
+                            {data.is_anonymous ? 'Anonim' : data.name}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                            {data.is_anonymous ? '—' : data.nim}
+                        </p>
                     </div>
+
+                    {/* Sentiment badge (jika ada)
+                    {sentiment && (
+                        <span className={`ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium border ${sentiment.bg} ${sentiment.text} ${sentiment.border}`}>
+                            {sentiment.label}
+                        </span>
+                    )} */}
                 </div>
 
-                {/* Image (if available)
+                {/* Image attachment (jika ada) */}
                 {data.image_url && (
                     <div className="mx-6 mb-4 rounded-2xl overflow-hidden h-44 relative">
                         <Image
@@ -149,7 +175,7 @@ export default function SearchResult({ data }) {
                             className="object-cover"
                         />
                     </div>
-                )} */}
+                )}
 
                 {/* Content */}
                 <div className="px-6 pb-4 space-y-4">
@@ -162,16 +188,14 @@ export default function SearchResult({ data }) {
                     </div>
 
                     {/* Tanggapan */}
-
                     <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4">
                         <p className="text-xs font-semibold text-primary/60 uppercase tracking-wider mb-1.5">
                             Tanggapan
                         </p>
                         <p className="text-sm text-gray-700 leading-relaxed">
-                            {data?.response || "Belum ada tanggapan dari BEM"}
+                            {data.response ?? 'Belum ada tanggapan dari BEM'}
                         </p>
                     </div>
-
                 </div>
 
                 {/* Footer timestamps */}
@@ -183,15 +207,15 @@ export default function SearchResult({ data }) {
                             <line x1="8" y1="2" x2="8" y2="6" />
                             <line x1="3" y1="10" x2="21" y2="10" />
                         </svg>
-                        <span>Dibuat: {formatDate(data.createdAt)}</span>
+                        <span>Dibuat: {formatDate(data.created_at)}</span>
                     </div>
-                    {/* <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-400">
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="23 4 23 10 17 10" />
                             <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                         </svg>
-                        <span>Diperbarui: {formatDate(data.updatedAt)}</span>
-                    </div> */}
+                        <span>Diperbarui: {formatDate(data.updated_at)}</span>
+                    </div>
                 </div>
 
             </div>

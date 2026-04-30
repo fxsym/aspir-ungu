@@ -3,8 +3,8 @@ import Hero from '@/components/ui/layout/Hero'
 import HeroText from '@/components/ui/layout/HeroText'
 import React, { useState } from 'react'
 import SearchInput from './SearchInput'
-import { searchPengaduanAction } from '@/actions/pengaduan.action'
 import SearchResult from './SearchResult'
+import { searchPengaduanAction } from '@/actions/aspiration.action'
 
 export default function CekPengaduanContent() {
     const [data, setData] = useState(null)
