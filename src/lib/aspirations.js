@@ -8,6 +8,7 @@ export const aspirations = [
         response: "Untuk masalah ini sedang di usut oleh pihak BEM Untuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEM Untuk masalah ini sedang di usut oleh pihak BEM Untuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEM Untuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEMUntuk masalah ini sedang di usut oleh pihak BEM",
         aspiration_category_id: 1,
         status: "Resolved",
+        sentiment: "negative",
         image_url: "/images/heroImage.jpg",
         createdAt: "2026-03-24T08:00:00Z",
         updatedAt: "2026-03-24T08:10:00Z"
@@ -21,6 +22,7 @@ export const aspirations = [
         response: null,
         aspiration_category_id: 2,
         status: "In Progress",
+        sentiment: "negative",
         image_url: "/images/heroImage.jpg",
         createdAt: "2026-03-24T08:15:00Z",
         updatedAt: "2026-03-24T08:20:00Z"
@@ -34,6 +36,7 @@ export const aspirations = [
         response: "Sudah diajukan ke bagian sarana untuk perbaikan",
         aspiration_category_id: 2,
         status: "Verified",
+        sentiment: "negative",
         image_url: "/images/heroImage.jpg",
         createdAt: "2026-03-24T08:30:00Z",
         updatedAt: "2026-03-24T08:35:00Z"
@@ -47,6 +50,7 @@ export const aspirations = [
         response: "Akan dilakukan koordinasi dengan pihak akademik",
         aspiration_category_id: 1,
         status: "Pending",
+        sentiment: "negative",
         image_url: "/images/heroImage.jpg",
         createdAt: "2026-03-24T08:40:00Z",
         updatedAt: "2026-03-24T08:50:00Z"
@@ -60,6 +64,7 @@ export const aspirations = [
         response: "Petugas kebersihan akan ditingkatkan jadwalnya",
         aspiration_category_id: 3,
         status: "Rejected",
+        sentiment: "negative",
         image_url: "/images/heroImage.jpg",
         createdAt: "2026-03-24T09:00:00Z",
         updatedAt: "2026-03-24T09:10:00Z"
@@ -73,8 +78,23 @@ export const aspirations = [
         response: "Sedang direncanakan perluasan area parkir",
         aspiration_category_id: 3,
         status: "In Progress",
+        sentiment: "negative",
         image_url: "/images/heroImage.jpg",
         createdAt: "2026-03-24T09:15:00Z",
         updatedAt: "2026-03-24T09:20:00Z"
+    },
+    {
+        id: 7,
+        tracking_code: "ASP-2403-0007",
+        name: "Andi Prakoso",
+        nim: "22SA11A115",
+        content: "Pelayanan administrasi kampus sangat cepat dan membantu",
+        response: "Terima kasih atas apresiasinya, kami akan terus meningkatkan pelayanan",
+        aspiration_category_id: 1,
+        status: "Resolved",
+        sentiment: "positive",
+        image_url: "/images/heroImage.jpg",
+        createdAt: "2026-03-24T09:30:00Z",
+        updatedAt: "2026-03-24T09:35:00Z"
     }
-]
+];

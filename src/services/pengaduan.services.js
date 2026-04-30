@@ -11,3 +11,12 @@ export async function getPengaduanByTrackingCode(trackingCode) {
         pengaduan
     }
 }
+
+export async function getStatCardData(params) {
+    return data = {
+        totalAspirations: 50,
+        totalAspirationsToday: 3,
+        totalAspirationsResolved: 30,
+        totalAspirationsInProgress: 12
+    }
+}

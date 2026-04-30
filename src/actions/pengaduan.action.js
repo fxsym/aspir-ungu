@@ -26,3 +26,12 @@ export async function searchPengaduanAction(trackingCode) {
         };
     }
 }
+
+export async function getStatCardData(params) {
+    try {
+        const data = await getStatCardData()
+        
+    } catch (error) {
+        
+    }
+}
