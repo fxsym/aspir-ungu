@@ -1,5 +1,7 @@
-import { aspirationCategories } from "@/lib/aspirationCategories";
+import prisma from "@/lib/prisma";
 
-export const getAspirationCategoryBySlug = (slug) =>{
-    return aspirationCategories.find((item) => item.slug === slug);
-}
+export const getAspirationCategoryBySlug = async (slug) => {
+    return await prisma.aspirationCategory.findUnique({
+        where: { slug },
+    });
+};

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
 
-export default function PengaduanCategoriesCard() {
+export default function AspiratonCategoryCard() {
     const pengaduanCategories = aspirationCategories
 
     const [hovered, setHovered] = useState(null);
@@ -30,7 +30,7 @@ export default function PengaduanCategoriesCard() {
                     >
                         {/* Image */}
                         <Image
-                            src={data.url}
+                            src={data?.image_url}
                             alt={data.name}
                             fill
                             sizes="(max-width: 768px) 33vw, 300px"

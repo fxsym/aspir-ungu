@@ -4,7 +4,7 @@ import OrganizationLogo from "@/components/ui/OrganizationLogo";
 import { motion } from "framer-motion";
 import Hero from "@/components/ui/layout/Hero";
 import HeroText from "@/components/ui/layout/HeroText";
-import PengaduanCategoriesCard from './PengaduanCategoriesCard';
+import AspiratonCategoryCard from './AspiratonCategoryCard';
 
 export default function ChoosePengaduanContent() {
     return (
@@ -25,7 +25,7 @@ export default function ChoosePengaduanContent() {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="w-full"
             >
-                <PengaduanCategoriesCard />
+                <AspiratonCategoryCard />
             </motion.div>
 
             <motion.div
