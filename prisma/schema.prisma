@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum Status {
+  pending
+  resolved
+  in_progress
+  verified
+  rejected
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  name       String
+  username   String       @unique
+  email      String       @unique
+  password   String
+  image_url  String?
+  role       Role         @default(user)
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+
+  @@map("users")
+}
+
+model AspirationCategory {
+  id          Int          @id @default(autoincrement())
+  slug        String       @unique
+  name        String
+  image_url   String?
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+
+  aspirations Aspiration[]
+
+  @@map("aspiration_categories")
+}
+
+model Aspiration {
+  id                     Int                 @id @default(autoincrement())
+  tracking_code          String              @unique
+  name                   String
+  nim                    String
+  content                String
+  response               String?
+  aspiration_category_id Int              
+  sentiment              String?
+  status                 Status              @default(pending)
+  is_anonymous           Boolean             @default(false)
+  image_url              String?
+  created_at             DateTime            @default(now())
+  updated_at             DateTime            @updatedAt
+
+  category AspirationCategory @relation(fields: [aspiration_category_id], references: [id])
+
+  @@map("aspirations")
+}

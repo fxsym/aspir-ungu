@@ -1,32 +1,32 @@
 export const aspirationCategories = [
     {
-        slug: "pencabulan",
-        url: "/images/heroImage.jpg",
-        name: "Pencabulan"
+        slug: "akademik",
+        image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp",
+        name: "Akademik"
     },
     {
-        slug: "dosen",
-        url: "/images/heroImage.jpg",
-        name: "Dosen"
+        slug: "fasilitas-kampus",
+        image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp",
+        name: "Fasilitas Kampus"
     },
     {
-        slug: "fasilitas",
-        url: "/images/heroImage.jpg",
-        name: "Fasilitas"
+        slug: "pelayanan-administrasi",
+        image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp",
+        name: "Pelayanan Administrasi"
     },
     {
-        slug: "pencabulan",
-        url: "/images/heroImage.jpg",
-        name: "Pencabulan"
+        slug: "keuangan",
+        image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp",
+        name: "Keuangan"
     },
     {
-        slug: "dosen",
-        url: "/images/heroImage.jpg",
-        name: "Dosen"
+        slug: "pelecehan-seksual",
+        image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp",
+        name: "Pelecehan Seksual"
     },
     {
-        slug: "fasilitas",
-        url: "/images/heroImage.jpg",
-        name: "Fasilitas"
-    },
+        slug: "lainnya",
+        image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp",
+        name: "Lainnya"
+    }
 ]
