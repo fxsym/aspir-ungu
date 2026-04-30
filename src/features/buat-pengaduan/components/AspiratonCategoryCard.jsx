@@ -1,20 +1,16 @@
 import Text from '@/components/ui/typography/Text'
-import { aspirationCategories } from '@/lib/aspirationCategories';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
 
-export default function AspiratonCategoryCard() {
-    const pengaduanCategories = aspirationCategories
-
+export default function AspiratonCategoryCard({aspirationCategories}) {
     const [hovered, setHovered] = useState(null);
-
 
     return (
         <div className='flex flex-col items-center'>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-2xl">
-                {pengaduanCategories.map((data, i) => (
+                {aspirationCategories.map((data, i) => (
                     <Link
                         href={`/buat-pengaduan/${data.slug}`}
                         key={i}

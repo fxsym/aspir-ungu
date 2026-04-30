@@ -6,7 +6,7 @@ import Hero from "@/components/ui/layout/Hero";
 import HeroText from "@/components/ui/layout/HeroText";
 import AspiratonCategoryCard from './AspiratonCategoryCard';
 
-export default function ChoosePengaduanContent() {
+export default function ChoosePengaduanContent({aspirationCategories}) {
     return (
         <Hero>
             <motion.div
@@ -25,7 +25,7 @@ export default function ChoosePengaduanContent() {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="w-full"
             >
-                <AspiratonCategoryCard />
+                <AspiratonCategoryCard aspirationCategories={aspirationCategories} />
             </motion.div>
 
             <motion.div

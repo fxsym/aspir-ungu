@@ -1,10 +1,10 @@
 import BuatPengaduanContent from "@/features/buat-pengaduan/components/BuatPengaduanContent";
-import { getAspirationCategoryBySlug } from "@/services/aspirationCategories.service";
+import { FindAspirationCategoryBySlug } from "@/services/aspirationCategories.service";
 
 export default async function BuatPengaduan({ params }) {
 
   const { slug } = await params;
-  const category = getAspirationCategoryBySlug(slug)
+  const category = FindAspirationCategoryBySlug(slug)
 
   return <BuatPengaduanContent category={category} />;
 }

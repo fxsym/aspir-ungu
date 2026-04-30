@@ -2,8 +2,6 @@
 
 import { getPengaduanByTrackingCode } from "@/services/pengaduan.services"
 
-
-
 export async function searchPengaduanAction(trackingCode) {
     try {
         const data = await getPengaduanByTrackingCode(trackingCode)
