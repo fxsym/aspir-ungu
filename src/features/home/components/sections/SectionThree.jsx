@@ -1,7 +1,4 @@
-import MainButton from '@/components/ui/button/MainButton'
 import Text from '@/components/ui/typography/Text'
-import Title from '@/components/ui/typography/Title';
-import { aspirationCategories } from '@/lib/aspirationCategories';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'

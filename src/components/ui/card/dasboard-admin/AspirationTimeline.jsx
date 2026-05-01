@@ -1,29 +1,8 @@
 'use client'
 import React, { useState, useRef } from 'react'
 
-function groupByDate(aspirations) {
-  const map = {}
-  aspirations.forEach(({ createdAt, status }) => {
-    const date = new Date(createdAt)
-    const key = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })
-    if (!map[key]) map[key] = { date: key, total: 0, resolved: 0, pending: 0 }
-    map[key].total++
-    if (status === 'Resolved') map[key].resolved++
-    if (status === 'Pending') map[key].pending++
-  })
-
-  return Object.values(map).sort((a, b) => {
-    // Sort by original date
-    const aOrig = aspirations.find(
-      (x) => new Date(x.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) === a.date
-    )
-    const bOrig = aspirations.find(
-      (x) => new Date(x.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) === b.date
-    )
-    return new Date(aOrig?.createdAt) - new Date(bOrig?.createdAt)
-  })
-}
-
+// data: Array<{ date: string, total: number, resolved: number, pending: number }>
+// — dikirim sudah diproses dari server (getTimelineData())
 function MiniAreaChart({ data, width = 400, height = 120 }) {
   const [tooltip, setTooltip] = useState(null)
   const svgRef = useRef(null)
@@ -74,41 +53,29 @@ function MiniAreaChart({ data, width = 400, height = 120 }) {
           </linearGradient>
         </defs>
 
-        {/* Grid lines */}
         {[0, 0.5, 1].map((t) => (
           <line
             key={t}
-            x1={padX}
-            x2={width - padX}
-            y1={padY + chartH * (1 - t)}
-            y2={padY + chartH * (1 - t)}
-            stroke="var(--border)"
-            strokeWidth={1}
+            x1={padX} x2={width - padX}
+            y1={padY + chartH * (1 - t)} y2={padY + chartH * (1 - t)}
+            stroke="var(--border)" strokeWidth={1}
             strokeDasharray={t === 0 ? 'none' : '4 3'}
           />
         ))}
 
-        {/* Area fills */}
         <path d={toArea(totalPoints)} fill="url(#totalGrad)" />
         <path d={toArea(resolvedPoints)} fill="url(#resolvedGrad)" />
-
-        {/* Lines */}
         <path d={toPath(totalPoints)} fill="none" stroke="#7c3aed" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
         <path d={toPath(resolvedPoints)} fill="none" stroke="#22c55e" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" strokeDasharray="6 3" />
 
-        {/* Hover targets + dots */}
         {data.map((d, i) => {
           const x = getX(i)
-          const y = getY(d.total)
           return (
             <g key={i}>
               <rect
-                x={x - 18}
-                y={0}
-                width={36}
-                height={height}
+                x={x - 18} y={0} width={36} height={height}
                 fill="transparent"
-                onMouseEnter={() => setTooltip({ ...d, x, y, i })}
+                onMouseEnter={() => setTooltip({ ...d, x, y: getY(d.total), i })}
               />
               {tooltip?.i === i && (
                 <>
@@ -122,7 +89,6 @@ function MiniAreaChart({ data, width = 400, height = 120 }) {
         })}
       </svg>
 
-      {/* Tooltip */}
       {tooltip && (
         <div
           className="absolute z-10 rounded-xl px-3 py-2 text-xs shadow-lg pointer-events-none"
@@ -137,7 +103,7 @@ function MiniAreaChart({ data, width = 400, height = 120 }) {
         >
           <p className="font-semibold mb-1">{tooltip.date}</p>
           <p className="flex items-center gap-1.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-primary" style={{ background: '#7c3aed' }} />
+            <span className="inline-block w-2 h-2 rounded-full" style={{ background: '#7c3aed' }} />
             Total: <span className="font-bold">{tooltip.total}</span>
           </p>
           <p className="flex items-center gap-1.5">
@@ -147,24 +113,27 @@ function MiniAreaChart({ data, width = 400, height = 120 }) {
         </div>
       )}
 
-      {/* X-axis labels */}
       <div className="flex justify-between mt-1 px-2">
-        {data.map((d, i) => (
-          (i === 0 || i === data.length - 1 || data.length <= 5) && (
-            <span key={i} className="text-xs" style={{ color: 'var(--muted)' }}>
-              {d.date}
-            </span>
-          )
-        ))}
+        {data.map((d, i) =>
+          (i === 0 || i === data.length - 1 || data.length <= 5) ? (
+            <span key={i} className="text-xs" style={{ color: 'var(--muted)' }}>{d.date}</span>
+          ) : null
+        )}
       </div>
     </div>
   )
 }
 
-export default function AspirationTimeline({ aspirations = [] }) {
-  const data = groupByDate(aspirations)
-  const totalThisMonth = aspirations.length
-  const totalResolved = aspirations.filter((a) => a.status === 'Resolved').length
+/**
+ * Props:
+ *   timelineData: Array<{ date: string, total: number, resolved: number, pending: number }>
+ *   totalIn: number   — total semua aspiration
+ *   totalResolved: number
+ *
+ * Semua props dikirim dari Server Component via getTimelineData() & getDashboardStats()
+ */
+export default function AspirationTimeline({ timelineData = [], totalIn = 0, totalResolved = 0 }) {
+  const resolveRate = totalIn > 0 ? Math.round((totalResolved / totalIn) * 100) : 0
 
   return (
     <div
@@ -183,7 +152,7 @@ export default function AspirationTimeline({ aspirations = [] }) {
         <div className="flex items-center gap-4">
           <div className="text-center">
             <p className="text-xs" style={{ color: 'var(--muted)' }}>Masuk</p>
-            <p className="text-lg font-bold" style={{ color: 'var(--primary)' }}>{totalThisMonth}</p>
+            <p className="text-lg font-bold" style={{ color: 'var(--primary)' }}>{totalIn}</p>
           </div>
           <div className="text-center">
             <p className="text-xs" style={{ color: 'var(--muted)' }}>Resolved</p>
@@ -191,9 +160,7 @@ export default function AspirationTimeline({ aspirations = [] }) {
           </div>
           <div className="text-center">
             <p className="text-xs" style={{ color: 'var(--muted)' }}>Rate</p>
-            <p className="text-lg font-bold" style={{ color: 'var(--foreground)' }}>
-              {totalThisMonth > 0 ? Math.round((totalResolved / totalThisMonth) * 100) : 0}%
-            </p>
+            <p className="text-lg font-bold" style={{ color: 'var(--foreground)' }}>{resolveRate}%</p>
           </div>
         </div>
       </div>
@@ -212,7 +179,7 @@ export default function AspirationTimeline({ aspirations = [] }) {
         </span>
       </div>
 
-      <MiniAreaChart data={data} />
+      <MiniAreaChart data={timelineData} />
     </div>
   )
 }

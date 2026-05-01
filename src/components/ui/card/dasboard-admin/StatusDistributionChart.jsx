@@ -1,25 +1,13 @@
 'use client'
 import React, { useState } from 'react'
 
+// Status dari Prisma enum: pending | resolved | in_progress | verified | rejected
 const STATUS_CONFIG = {
-  Resolved: { color: '#22c55e', label: 'Resolved' },
-  'In Progress': { color: '#f59e0b', label: 'In Progress' },
-  Verified: { color: '#7c3aed', label: 'Verified' },
-  Pending: { color: '#a78bfa', label: 'Pending' },
-  Rejected: { color: '#ef4444', label: 'Rejected' },
-}
-
-function getStatusCounts(aspirations) {
-  const counts = {}
-  aspirations.forEach(({ status }) => {
-    counts[status] = (counts[status] || 0) + 1
-  })
-  return Object.entries(counts).map(([status, count]) => ({
-    status,
-    count,
-    color: STATUS_CONFIG[status]?.color || '#6b7280',
-    label: STATUS_CONFIG[status]?.label || status,
-  }))
+  resolved:    { color: '#22c55e', label: 'Resolved' },
+  in_progress: { color: '#f59e0b', label: 'In Progress' },
+  verified:    { color: '#7c3aed', label: 'Verified' },
+  pending:     { color: '#a78bfa', label: 'Pending' },
+  rejected:    { color: '#ef4444', label: 'Rejected' },
 }
 
 function DonutChart({ data, total }) {
@@ -44,14 +32,9 @@ function DonutChart({ data, total }) {
 
   return (
     <div className="flex items-center gap-6 w-full">
-      <div className="relative flex-shrink-0">
+      <div className="relative shrink-0">
         <svg width={180} height={180} viewBox="0 0 180 180">
-          <circle
-            cx={cx} cy={cy} r={radius}
-            fill="none"
-            stroke="var(--border)"
-            strokeWidth={strokeWidth}
-          />
+          <circle cx={cx} cy={cy} r={radius} fill="none" stroke="var(--border)" strokeWidth={strokeWidth} />
           {slices.map((s, i) => (
             <circle
               key={s.status}
@@ -94,13 +77,10 @@ function DonutChart({ data, total }) {
             onMouseLeave={() => setHovered(null)}
           >
             <div className="flex items-center gap-2 min-w-0">
-              <span
-                className="inline-block rounded-full flex-shrink-0"
-                style={{ width: 10, height: 10, background: d.color }}
-              />
+              <span className="inline-block rounded-full shrink-0" style={{ width: 10, height: 10, background: d.color }} />
               <span className="text-sm truncate" style={{ color: 'var(--muted)' }}>{d.label}</span>
             </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               <span className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>{d.count}</span>
               <span
                 className="text-xs px-1.5 py-0.5 rounded-full font-medium"
@@ -116,9 +96,20 @@ function DonutChart({ data, total }) {
   )
 }
 
-export default function StatusDistributionChart({ aspirations = [] }) {
-  const data = getStatusCounts(aspirations)
-  const total = aspirations.length
+/**
+ * Props:
+ *   statusData: Array<{ status: string, count: number }>
+ *     — dari getStatusDistribution(), status pakai enum Prisma (lowercase)
+ *   total: number
+ */
+export default function StatusDistributionChart({ statusData = [], total = 0 }) {
+  // Enrich dengan warna & label
+  const data = statusData.map((d) => ({
+    ...d,
+    color: STATUS_CONFIG[d.status]?.color || '#6b7280',
+    label: STATUS_CONFIG[d.status]?.label || d.status,
+    pct: total > 0 ? d.count / total : 0,
+  }))
 
   return (
     <div

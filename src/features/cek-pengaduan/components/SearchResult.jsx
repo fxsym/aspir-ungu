@@ -109,7 +109,7 @@ export default function SearchResult({ data }) {
                 <div className="h-1.5 w-full bg-linear-to-r from-primary via-primary/70 to-primary/30" />
 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:justify-between px-6 pt-5 pb-4 items-start md:items-center gap-3">
+                <div className="flex flex-col sm:flex-row sm:justify-between px-6 pt-5 pb-4 items-center gap-3">
                     <div>
                         <p className="text-xs font-semibold tracking-widest text-primary/60 uppercase mb-1">
                             Tracking Code
@@ -130,7 +130,7 @@ export default function SearchResult({ data }) {
                             {status.label}
                         </span>
                         {status.description && (
-                            <p className="text-[10px] text-gray-400 text-right max-w-[9rem] leading-tight">
+                            <p className="text-[10px] text-gray-400 text-right max-w-36 leading-tight">
                                 {status.description}
                             </p>
                         )}

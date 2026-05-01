@@ -1,15 +1,6 @@
 'use client'
 import React from 'react'
 
-function getSentimentCounts(aspirations) {
-  const counts = { positive: 0, negative: 0, neutral: 0 }
-  aspirations.forEach(({ sentiment }) => {
-    const key = sentiment?.toLowerCase()
-    if (key in counts) counts[key]++
-  })
-  return counts
-}
-
 const SENTIMENT_CONFIG = {
   positive: {
     label: 'Positif',
@@ -34,9 +25,8 @@ const SENTIMENT_CONFIG = {
   },
 }
 
-function SentimentBar({ label, count, total, color, bg, emoji, desc }) {
+function SentimentBar({ label, count, total, color, emoji, desc }) {
   const pct = total > 0 ? (count / total) * 100 : 0
-
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
@@ -52,26 +42,24 @@ function SentimentBar({ label, count, total, color, bg, emoji, desc }) {
           <p className="text-xs" style={{ color: 'var(--muted)' }}>{pct.toFixed(0)}%</p>
         </div>
       </div>
-      <div
-        className="w-full rounded-full overflow-hidden"
-        style={{ height: 10, background: 'var(--border)' }}
-      >
+      <div className="w-full rounded-full overflow-hidden" style={{ height: 10, background: 'var(--border)' }}>
         <div
           className="h-full rounded-full transition-all duration-700"
-          style={{
-            width: `${pct}%`,
-            background: `linear-gradient(90deg, ${color}cc, ${color})`,
-          }}
+          style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${color}cc, ${color})` }}
         />
       </div>
     </div>
   )
 }
 
-export default function SentimentChart({ aspirations = [] }) {
-  const counts = getSentimentCounts(aspirations)
-  const total = aspirations.length
-  const positivePct = total > 0 ? Math.round((counts.positive / total) * 100) : 0
+/**
+ * Props:
+ *   sentimentData: { positive: number, negative: number, neutral: number }
+ *     — dari getSentimentDistribution()
+ *   total: number
+ */
+export default function SentimentChart({ sentimentData = { positive: 0, negative: 0, neutral: 0 }, total = 0 }) {
+  const positivePct = total > 0 ? Math.round((sentimentData.positive / total) * 100) : 0
 
   return (
     <div
@@ -87,19 +75,15 @@ export default function SentimentChart({ aspirations = [] }) {
             Nada & emosi dari pengaduan mahasiswa
           </p>
         </div>
-        <div
-          className="flex flex-col items-end"
+        <span
+          className="text-xs px-2.5 py-1 rounded-full font-medium"
+          style={{
+            background: positivePct >= 50 ? '#22c55e20' : '#ef444420',
+            color: positivePct >= 50 ? '#22c55e' : '#ef4444',
+          }}
         >
-          <span
-            className="text-xs px-2.5 py-1 rounded-full font-medium"
-            style={{
-              background: positivePct >= 50 ? '#22c55e20' : '#ef444420',
-              color: positivePct >= 50 ? '#22c55e' : '#ef4444',
-            }}
-          >
-            {positivePct >= 50 ? '👍 Cukup Positif' : '👎 Dominan Negatif'}
-          </span>
-        </div>
+          {positivePct >= 50 ? '👍 Cukup Positif' : '👎 Dominan Negatif'}
+        </span>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -107,20 +91,19 @@ export default function SentimentChart({ aspirations = [] }) {
           <SentimentBar
             key={key}
             label={cfg.label}
-            count={counts[key]}
+            count={sentimentData[key] ?? 0}
             total={total}
             color={cfg.color}
-            bg={cfg.bg}
             emoji={cfg.emoji}
             desc={cfg.desc}
           />
         ))}
       </div>
 
-      {/* Ratio indicator */}
+      {/* Ratio bar */}
       <div className="flex items-center gap-1 rounded-xl overflow-hidden" style={{ height: 8 }}>
         {Object.entries(SENTIMENT_CONFIG).map(([key, cfg]) => {
-          const pct = total > 0 ? (counts[key] / total) * 100 : 0
+          const pct = total > 0 ? ((sentimentData[key] ?? 0) / total) * 100 : 0
           return pct > 0 ? (
             <div
               key={key}
