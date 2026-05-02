@@ -127,3 +127,12 @@ export async function getCategoryDistribution() {
         .filter((c) => c.total > 0)
         .sort((a, b) => b.total - a.total)
 }
+
+export async function getAllAspirations() {
+    const aspirations = await prisma.aspiration.findMany({
+        orderBy: { created_at: "desc" },
+        include: { category: true },
+    })
+
+    return aspirations
+}

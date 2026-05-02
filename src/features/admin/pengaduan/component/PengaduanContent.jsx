@@ -1,9 +1,10 @@
 import React from 'react'
+import AspirationTable from './PengaduanTable'
 
-export default function PengaduanContent() {
+export default function PengaduanContent({aspirations}) {
   return (
-    <div>
-      Pengaduan Content
-    </div>
+    <>
+      <AspirationTable aspirations={aspirations}/>
+    </>
   )
 }
