@@ -1,4 +1,5 @@
 'use client'
+import { submitAspiration } from '@/actions/aspiration.action'
 import MainButton from '@/components/ui/button/MainButton'
 import FormCheckbox from '@/components/ui/form/FormCheckbox'
 import FormImage from '@/components/ui/form/FormImage'
@@ -13,8 +14,16 @@ import { useForm } from 'react-hook-form'
 export default function BuatPengaduanContent({ category }) {
     const { register, handleSubmit, formState: { errors } } = useForm()
 
-    const onSubmit = (data) => {
-        console.log(data)
+    const onSubmit = async (data) => {
+        try {
+            const payload = {
+                ...data,
+                aspiration_category_id: category.id
+            }
+            await submitAspiration(payload)
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     return (

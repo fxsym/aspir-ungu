@@ -136,3 +136,16 @@ export async function getAllAspirations() {
 
     return aspirations
 }
+
+export async function getLastTrackingCodeByDate(datePrefix) {
+    return await prisma.aspiration.findFirst({
+        where: {
+            tracking_code: {
+                startsWith: datePrefix
+            }
+        },
+        orderBy: {
+            tracking_code: "desc"
+        }
+    });
+}

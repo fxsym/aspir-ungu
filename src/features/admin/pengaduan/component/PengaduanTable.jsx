@@ -44,7 +44,7 @@ function StatusBadge({ status }) {
 }
 
 function SentimentBadge({ sentiment }) {
-    if (!sentiment) return <span className="text-[var(--muted)] text-xs">—</span>
+    if (!sentiment) return <span className="text-muted text-xs">—</span>
     const map = {
         positive: "text-[var(--success)] bg-green-50 border border-green-200",
         negative: "text-[var(--danger)] bg-red-50 border border-red-200",
