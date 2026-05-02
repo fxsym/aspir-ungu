@@ -1,5 +1,6 @@
 'use client'
 import MainButton from '@/components/ui/button/MainButton'
+import FormCheckbox from '@/components/ui/form/FormCheckbox'
 import FormImage from '@/components/ui/form/FormImage'
 import FormInput from '@/components/ui/form/FormInput'
 import FormTextArea from '@/components/ui/form/FormTextArea'
@@ -10,11 +11,10 @@ import { useForm } from 'react-hook-form'
 
 // PengaduanContent.jsx
 export default function BuatPengaduanContent({ category }) {
-    const { register, handleSubmit } = useForm()
+    const { register, handleSubmit, formState: { errors } } = useForm()
 
     const onSubmit = (data) => {
         console.log(data)
-        
     }
 
     return (
@@ -49,6 +49,14 @@ export default function BuatPengaduanContent({ category }) {
                             type='textarea'
                             className='h-25'
                         />
+
+                        <FormCheckbox
+                            register={register}
+                            errors={errors}
+                            name="is_anonymous"
+                            label="Kirim sebagai Anonim"
+                            description="Nama dan NIM kamu tidak akan ditampilkan ke publik"
+                        />
                     </div>
 
                     <FormImage
@@ -60,7 +68,7 @@ export default function BuatPengaduanContent({ category }) {
                     Note: Identitas pelapor diperlukan untuk follow up terkait pengaduan yang diberikan. Data identitas yang diberikan pelapor tidak akan berpengaruh terhadap nilai
                 </Text>
 
-                
+
                 <MainButton type='submit' className='w-full'>Kirim</MainButton>
 
             </form>

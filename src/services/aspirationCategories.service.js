@@ -1,9 +1,11 @@
 import prisma from "@/lib/prisma";
 
 export const FindAspirationCategoryBySlug = async (slug) => {
-    return await prisma.aspirationCategory.findUnique({
+    const aspirationCategory = await prisma.aspirationCategory.findUnique({
         where: { slug },
     });
+
+    return aspirationCategory
 };
 
 export const FindAllAspirationCategories = async () => {

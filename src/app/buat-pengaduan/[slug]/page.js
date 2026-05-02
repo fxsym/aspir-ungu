@@ -4,7 +4,7 @@ import { FindAspirationCategoryBySlug } from "@/services/aspirationCategories.se
 export default async function BuatPengaduan({ params }) {
 
   const { slug } = await params;
-  const category = FindAspirationCategoryBySlug(slug)
+  const category = await FindAspirationCategoryBySlug(slug)
 
   return <BuatPengaduanContent category={category} />;
 }
