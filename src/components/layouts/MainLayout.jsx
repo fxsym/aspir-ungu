@@ -1,7 +1,9 @@
+'use client'
 import { useState } from "react";
 import Navmenu from "./Navmenu";
 import Navbar from "./Navbar";
 import Hero from "../ui/layout/Hero";
+
 
 export default function MainLayout({ children, user }) {
     const [showSidebar, setShowSidebar] = useState(false)

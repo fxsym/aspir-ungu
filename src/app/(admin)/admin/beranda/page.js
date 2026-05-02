@@ -1,6 +1,3 @@
-import DashboardContent from '@/features/dashboard/components/DashboardContent'
-import { getCurrentUser } from '@/services/auth.services'
-import { redirect } from 'next/navigation'
 import React from 'react'
 import {
     getDashboardStats,
@@ -9,13 +6,9 @@ import {
     getSentimentDistribution,
     getCategoryDistribution,
 } from '@/services/aspiration.services'
+import BerandaContent from '@/features/admin/beranda/component/BerandaContent'
 
-export default async function Dashboard() {
-    const user = await getCurrentUser()
-
-    if (!user) {
-        redirect('/login')
-    }
+export default async function Beranda() {
 
     const [stats, timelineData, statusData, sentimentData, categoryData] = await Promise.all([
         getDashboardStats(),
@@ -26,8 +19,7 @@ export default async function Dashboard() {
     ])
 
     return (
-        <DashboardContent
-            user={user}
+        <BerandaContent
             stats={stats}
             timelineData={timelineData}
             statusData={statusData}

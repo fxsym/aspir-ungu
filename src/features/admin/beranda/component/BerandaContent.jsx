@@ -1,6 +1,4 @@
 'use client'
-import MainLayout from '@/components/layouts/MainLayout'
-import LogoutButton from '@/components/ui/button/LogoutButton'
 import Text from '@/components/ui/typography/Text'
 import React from 'react'
 import { FiUsers, FiCheckCircle, FiClock, FiAlertCircle } from 'react-icons/fi'
@@ -11,9 +9,9 @@ import StatusDistributionChart from '@/components/ui/card/dasboard-admin/StatusD
 import SentimentChart from '@/components/ui/card/dasboard-admin/SentimentChart'
 import CategoryChart from '@/components/ui/card/dasboard-admin/CategoryChart'
 
-export default function DashboardContent({ user, stats, timelineData, statusData, sentimentData, categoryData }) {
+export default function BerandaContent({ stats, timelineData, statusData, sentimentData, categoryData }) {
     return (
-        <MainLayout className="flex flex-col items-center" user={user}>
+        <>
             {/* Stat Cards */}
             <div className="bg-primary/80 w-full rounded-2xl items-start flex flex-col py-4 px-6 gap-4">
                 <Text className="font-bold text-2xl">Status Pengaduan</Text>
@@ -61,7 +59,6 @@ export default function DashboardContent({ user, stats, timelineData, statusData
                 <CategoryChart categoryData={categoryData} />
             </div>
 
-            <LogoutButton>Logout</LogoutButton>
-        </MainLayout>
+        </>
     )
 }

@@ -33,7 +33,7 @@ export default function LoginContent() {
             setError(result.error);
             return;
         }
-        router.push("/dashboard");
+        router.push("/admin/beranda");
         console.log(result)
     }
 

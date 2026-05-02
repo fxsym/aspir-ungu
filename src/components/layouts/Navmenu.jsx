@@ -30,20 +30,20 @@ export default function Navmenu({ isOpen, onClose }) {
                     {/* Menu */}
                     <div className="flex flex-col gap-4 p-6 text-lg font-semibold">
 
-                        <Link href="/dashboard" className="flex items-center gap-3 hover:text-secondary">
+                        <Link href="/admin/beranda" className="flex items-center gap-3 hover:text-secondary">
                             <MdDashboard size={24} />
                             <p>Dashboard</p>
                         </Link>
 
-                        <Link href="/dashboard" className="flex items-center gap-3 hover:text-secondary">
+                        <Link href="/admin/pengaduan" className="flex items-center gap-3 hover:text-secondary">
                             <MdDashboard size={24} />
                             <p>Lihat Pengaduan</p>
                         </Link>
 
-                        <Link href="/dashboard" className="flex items-center gap-3 hover:text-secondary">
+                        {/* <Link href="/dashboard" className="flex items-center gap-3 hover:text-secondary">
                             <MdDashboard size={24} />
                             <p>Laporan</p>
-                        </Link>
+                        </Link> */}
 
                         {/* Logout */}
                         <LogoutButton className={"text-background"}>Logout</LogoutButton>
