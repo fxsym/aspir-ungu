@@ -64,6 +64,7 @@ model Aspiration {
   status                 Status              @default(pending)
   is_anonymous           Boolean             @default(false)
   image_url              String?
+  image_id               String?
   created_at             DateTime            @default(now())
   updated_at             DateTime            @updatedAt
 

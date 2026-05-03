@@ -34,6 +34,7 @@ export async function submitAspiration(submitData) {
         const sentiment = success ? data : null;
 
         console.log("Hasil sentiment:", sentiment)
+        
 
         const payload = {
             ...submitData,

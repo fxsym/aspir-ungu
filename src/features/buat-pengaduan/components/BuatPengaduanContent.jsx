@@ -8,6 +8,7 @@ import FormTextArea from '@/components/ui/form/FormTextArea'
 import Hero from '@/components/ui/layout/Hero'
 import HeroText from '@/components/ui/layout/HeroText'
 import Text from '@/components/ui/typography/Text'
+import { uploadToCloudinary } from '@/services/cloudinary.services'
 import { useForm } from 'react-hook-form'
 
 // PengaduanContent.jsx
@@ -16,8 +17,18 @@ export default function BuatPengaduanContent({ category }) {
 
     const onSubmit = async (data) => {
         try {
+            let imageUrl = null
+            console.log(data)
+            if (data.image_url?.[0]) {
+                console.log(data.image_url?.[0])
+                imageUrl = await uploadToCloudinary(data.image_url[0])
+            }
+
+            console.log(imageUrl)
+            
             const payload = {
                 ...data,
+                image_url: imageUrl,
                 aspiration_category_id: category.id
             }
             await submitAspiration(payload)
