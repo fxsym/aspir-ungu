@@ -149,3 +149,34 @@ export async function getLastTrackingCodeByDate(datePrefix) {
         }
     });
 }
+
+export async function createAspirationService(payload) {
+    try {
+        const aspiration = await prisma.aspiration.create({
+            data: {
+                tracking_code: payload.tracking_code,
+                name: payload.name,
+                nim: payload.nim,
+                content: payload.content,
+                aspiration_category_id: payload.aspiration_category_id,
+                sentiment: payload.sentiment,
+                status: payload.status,
+                is_anonymous: payload.is_anonymous,
+                image_url: payload.image_url || null,
+                image_id: payload.image_id || null,
+            },
+        });
+
+        return {
+            success: true,
+            data: aspiration,
+        };
+    } catch (error) {
+        console.error("Create Aspiration Error:", error);
+
+        return {
+            success: false,
+            error: "Gagal menyimpan data aspirasi",
+        };
+    }
+}

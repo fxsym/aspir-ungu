@@ -1,7 +1,7 @@
 'use server'
 
 import { analyzeSentiment } from "@/services/ai.services";
-import { findAspirationByTrackingCode } from "@/services/aspiration.services";
+import { createAspirationService, findAspirationByTrackingCode } from "@/services/aspiration.services";
 import { generateTrackingCode } from "@/utils/generateTrackingCode";
 
 export async function searchPengaduanAction(trackingCode) {
@@ -33,8 +33,8 @@ export async function submitAspiration(submitData) {
         const { success, data } = await analyzeSentiment(submitData.content);
         const sentiment = success ? data : null;
 
-        console.log("Hasil sentiment:", sentiment)
-        
+        // console.log("Hasil sentiment:", sentiment)
+
 
         const payload = {
             ...submitData,
@@ -45,16 +45,26 @@ export async function submitAspiration(submitData) {
 
         console.log(payload)
 
+        const result = await createAspirationService(payload);
+
+        if (!result.success) {
+            return {
+                success: false,
+                error: result.error,
+            };
+        }
+
         return {
             success: true,
             message: "Data berhasil dibuat",
+            data: result.data,
         }
     } catch (error) {
         console.error(error)
 
         return {
             success: false,
-            error: "Terjadi kesalahan saat mencari data",
+            error: "Terjadi kesalahan saat membuat aspirasi",
         }
     }
 }

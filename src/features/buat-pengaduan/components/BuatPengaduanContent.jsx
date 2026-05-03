@@ -17,21 +17,28 @@ export default function BuatPengaduanContent({ category }) {
 
     const onSubmit = async (data) => {
         try {
-            let imageUrl = null
+            let imageResult = null
             console.log(data)
+
             if (data.image_url?.[0]) {
                 console.log(data.image_url?.[0])
-                imageUrl = await uploadToCloudinary(data.image_url[0])
+                imageResult = await uploadToCloudinary(data.image_url[0])
             }
 
-            console.log(imageUrl)
+            console.log(imageResult)
             
             const payload = {
                 ...data,
-                image_url: imageUrl,
+                image_url: imageResult.url,
+                image_id: imageResult.public_id,
                 aspiration_category_id: category.id
             }
-            await submitAspiration(payload)
+            const result = await submitAspiration(payload)
+            console.log(result)
+            
+            if(succes){
+
+            }
         } catch (error) {
             console.error(error)
         }
