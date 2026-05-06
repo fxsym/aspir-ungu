@@ -1,5 +1,6 @@
 import { Inter, Nunito_Sans } from "next/font/google";
 import "./globals.css";
+import NotificationProvider from "@/components/ui/notification/NotificationProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,7 +23,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${inter.variable} ${nunitoSans.variable} antialiased`}
       >
-        {children}
+        <NotificationProvider>
+          {children}
+        </NotificationProvider>
       </body>
     </html>
   );

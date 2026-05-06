@@ -33,9 +33,6 @@ export async function submitAspiration(submitData) {
         const { success, data } = await analyzeSentiment(submitData.content);
         const sentiment = success ? data : null;
 
-        // console.log("Hasil sentiment:", sentiment)
-
-
         const payload = {
             ...submitData,
             tracking_code: trackingCode,
@@ -60,7 +57,7 @@ export async function submitAspiration(submitData) {
             data: result.data,
         }
     } catch (error) {
-        console.error(error)
+        console.error("Error action:",error)
 
         return {
             success: false,

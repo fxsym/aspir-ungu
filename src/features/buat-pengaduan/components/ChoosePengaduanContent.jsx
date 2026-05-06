@@ -1,12 +1,15 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import OrganizationLogo from "@/components/ui/OrganizationLogo";
 import { motion } from "framer-motion";
 import Hero from "@/components/ui/layout/Hero";
 import HeroText from "@/components/ui/layout/HeroText";
 import AspiratonCategoryCard from './AspiratonCategoryCard';
+import { getAspirationCategories } from '@/actions/aspirationCategory.action';
+import MainLoading from '@/components/ui/MainLoading';
 
-export default function ChoosePengaduanContent({aspirationCategories}) {
+export default function ChoosePengaduanContent() {
+
     return (
         <Hero>
             <motion.div
@@ -25,7 +28,7 @@ export default function ChoosePengaduanContent({aspirationCategories}) {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="w-full"
             >
-                <AspiratonCategoryCard aspirationCategories={aspirationCategories} />
+                <AspiratonCategoryCard />
             </motion.div>
 
             <motion.div

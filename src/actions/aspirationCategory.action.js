@@ -5,6 +5,7 @@ import { FindAllAspirationCategories } from "@/services/aspirationCategories.ser
 export async function getAspirationCategories() {
     try {
         const aspirationCategories = await FindAllAspirationCategories()
+        
         return {
             success: true,
             message: "Data berhasil ditemukan",

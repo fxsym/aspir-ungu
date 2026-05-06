@@ -35,15 +35,21 @@ export async function login(credentials) {
 }
 
 export async function getCurrentUser() {
-    const token = await getToken()
-    if (!token) return null
+    try {
+        const token = await getToken()
+        if (!token) return null
 
-    const payload = verifyToken(token)
-    if (!payload) return null
+        const payload = verifyToken(token)
+        if (!payload) return null
 
-    const user = await prisma.user.findUnique({
-        where: { id: payload.id }
-    })
+        const user = await prisma.user.findUnique({
+            where: { id: payload.id }
+        })
 
-    return user
+        return user
+    } catch (error) {
+        console.error("GetCurrentUser Error:", error.message)
+
+        return null
+    }
 }

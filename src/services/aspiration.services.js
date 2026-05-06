@@ -162,7 +162,7 @@ export async function createAspirationService(payload) {
                 sentiment: payload.sentiment,
                 status: payload.status,
                 is_anonymous: payload.is_anonymous,
-                image_url: payload.image_url || null,
+                image_ur: payload.image_url || null,
                 image_id: payload.image_id || null,
             },
         });
@@ -172,11 +172,11 @@ export async function createAspirationService(payload) {
             data: aspiration,
         };
     } catch (error) {
-        console.error("Create Aspiration Error:", error);
-
+        // console.error(error)
+        
         return {
             success: false,
-            error: "Gagal menyimpan data aspirasi",
+            error: error,
         };
     }
 }

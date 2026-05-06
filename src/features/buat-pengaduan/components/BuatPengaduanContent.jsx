@@ -8,38 +8,43 @@ import FormTextArea from '@/components/ui/form/FormTextArea'
 import Hero from '@/components/ui/layout/Hero'
 import HeroText from '@/components/ui/layout/HeroText'
 import Text from '@/components/ui/typography/Text'
+import useNotification from '@/hooks/useNotification'
 import { uploadToCloudinary } from '@/services/cloudinary.services'
 import { useForm } from 'react-hook-form'
 
 // PengaduanContent.jsx
 export default function BuatPengaduanContent({ category }) {
     const { register, handleSubmit, formState: { errors } } = useForm()
+    const showNotification = useNotification()
 
     const onSubmit = async (data) => {
         try {
             let imageResult = null
-            console.log(data)
 
             if (data.image_url?.[0]) {
-                console.log(data.image_url?.[0])
                 imageResult = await uploadToCloudinary(data.image_url[0])
             }
-
-            console.log(imageResult)
             
             const payload = {
                 ...data,
-                image_url: imageResult.url,
-                image_id: imageResult.public_id,
+                image_url: imageResult?.url ?? null,
+                image_id: imageResult?.public_id ?? null,
                 aspiration_category_id: category.id
             }
             const result = await submitAspiration(payload)
             console.log(result)
-            
-            if(succes){
 
+            if(result.success){
+                showNotification(201,{
+                    successCreate: "Data berhasil dibuat"
+                })
             }
         } catch (error) {
+            if(error){
+                showNotification(500,{
+                    successCreate: "Terjadi kesalahan saat membuat data"
+                })
+            }
             console.error(error)
         }
     }

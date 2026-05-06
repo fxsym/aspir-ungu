@@ -1,18 +1,62 @@
+import { getAspirationCategories } from '@/actions/aspirationCategory.action';
+import MainLoading from '@/components/ui/MainLoading';
 import Text from '@/components/ui/typography/Text'
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-export default function AspiratonCategoryCard({aspirationCategories}) {
+export default function AspiratonCategoryCard() {
     const [hovered, setHovered] = useState(null);
+
+    const [aspirationCategories, setAspirationCategories] = useState()
+    const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+
+        const loadData = async () => {
+            setLoading(true)
+            try {
+                const response = await getAspirationCategories()
+                setAspirationCategories(response.data)
+            } catch (error) {
+                // console.log(error)
+                setError("Data tidak ditemukan")
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadData()
+    }, [])
 
     return (
         <div className='flex flex-col items-center'>
 
+            {loading && (
+                <MainLoading />
+            )}
+            {error && (
+                <div className="w-full max-w-2xl flex items-start gap-3 bg-red-600/60 border border-red-400/30 backdrop-blur-sm text-white px-4 py-3 rounded-2xl
+                    animate-[fadeSlideDown_0.3s_ease_forwards]">
+                    <div className="mt-0.5 shrink-0 w-8 h-8 rounded-full bg-red-400/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-red-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="text-sm text-left font-semibold text-red-300">Data tidak ditemukan</p>
+                        <p className="text-xs text-left text-red-200 mt-0.5">{error}</p>
+                    </div>
+                </div>
+            )}
+
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-2xl">
-                {aspirationCategories.map((data, i) => (
+                {aspirationCategories?.map((data, i) => (
                     <Link
-                        href={`/buat-pengaduan/${data.slug}`}
+                        href={`/buat-pengaduan/${data?.slug}`}
                         key={i}
                         onMouseEnter={() => setHovered(i)}
                         onMouseLeave={() => setHovered(null)}
@@ -27,7 +71,7 @@ export default function AspiratonCategoryCard({aspirationCategories}) {
                         {/* Image */}
                         <Image
                             src={data?.image_url}
-                            alt={data.name}
+                            alt={data?.name}
                             fill
                             sizes="(max-width: 768px) 33vw, 300px"
                             className="object-cover transition-transform duration-700"
@@ -53,7 +97,7 @@ export default function AspiratonCategoryCard({aspirationCategories}) {
                                 className="h-px bg-background mb-3 transition-all duration-500"
                                 style={{ width: hovered === i ? "48px" : "32px" }}
                             />
-                            <Text className={"font-bold text-background text-xs sm:text-sm md:text-xl mb-2"}>{data.name}</Text>
+                            <Text className={"font-bold text-background text-xs sm:text-sm md:text-xl mb-2"}>{data?.name}</Text>
                         </div>
                     </Link>
                 ))}
