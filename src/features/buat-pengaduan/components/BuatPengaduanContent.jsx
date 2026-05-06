@@ -24,7 +24,7 @@ export default function BuatPengaduanContent({ category }) {
             if (data.image_url?.[0]) {
                 imageResult = await uploadToCloudinary(data.image_url[0])
             }
-            
+
             const payload = {
                 ...data,
                 image_url: imageResult?.url ?? null,
@@ -34,14 +34,14 @@ export default function BuatPengaduanContent({ category }) {
             const result = await submitAspiration(payload)
             console.log(result)
 
-            if(result.success){
-                showNotification(201,{
+            if (result.success) {
+                showNotification(201, {
                     successCreate: "Data berhasil dibuat"
                 })
             }
         } catch (error) {
-            if(error){
-                showNotification(500,{
+            if (error) {
+                showNotification(500, {
                     successCreate: "Terjadi kesalahan saat membuat data"
                 })
             }
@@ -72,6 +72,15 @@ export default function BuatPengaduanContent({ category }) {
                             label='NIM Pelapor'
                             placeholder='Masukan NIM Pelapor'
                         />
+
+                        {category?.id === 6 && (
+                            <FormInput
+                                register={register}
+                                name='anotherCategories'
+                                label='Masukan Kategori'
+                                placeholder='Masukan Kategori Pengaduan'
+                            />
+                        )}
 
                         <FormTextArea
                             register={register}

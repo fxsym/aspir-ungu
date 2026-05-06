@@ -59,7 +59,8 @@ model Aspiration {
   nim                    String
   content                String
   response               String?
-  aspiration_category_id Int              
+  aspiration_category_id Int    
+  custom_category        String?          
   sentiment              String?
   status                 Status              @default(pending)
   is_anonymous           Boolean             @default(false)

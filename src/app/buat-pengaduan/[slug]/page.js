@@ -6,5 +6,9 @@ export default async function BuatPengaduan({ params }) {
   const { slug } = await params;
   const category = await FindAspirationCategoryBySlug(slug)
 
+  if (!category) {
+    return <div>Terjadi Kesalahan Pada Server</div>
+  }
+  
   return <BuatPengaduanContent category={category} />;
 }
