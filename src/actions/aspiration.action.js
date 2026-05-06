@@ -57,11 +57,6 @@ export async function submitAspiration(submitData) {
             data: result.data,
         }
     } catch (error) {
-        console.error("Error action:",error)
-
-        return {
-            success: false,
-            error: "Terjadi kesalahan saat membuat aspirasi",
-        }
+        throw error
     }
 }

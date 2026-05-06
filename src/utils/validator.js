@@ -30,8 +30,8 @@ export const searchPengaduanSchema = z.object({
     .min(1, "Harap masukan tracking code")
     .max(20, "Tracking code terlalu panjang")
     .transform((val) => val.toUpperCase())
-    .refine(
-      (val) => /^ASP-\d{4}-\d{4}$/.test(val),
-      "Format tracking code tidak valid (contoh: ASP-2403-0001)"
-    )
+    // .refine(
+    //   (val) => /^ASP-\d{4}-\d{4}$/.test(val),
+    //   "Format tracking code tidak valid (contoh: ASP-2403-0001)"
+    // )
 });

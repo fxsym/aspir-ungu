@@ -173,11 +173,6 @@ export async function createAspirationService(payload) {
             data: aspiration,
         };
     } catch (error) {
-        console.error(error)
-        
-        return {
-            success: false,
-            error: error,
-        };
+        throw error
     }
 }

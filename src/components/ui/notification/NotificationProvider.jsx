@@ -7,11 +7,8 @@ import NotificationModal from "./NotificationModal";
 export default function NotificationProvider({ children }) {
     const [notification, setNotification] = useState(null);
 
-    const showNotification = useCallback((status, custom = {}) => {
-        setNotification({
-            status,
-            ...custom,
-        });
+    const showNotification = useCallback(({ type, title, message }) => {
+        setNotification({ type, title, message });
     }, []);
 
     const hideNotification = () => setNotification(null);
@@ -19,9 +16,9 @@ export default function NotificationProvider({ children }) {
     return (
         <NotificationContext.Provider value={{ showNotification }}>
             {children}
-            <NotificationModal 
-                notification={notification} 
-                hide={hideNotification} 
+            <NotificationModal
+                notification={notification}
+                hide={hideNotification}
             />
         </NotificationContext.Provider>
     );

@@ -6,30 +6,8 @@ import { CheckCircle, XCircle } from "lucide-react";
 export default function NotificationModal({ notification, hide }) {
     if (!notification) return null;
 
-    const { status, succesCreate, succesMessage } = notification;
-
-    const isSuccess = status === 200 || status === 201;
-
-    const getMessage = () => {
-        switch (status) {
-            case 200:
-                return succesMessage || "Request berhasil";
-            case 201:
-                return succesCreate || "Berhasil membuat data";
-            case 400:
-                return "Permintaan tidak valid.";
-            case 401:
-                return "Tidak memiliki izin.";
-            case 404:
-                return "Data tidak ditemukan.";
-            case 500:
-                return "Terjadi kesalahan server.";
-            case "network_error":
-                return "Gagal koneksi ke server.";
-            default:
-                return "Terjadi kesalahan.";
-        }
-    };
+    const { type, title, message } = notification;
+    const isSuccess = type === "success";
 
     return (
         <AnimatePresence>
@@ -53,11 +31,11 @@ export default function NotificationModal({ notification, hide }) {
                     )}
 
                     <h2 className="text-lg font-semibold mt-3 dark:text-white">
-                        {isSuccess ? "Berhasil!" : "Gagal!"}
+                        {title ?? (isSuccess ? "Berhasil!" : "Gagal!")}
                     </h2>
 
-                    <p className="text-gray-600 dark:text-gray-300 mt-2">
-                        {getMessage()}
+                    <p className="text-gray-600 dark:text-gray-300 mt-2 whitespace-pre-line">
+                        {message}
                     </p>
 
                     <button

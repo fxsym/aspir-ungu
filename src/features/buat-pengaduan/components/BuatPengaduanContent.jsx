@@ -32,20 +32,16 @@ export default function BuatPengaduanContent({ category }) {
                 aspiration_category_id: category.id,
             }
             const result = await submitAspiration(payload)
-            console.log(result)
+            // console.log(result)
 
             if (result.success) {
-                showNotification(201, {
-                    successCreate: "Data berhasil dibuat"
-                })
+                showNotification({ type: "success", title: "Berhasil!", message: `Data aspirasi berhasil dibuat\n Tracking Code pengaduan : "${result.data.tracking_code}" \n Harap simpan tracking code untuk mengecek status pengaduan`  })
             }
         } catch (error) {
             if (error) {
-                showNotification(500, {
-                    successCreate: "Terjadi kesalahan saat membuat data"
-                })
+                showNotification({ type: "error", title: "Gagal Membuat Aspirasi", message: "Terjadi kesalahan, silahkan coba beberapa saat lagi" })
             }
-            console.error(error)
+            // console.error(error)
         }
     }
 
