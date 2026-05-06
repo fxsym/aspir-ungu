@@ -159,10 +159,11 @@ export async function createAspirationService(payload) {
                 nim: payload.nim,
                 content: payload.content,
                 aspiration_category_id: payload.aspiration_category_id,
+                custom_category: payload.custom_category,
                 sentiment: payload.sentiment,
                 status: payload.status,
                 is_anonymous: payload.is_anonymous,
-                image_ur: payload.image_url || null,
+                image_url: payload.image_url || null,
                 image_id: payload.image_id || null,
             },
         });
@@ -172,7 +173,7 @@ export async function createAspirationService(payload) {
             data: aspiration,
         };
     } catch (error) {
-        // console.error(error)
+        console.error(error)
         
         return {
             success: false,

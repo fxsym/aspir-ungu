@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 
 export default function AspiratonCategoryCard() {
     const [hovered, setHovered] = useState(null);
-    const [loadingCard, setLoadingCard] = useState(null); // 👈 tambahan
+    const [loadingCard, setLoadingCard] = useState(null);
 
     const [aspirationCategories, setAspirationCategories] = useState(null)
     const [error, setError] = useState(null)
@@ -54,7 +54,7 @@ export default function AspiratonCategoryCard() {
                     <Link
                         href={`/buat-pengaduan/${data?.slug}`}
                         key={i}
-                        onClick={() => setLoadingCard(i)} // 👈 tambahan
+                        onClick={() => setLoadingCard(i)} 
                         onMouseEnter={() => setHovered(i)}
                         onMouseLeave={() => setHovered(null)}
                         className="relative rounded overflow-hidden cursor-pointer aspect-square transition-all duration-500"
@@ -85,7 +85,7 @@ export default function AspiratonCategoryCard() {
                             }}
                         />
 
-                        {/* 👇 Loading overlay saat card diklik */}
+                        {/* Loading overlay saat card diklik */}
                         {loadingCard === i && (
                             <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50 backdrop-blur-sm">
                                 <div className="w-8 h-8 rounded-full border-4 border-white/30 border-t-white animate-spin" />

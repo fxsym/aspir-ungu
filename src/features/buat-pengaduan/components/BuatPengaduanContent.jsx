@@ -29,7 +29,7 @@ export default function BuatPengaduanContent({ category }) {
                 ...data,
                 image_url: imageResult?.url ?? null,
                 image_id: imageResult?.public_id ?? null,
-                aspiration_category_id: category.id
+                aspiration_category_id: category.id,
             }
             const result = await submitAspiration(payload)
             console.log(result)
@@ -76,8 +76,8 @@ export default function BuatPengaduanContent({ category }) {
                         {category?.id === 6 && (
                             <FormInput
                                 register={register}
-                                name='anotherCategories'
-                                label='Masukan Kategori'
+                                name='custom_category'
+                                label='Kategori Pengaduan'
                                 placeholder='Masukan Kategori Pengaduan'
                             />
                         )}
