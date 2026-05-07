@@ -35,3 +35,44 @@ export const searchPengaduanSchema = z.object({
     //   "Format tracking code tidak valid (contoh: ASP-2403-0001)"
     // )
 });
+
+export const submitAspirationSchema = z
+  .object({
+    name: z
+      .string()
+      .min(3, "Nama minimal 3 karakter"),
+
+    nim: z
+      .string()
+      .min(5, "NIM tidak valid"),
+
+    custom_category: z
+      .string()
+      .optional(),
+
+    content: z
+      .string()
+      .min(10, "Isi pengaduan minimal 10 karakter"),
+
+    is_anonymous: z
+      .boolean()
+      .optional(),
+
+    image_url: z
+      .any()
+      .optional(),
+
+    aspiration_category_id: z.number(),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.aspiration_category_id === 6 &&
+      !data.custom_category?.trim()
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["custom_category"],
+        message: "Kategori pengaduan wajib diisi",
+      });
+    }
+  });

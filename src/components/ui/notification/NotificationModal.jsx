@@ -15,14 +15,14 @@ export default function NotificationModal({ notification, hide }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center"
+                className="fixed inset-0 bg-black/20 z-50 flex items-center justify-center"
             >
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="bg-white dark:bg-gray-800 w-[90%] max-w-md rounded-2xl shadow-xl p-6 text-center"
+                    className="bg-primary w-[90%] max-w-md rounded-2xl shadow-xl p-6 text-center"
                 >
                     {isSuccess ? (
                         <CheckCircle className="text-green-500 mx-auto w-12 h-12" />
