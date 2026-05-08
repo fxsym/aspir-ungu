@@ -15,6 +15,25 @@ export async function findAspirationByTrackingCode(trackingCode) {
     return { pengaduan }
 }
 
+export async function findAspirationById(id) {
+    try {
+        const pengaduan = await prisma.aspiration.findUnique({
+            where: { id: id },
+            include: {
+                category: true
+            }
+        })
+
+        if (!pengaduan) {
+            throw new Error("DATA_NOT_FOUND")
+        }
+
+        return pengaduan 
+    } catch (error) {
+        throw error
+    }
+}
+
 /**
  * Ringkasan stat card dashboard:
  * total, resolved, inProgress, pending
@@ -176,3 +195,46 @@ export async function createAspirationService(payload) {
         throw error
     }
 }
+
+export async function updateAspiration(id, data) {
+    try {
+        const updated = await prisma.aspiration.update({
+            where: { id },
+            data: {
+                ...(data.response !== undefined && { response: data.response }),
+                ...(data.sentiment !== undefined && { sentiment: data.sentiment || null }),
+                ...(data.status !== undefined && { status: data.status }),
+                updated_at: new Date(),
+            },
+        })
+
+        return { success: true, data: updated }
+    } catch (error) {
+        console.error('Error updating aspiration:', error)
+
+        if (error.code === 'P2025') {
+            return { success: false, error: 'NOT_FOUND', message: 'Aspirasi tidak ditemukan.' }
+        }
+
+        return { success: false, error: 'UNKNOWN', message: 'Terjadi kesalahan saat update aspirasi.' }
+    }
+}
+
+export async function deleteAspiration(id) {
+    try {
+        await prisma.aspiration.delete({
+            where: { id },
+        })
+
+        return { success: true }
+    } catch (error) {
+        console.error('Error deleting aspiration:', error)
+
+        if (error.code === 'P2025') {
+            return { success: false, error: 'NOT_FOUND', message: 'Aspirasi tidak ditemukan.' }
+        }
+
+        return { success: false, error: 'UNKNOWN', message: 'Terjadi kesalahan saat menghapus aspirasi.' }
+    }
+}
+

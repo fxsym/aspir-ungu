@@ -264,7 +264,7 @@ export default function AspirationTable({
                                         <td className="px-4 py-3.5 pr-6 whitespace-nowrap">
                                             <button
                                                 onClick={() => onDetail?.(a)}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] active:scale-95 transition-all shadow-sm"
+                                                className="hover:cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] active:scale-95 transition-all shadow-sm"
                                             >
                                                 Detail
                                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
