@@ -10,11 +10,13 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import Image from 'next/image'
-import { editAspiration } from '@/actions/aspiration.action'
+import { deleteAspirationAction, editAspiration } from '@/actions/aspiration.action'
+import { useRouter } from 'next/navigation'
+import DeleteConfirmModal from '@/components/ui/DeleteConfirmModal'
 
 const updateAspirationSchema = z.object({
     response: z.string().optional(),
-    sentiment: z.enum(['positive', 'negative']).optional(),
+    sentiment: z.enum(['positive', 'negative', '']).optional(),
     status: z.enum(['pending', 'resolved', 'in_progress', 'verified', 'rejected']),
 })
 
@@ -31,6 +33,7 @@ const SENTIMENT_OPTIONS = [
     { value: 'positive', label: 'Positive' },
     { value: 'negative', label: 'Negative' },
 ]
+
 
 function FormSelect({ register, name, label, options, errors }) {
     const errorMessage = errors?.[name]?.message
@@ -70,6 +73,9 @@ export default function DetailPengaduanContent({ aspiration }) {
     const showNotification = useNotification()
     const [loadingUpdate, setLoadingUpdate] = useState(false)
     const [loadingAnalysis, setLoadingAnalysis] = useState(false)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const router = useRouter()
+
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver: zodResolver(updateAspirationSchema),
@@ -100,11 +106,7 @@ export default function DetailPengaduanContent({ aspiration }) {
     }
 
     const onDelete = () => {
-        const confirmed = confirm(`Yakin ingin menghapus pengaduan "${aspiration.tracking_code}"?`)
-        if (confirmed) {
-            console.log('Delete aspiration id:', aspiration.id)
-            // TODO: call delete action
-        }
+        setShowDeleteModal(true)
     }
 
     const onAnalyzeSentiment = async () => {
@@ -135,12 +137,35 @@ export default function DetailPengaduanContent({ aspiration }) {
         }
     }
 
+    const onConfirmDelete = async () => {
+        setShowDeleteModal(false)
+        try {
+            const result = await deleteAspirationAction(aspiration.id)
+            if (result.success) {
+                showNotification({ type: 'success', title: 'Berhasil', message: 'Aspirasi berhasil dihapus.' })
+                router.push('/admin/pengaduan')
+            } else {
+                showNotification({ type: 'error', title: 'Gagal Hapus', message: result.message })
+            }
+        } catch (error) {
+            console.error(error)
+            showNotification({ type: 'error', title: 'Gagal Hapus', message: 'Terjadi kesalahan saat menghapus aspirasi.' })
+        }
+    }
+
     const initials = aspiration.is_anonymous
         ? '?'
         : aspiration.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 
     return (
         <div>
+            <DeleteConfirmModal
+                isOpen={showDeleteModal}
+                onConfirm={onConfirmDelete}
+                onCancel={() => setShowDeleteModal(false)}
+                title={`Hapus Pengaduan?`}
+                message={`Pengaduan dengan kode #${aspiration.tracking_code} akan dihapus permanen dan tidak dapat dikembalikan.`}
+            />
             <HeroText>Detail Pengaduan</HeroText>
 
             <div className='sm:w-90 md:w-100 lg:w-180 bg-secondary/40 backdrop-blur-xs border-4 border-primary shadow-4xl px-4 py-8 rounded-4xl relative'>

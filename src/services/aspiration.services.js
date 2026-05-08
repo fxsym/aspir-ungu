@@ -24,10 +24,6 @@ export async function findAspirationById(id) {
             }
         })
 
-        if (!pengaduan) {
-            throw new Error("DATA_NOT_FOUND")
-        }
-
         return pengaduan 
     } catch (error) {
         throw error

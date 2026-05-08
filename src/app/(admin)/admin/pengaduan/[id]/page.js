@@ -6,7 +6,7 @@ export default async function DetailPengaduan({ params }) {
   const aspiration = await findAspirationById(Number(id))
 
   if (!aspiration) {
-    return <div>Terjadi Kesalahan Pada Server</div>
+    return <div>Data tidak ditemukan atau sudah terhapus</div>
   }
 
   return <DetailPengaduanContent aspiration={aspiration} />;
