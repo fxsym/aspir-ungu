@@ -11,12 +11,12 @@ const CATEGORY_COLORS = [
 
 /**
  * Props:
- *   categoryData: Array<{ id: number, label: string, slug: string, total: number, resolved: number }>
+ *   categoryData: Array<{ id: number, label: string, slug: string, total: number }>
  *     — dari getCategoryDistribution(), sudah sorted by total desc
  */
 export default function CategoryChart({ categoryData = [] }) {
   const [hovered, setHovered] = useState(null)
-  const max = Math.max(...categoryData.map((d) => d.total), 1)
+  const total = categoryData.reduce((sum, d) => sum + d.total, 0)
 
   return (
     <div
@@ -29,26 +29,21 @@ export default function CategoryChart({ categoryData = [] }) {
             Pengaduan per Kategori
           </h3>
           <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>
-            Volume & resolusi tiap kategori
+            Proporsi tiap kategori dari total keseluruhan
           </p>
         </div>
-        <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--muted)' }}>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: 'var(--primary)' }} />
-            Total
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: '#22c55e' }} />
-            Resolved
-          </span>
-        </div>
+        <span
+          className="text-xs px-2.5 py-1 rounded-full font-medium"
+          style={{ background: 'var(--border)', color: 'var(--muted)' }}
+        >
+          Total: {total}
+        </span>
       </div>
 
       <div className="flex flex-col gap-3">
         {categoryData.map((d, i) => {
           const color = CATEGORY_COLORS[i % CATEGORY_COLORS.length]
-          const totalPct = (d.total / max) * 100
-          const resolvedPct = (d.resolved / max) * 100
+          const pct = total > 0 ? (d.total / total) * 100 : 0
           const isHovered = hovered === i
 
           return (
@@ -69,35 +64,24 @@ export default function CategoryChart({ categoryData = [] }) {
                     {d.label}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--muted)' }}>
-                  <span>
-                    <span className="font-bold" style={{ color: '#22c55e' }}>{d.resolved}</span> resolved
-                  </span>
-                  <span
-                    className="font-bold px-1.5 py-0.5 rounded"
-                    style={{ background: `${color}20`, color }}
-                  >
-                    {d.total} total
-                  </span>
-                </div>
+                <span
+                  className="text-xs font-bold px-1.5 py-0.5 rounded"
+                  style={{ background: `${color}20`, color }}
+                >
+                  {d.total}/{total}
+                </span>
               </div>
 
               <div className="relative rounded-full overflow-hidden" style={{ height: 8, background: 'var(--border)' }}>
                 <div
                   className="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
-                  style={{ width: `${totalPct}%`, background: `${color}60` }}
-                />
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full transition-all duration-700"
-                  style={{ width: `${resolvedPct}%`, background: color }}
+                  style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${color}cc, ${color})` }}
                 />
               </div>
 
-              {d.total > 0 && (
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>
-                  Resolusi: {Math.round((d.resolved / d.total) * 100)}%
-                </p>
-              )}
+              <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                {pct.toFixed(1)}% dari keseluruhan
+              </p>
             </div>
           )
         })}

@@ -16,13 +16,6 @@ const SENTIMENT_CONFIG = {
     emoji: '😞',
     desc: 'Pengaduan dengan nada keluhan / masalah',
   },
-  neutral: {
-    label: 'Netral',
-    color: '#f59e0b',
-    bg: '#f59e0b18',
-    emoji: '😐',
-    desc: 'Pengaduan dengan nada netral',
-  },
 }
 
 function SentimentBar({ label, count, total, color, emoji, desc }) {
@@ -54,11 +47,11 @@ function SentimentBar({ label, count, total, color, emoji, desc }) {
 
 /**
  * Props:
- *   sentimentData: { positive: number, negative: number, neutral: number }
+ *   sentimentData: { positive: number, negative: number }
  *     — dari getSentimentDistribution()
  *   total: number
  */
-export default function SentimentChart({ sentimentData = { positive: 0, negative: 0, neutral: 0 }, total = 0 }) {
+export default function SentimentChart({ sentimentData = { positive: 0, negative: 0 }, total = 0 }) {
   const positivePct = total > 0 ? Math.round((sentimentData.positive / total) * 100) : 0
 
   return (

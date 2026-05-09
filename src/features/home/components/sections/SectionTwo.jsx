@@ -5,8 +5,13 @@ import React from 'react'
 export default function SectionTwo({ next }) {
     return (
         <div>
-            <Text className={"sm:text-lg md:text-2xl mb-2"}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Velit magnam a totam consequatur labore. Molestiae laudantium incidunt sunt quis praesentium.</Text>
-            <MainButton onClick={next}>Berikutnya</MainButton>
+            <Text className={"sm:text-lg md:text-2xl mb-2"}>
+                Aspir Ungu adalah website resmi milik BEM Universitas Amikom Purwokerto yang digunakan sebagai wadah bagi mahasiswa untuk menyampaikan aspirasi, kritik, saran, maupun pengaduan secara mudah, cepat, dan transparan.
+            </Text>
+
+            <MainButton onClick={next}>
+                Berikutnya
+            </MainButton>
         </div>
     )
 }
