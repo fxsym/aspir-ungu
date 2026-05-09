@@ -61,13 +61,89 @@ function SentimentBadge({ sentiment }) {
 function Skeleton() {
     return (
         <div className="animate-pulse">
-            {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex gap-4 px-6 py-4 border-b border-[var(--border)]">
-                    {Array.from({ length: 6 }).map((_, j) => (
-                        <div key={j} className="h-4 bg-gray-200 rounded flex-1" />
-                    ))}
+            {/* Desktop skeleton */}
+            <div className="hidden md:block">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="flex gap-4 px-6 py-4 border-b border-[var(--border)]">
+                        {Array.from({ length: 6 }).map((_, j) => (
+                            <div key={j} className="h-4 bg-gray-200 rounded flex-1" />
+                        ))}
+                    </div>
+                ))}
+            </div>
+            {/* Mobile skeleton */}
+            <div className="md:hidden flex flex-col gap-3 p-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="rounded-xl border border-[var(--border)] p-4 flex flex-col gap-3">
+                        <div className="h-4 bg-gray-200 rounded w-1/3" />
+                        <div className="h-3 bg-gray-200 rounded w-1/2" />
+                        <div className="h-3 bg-gray-200 rounded w-full" />
+                        <div className="h-3 bg-gray-200 rounded w-2/3" />
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+// ── Mobile Card ──────────────────────────────────────────────────────────
+function MobileCard({ a, idx, onDetail }) {
+    return (
+        <div className={`rounded-xl border border-[var(--border)] p-4 flex flex-col gap-3 ${idx % 2 === 0 ? "bg-white" : "bg-[var(--card)]"}`}>
+            {/* Top row: kode + tanggal */}
+            <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-xs font-semibold text-[var(--primary)] bg-[var(--primary-light)] px-2 py-1 rounded">
+                    {a.tracking_code}
+                </span>
+                <span className="text-xs text-[var(--muted)]">
+                    {a.created_at
+                        ? new Date(a.created_at).toLocaleDateString("id-ID", {
+                            day: "2-digit", month: "short", year: "numeric",
+                        })
+                        : "—"}
+                </span>
+            </div>
+
+            {/* Nama / NIM */}
+            <div>
+                <p className="font-medium text-sm text-[var(--foreground)]">
+                    {a.is_anonymous ? (
+                        <span className="italic text-[var(--muted)]">Anonim</span>
+                    ) : a.name}
+                </p>
+                {!a.is_anonymous && a.nim && (
+                    <p className="text-xs text-[var(--muted)] mt-0.5">{a.nim}</p>
+                )}
+            </div>
+
+            {/* Kategori */}
+            <div>
+                <span className="text-xs font-medium text-[var(--secondary-hover)] bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">
+                    {a.category?.name ?? "—"}
+                </span>
+            </div>
+
+            {/* Isi Singkat */}
+            <p className="text-xs text-[var(--foreground)] leading-relaxed line-clamp-3">
+                {a.content}
+            </p>
+
+            {/* Bottom row: sentimen + status + tombol */}
+            <div className="flex items-center justify-between gap-2 pt-1 border-t border-[var(--border)]">
+                <div className="flex items-center gap-2 flex-wrap">
+                    <SentimentBadge sentiment={a.sentiment} />
+                    <StatusBadge status={a.status} />
                 </div>
-            ))}
+                <button
+                    onClick={() => onDetail?.(a)}
+                    className="hover:cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] active:scale-95 transition-all shadow-sm shrink-0"
+                >
+                    Detail
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
         </div>
     )
 }
@@ -76,9 +152,9 @@ function Skeleton() {
 // Main Component
 // -----------------------------------------------------------------------
 export default function AspirationTable({
-    aspirations = [],       // array of Aspiration records
+    aspirations = [],
     isLoading = false,
-    onDetail,               // (aspiration) => void  — called when "Detail" clicked
+    onDetail,
 }) {
     const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25]
 
@@ -114,13 +190,12 @@ export default function AspirationTable({
 
     const pageNumbers = (() => {
         const pages = []
-        const delta = 2
+        const delta = 1 // lebih kecil di mobile
         for (let i = 1; i <= totalPages; i++) {
             if (i === 1 || i === totalPages || (i >= safePage - delta && i <= safePage + delta)) {
                 pages.push(i)
             }
         }
-        // insert ellipsis
         const result = []
         let prev = null
         for (const p of pages) {
@@ -167,8 +242,8 @@ export default function AspirationTable({
                 </div>
             </div>
 
-            {/* ── Table ────────────────────────────────────────────────── */}
-            <div className="rounded-xl border border-[var(--border)] overflow-hidden bg-white shadow-sm">
+            {/* ── DESKTOP: Table ────────────────────────────────────────── */}
+            <div className="hidden md:block rounded-xl border border-[var(--border)] overflow-hidden bg-white shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
@@ -279,10 +354,36 @@ export default function AspirationTable({
                     </table>
                 </div>
 
-                {/* ── Footer / Pagination ──────────────────────────────── */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-3 bg-[var(--card)] border-t border-[var(--border)]">
+                {/* ── Desktop Footer / Pagination ─────────────────────── */}
+                <TableFooter
+                    filtered={filtered}
+                    safePage={safePage}
+                    pageSize={pageSize}
+                    totalPages={totalPages}
+                    pageNumbers={pageNumbers}
+                    setCurrentPage={setCurrentPage}
+                />
+            </div>
 
-                    {/* Info */}
+            {/* ── MOBILE: Card List ─────────────────────────────────────── */}
+            <div className="md:hidden flex flex-col gap-3">
+                {isLoading ? (
+                    <Skeleton />
+                ) : paged.length === 0 ? (
+                    <div className="text-center py-16 text-[var(--muted)] flex flex-col items-center gap-3 rounded-xl border border-[var(--border)] bg-white">
+                        <svg className="w-10 h-10 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414A1 1 0 0 1 19 9.414V19a2 2 0 0 1-2 2z" />
+                        </svg>
+                        <span className="font-medium text-sm">Tidak ada data ditemukan</span>
+                    </div>
+                ) : (
+                    paged.map((a, idx) => (
+                        <MobileCard key={a.id} a={a} idx={idx} onDetail={onDetail} />
+                    ))
+                )}
+
+                {/* Mobile Pagination */}
+                <div className="flex flex-col items-center gap-3 py-2">
                     <p className="text-xs text-[var(--muted)]">
                         Menampilkan{" "}
                         <span className="font-semibold text-[var(--foreground)]">
@@ -292,8 +393,6 @@ export default function AspirationTable({
                         <span className="font-semibold text-[var(--foreground)]">{filtered.length}</span>{" "}
                         data
                     </p>
-
-                    {/* Page buttons */}
                     <div className="flex items-center gap-1">
                         <PaginationBtn
                             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
@@ -330,6 +429,59 @@ export default function AspirationTable({
                         </PaginationBtn>
                     </div>
                 </div>
+            </div>
+        </div>
+    )
+}
+
+// ── Table Footer (desktop only) ─────────────────────────────────────────
+function TableFooter({ filtered, safePage, pageSize, totalPages, pageNumbers, setCurrentPage }) {
+    return (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-3 bg-[var(--card)] border-t border-[var(--border)]">
+            <p className="text-xs text-[var(--muted)]">
+                Menampilkan{" "}
+                <span className="font-semibold text-[var(--foreground)]">
+                    {filtered.length === 0 ? 0 : (safePage - 1) * pageSize + 1}–{Math.min(safePage * pageSize, filtered.length)}
+                </span>{" "}
+                dari{" "}
+                <span className="font-semibold text-[var(--foreground)]">{filtered.length}</span>{" "}
+                data
+            </p>
+
+            <div className="flex items-center gap-1">
+                <PaginationBtn
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={safePage === 1}
+                    aria-label="Prev"
+                >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                    </svg>
+                </PaginationBtn>
+
+                {pageNumbers.map((p, i) =>
+                    p === "…" ? (
+                        <span key={`ellipsis-${i}`} className="px-1.5 text-[var(--muted)] text-sm select-none">…</span>
+                    ) : (
+                        <PaginationBtn
+                            key={p}
+                            active={p === safePage}
+                            onClick={() => setCurrentPage(p)}
+                        >
+                            {p}
+                        </PaginationBtn>
+                    )
+                )}
+
+                <PaginationBtn
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={safePage === totalPages}
+                    aria-label="Next"
+                >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                </PaginationBtn>
             </div>
         </div>
     )
