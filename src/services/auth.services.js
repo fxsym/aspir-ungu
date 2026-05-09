@@ -15,6 +15,9 @@ export async function login(credentials) {
         throw new Error("INVALID_CREDENTIALS");
     }
 
+    console.log(user)
+    console.log(credentials.password)
+
     const isPasswordValid = await comparePassword(
         credentials.password,
         user.password

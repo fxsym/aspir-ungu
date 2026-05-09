@@ -7,12 +7,12 @@ export default function SectionThree({ next }) {
     const menuOptions = [
         {
             menu: "buat-pengaduan",
-            url: "/images/heroImage.jpg",
+            url: "/images/GambarBuatPengaduan.png",
             name: "Buat Pengaduan"
         },
         {
             menu: "cek-pengaduan",
-            url: "/images/heroImage.jpg",
+            url: "/images/GambarCekPengaduan.png",
             name: "Cek Pengaduan"
         }
     ]

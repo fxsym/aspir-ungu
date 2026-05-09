@@ -10,6 +10,7 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { loginAction } from '@/actions/auth.action';
+import MainLoading from '@/components/ui/MainLoading';
 
 export default function LoginContent() {
 
@@ -26,15 +27,22 @@ export default function LoginContent() {
     const router = useRouter();
 
     const onSubmit = async (data) => {
+        setLoading(true)
         setError(null)
-        const result = await loginAction(data)
+        try {
+            const result = await loginAction(data)
 
-        if (!result.success) {
-            setError(result.error);
-            return;
+            if (!result.success) {
+                setError(result.error);
+                return;
+            }
+            router.push("/admin/beranda");
+            console.log(result)
+        } catch (error) {
+            setError(error)
+        } finally {
+            setLoading(false)
         }
-        router.push("/admin/beranda");
-        console.log(result)
     }
 
     return (
@@ -80,7 +88,14 @@ export default function LoginContent() {
                     </div>
                 )}
 
-                <MainButton type='submit' className='w-full'>Login</MainButton>
+
+                <MainButton
+                    type='submit'
+                    className='w-full text-center flex items-center justify-center'
+                    disabled={loading}
+                >
+                    {loading ? <MainLoading /> : "Login"}
+                </MainButton>
 
             </form>
         </Hero>

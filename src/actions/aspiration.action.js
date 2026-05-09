@@ -1,7 +1,7 @@
 'use server'
 
 import { analyzeSentiment } from "@/services/ai.services";
-import { createAspirationService, deleteAspiration, findAspirationByTrackingCode, updateAspiration } from "@/services/aspiration.services";
+import { createAspirationService, deleteAspiration, findAspirationByTrackingCode, getAllAspirations, updateAspiration } from "@/services/aspiration.services";
 import { generateTrackingCode } from "@/utils/generateTrackingCode";
 
 export async function searchPengaduanAction(trackingCode) {
@@ -67,4 +67,8 @@ export async function editAspiration(id, data) {
 
 export async function deleteAspirationAction(id) {
     return await deleteAspiration(id)
+}
+
+export async function getAllAspirationsAction() {
+    return await getAllAspirations()
 }
