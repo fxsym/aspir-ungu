@@ -55,6 +55,7 @@ model AspirationCategory {
 model Aspiration {
   id                     Int                 @id @default(autoincrement())
   tracking_code          String              @unique
+  email                  String?             @unique
   name                   String
   nim                    String
   content                String
@@ -72,4 +73,11 @@ model Aspiration {
   category AspirationCategory @relation(fields: [aspiration_category_id], references: [id])
 
   @@map("aspirations")
+}
+
+model OtpCode{
+ id       Int       @id @default(autoincrement())
+ email    String    @unique
+ otp      String
+ expired  DateTime
 }

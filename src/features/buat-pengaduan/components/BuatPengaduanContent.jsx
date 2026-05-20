@@ -1,5 +1,6 @@
 'use client'
 import { submitAspiration } from '@/actions/aspiration.action'
+import { sendOtpAction } from '@/actions/email.action'
 import MainButton from '@/components/ui/button/MainButton'
 import FormCheckbox from '@/components/ui/form/FormCheckbox'
 import FormImage from '@/components/ui/form/FormImage'
@@ -13,19 +14,32 @@ import useNotification from '@/hooks/useNotification'
 import { uploadToCloudinary } from '@/services/cloudinary.services'
 import { submitAspirationSchema } from '@/utils/validator'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { data } from 'framer-motion/client'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 // PengaduanContent.jsx
 export default function BuatPengaduanContent({ category }) {
-    const { register, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(submitAspirationSchema),
+    const {
+        register,
+        handleSubmit,
+        watch,
+        trigger,
+        formState: { errors }
+    } = useForm({
+        resolver: zodResolver(
+            submitAspirationSchema
+        ),
         defaultValues: {
-            aspiration_category_id: category.id,
+            aspiration_category_id:
+                category.id,
         }
     })
+    const email = watch("email")
     const showNotification = useNotification()
     const [loadingSubmit, setLoadingSubmit] = useState(false)
+    const [loadingOtp, setLoadingOtp] = useState(false)
+    const [showOtpInput, setShowOtpInput] = useState(false)
 
     const onSubmit = async (data) => {
         setLoadingSubmit(true)
@@ -58,6 +72,48 @@ export default function BuatPengaduanContent({ category }) {
         }
     }
 
+    const handleSendOtp = async () => {
+
+        const isValid =
+            await trigger("email")
+
+        if (!isValid) {
+            return
+        }
+
+        setLoadingOtp(true)
+
+        try {
+
+            const result =
+                await sendOtpAction(email)
+
+            if (!result.success) {
+                throw new Error(
+                    result.message
+                )
+            }
+
+            setShowOtpInput(true)
+
+            alert(
+                "OTP berhasil dikirim"
+            )
+
+        } catch (error) {
+
+            alert(
+                error.message ||
+                "Terjadi kesalahan"
+            )
+
+        } finally {
+
+            setLoadingOtp(false)
+
+        }
+    }
+
     return (
         <Hero>
             <HeroText>Pengaduan {category.name}</HeroText>
@@ -69,6 +125,32 @@ export default function BuatPengaduanContent({ category }) {
                 {loadingSubmit && <LoadingOverlay />}
                 <div className='w-full lg:flex lg:justify-around lg:gap-4 '>
                     <div className='lg:w-120'>
+                        <div className='flex items-center justify-between'>
+                            <FormInput
+                                register={register}
+                                name='email'
+                                label='Email Pelapor'
+                                placeholder='Masukan Email Untuk memverifikasi pengaduan'
+                                errors={errors}
+                            />
+                            <MainButton className='h-full' onClick={handleSendOtp}>Kirim OTP</MainButton>
+                        </div>
+
+                        {showOtpInput && (
+                            <div className='flex items-center justify-between'>
+                                <FormInput
+                                    register={register}
+                                    name='otp'
+                                    label='Kode OTP'
+                                    placeholder='Masukan Kode OTP yang dikirim ke email'
+                                    errors={errors}
+                                />
+                                <MainButton className='h-full'>Verifikasi Email</MainButton>
+                            </div>
+                        )}
+
+
+
                         <FormInput
                             register={register}
                             name='name'
