@@ -29,3 +29,50 @@ export async function saveOtp(email, otp) {
         )
     }
 }
+
+export async function verifyOtp(email, code) {
+    try {
+        const data = await prisma.otpCode.findUnique({
+            where: { email }
+        })
+
+        if (!data) {
+            return {
+                success: false,
+                code: "OTP_INVALID"
+            }
+        }
+
+        if (data.otp !== code) {
+            return {
+                success: false,
+                code: "OTP_WRONG"
+            }
+        }
+
+        if (new Date() > data.expired) {
+            return {
+                success: false,
+                code: "OTP_EXPIRED"
+            }
+        }
+
+        await prisma.otpCode.delete({
+            where: { email }
+        })
+
+        return {
+            success: true
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Verify OTP Error:",
+            error
+        )
+
+        // system error
+        throw error
+    }
+}

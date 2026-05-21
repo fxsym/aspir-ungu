@@ -20,9 +20,9 @@ export async function sendOtpAction(email) {
         )
 
         return {
-            success:true,
+            success: true,
             message:
-            "OTP berhasil dikirim"
+                "OTP berhasil dikirim"
         }
 
     } catch (error) {
@@ -33,9 +33,8 @@ export async function sendOtpAction(email) {
         )
 
         return {
-            success:false,
-            message:
-            error.message
+            success: false,
+            message: "Terjadi kesalahan server"
         }
     }
 }

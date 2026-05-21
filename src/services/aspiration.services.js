@@ -170,6 +170,7 @@ export async function createAspirationService(payload) {
         const aspiration = await prisma.aspiration.create({
             data: {
                 tracking_code: payload.tracking_code,
+                email: payload.email,
                 name: payload.name,
                 nim: payload.nim,
                 content: payload.content,
