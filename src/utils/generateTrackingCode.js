@@ -9,7 +9,16 @@ export function formatDateDDMMYYYY(date) {
 }
 
 export function padSequence(num) {
-    return String(num).padStart(4, "0");
+    return String(num).padStart(3, "0");
+}
+
+export function generateRandomChars(length = 4) {
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+    return result;
 }
 
 export async function generateTrackingCode() {
@@ -26,7 +35,8 @@ export async function generateTrackingCode() {
         nextNumber = lastSequence + 1;
     }
 
-    const newCode = `${datePrefix}-${padSequence(nextNumber)}`;
+    const randomSuffix = generateRandomChars(4);
+    const newCode = `${datePrefix}-${padSequence(nextNumber)}-${randomSuffix}`;
 
     return newCode;
 }

@@ -2,11 +2,12 @@
 
 import { analyzeSentiment } from "@/services/ai.services";
 import { createAspirationService, deleteAspiration, findAspirationByTrackingCode, getAllAspirations, updateAspiration } from "@/services/aspiration.services";
+import { sendTrackingCodeEmail } from "@/services/email.services";
 import { generateTrackingCode } from "@/utils/generateTrackingCode";
 
 export async function searchPengaduanAction(trackingCode) {
     try {
-        const data = await findAspirationByTrackingCode(trackingCode)
+        const data = await findAspirationByTrackingCode(trackingCode.toUpperCase())
 
         return {
             success: true,
@@ -51,12 +52,15 @@ export async function submitAspiration(submitData) {
             };
         }
 
+        await sendTrackingCodeEmail(result.data.email, result.data.tracking_code, result.data.name)
+
         return {
             success: true,
             message: "Data berhasil dibuat",
             data: result.data,
         }
     } catch (error) {
+        console.log(error)
         throw error
     }
 }

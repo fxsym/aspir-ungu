@@ -9,10 +9,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import Image from 'next/image'
 import { deleteAspirationAction, editAspiration } from '@/actions/aspiration.action'
 import { useRouter } from 'next/navigation'
 import DeleteConfirmModal from '@/components/ui/DeleteConfirmModal'
+import Link from 'next/link'
 
 const updateAspirationSchema = z.object({
     response: z.string().optional(),
@@ -158,7 +158,7 @@ export default function DetailPengaduanContent({ aspiration }) {
         : aspiration.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 
     return (
-        <div>
+        <div className='flex flex-col'>
             <DeleteConfirmModal
                 isOpen={showDeleteModal}
                 onConfirm={onConfirmDelete}
@@ -167,6 +167,15 @@ export default function DetailPengaduanContent({ aspiration }) {
                 message={`Pengaduan dengan kode #${aspiration.tracking_code} akan dihapus permanen dan tidak dapat dikembalikan.`}
             />
             <HeroText>Detail Pengaduan</HeroText>
+            <Link
+                href='/admin/pengaduan'
+                className='inline-flex items-center gap-1.5 text-sm text-primary font-semibold mb-4 hover:underline'
+            >
+                <svg xmlns='http://www.w3.org/2000/svg' className='w-4 h-4' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2.5} strokeLinecap='round' strokeLinejoin='round'>
+                    <polyline points='15 18 9 12 15 6' />
+                </svg>
+                Kembali
+            </Link>
 
             <div className='sm:w-90 md:w-100 lg:w-180 bg-secondary/40 backdrop-blur-xs border-4 border-primary shadow-4xl px-4 py-8 rounded-4xl relative'>
                 {(loadingUpdate || loadingAnalysis) && <LoadingOverlay />}
@@ -183,6 +192,9 @@ export default function DetailPengaduanContent({ aspiration }) {
                         <p className='text-sm text-text'>
                             {aspiration.is_anonymous ? '—' : aspiration.nim}
                         </p>
+                        {aspiration.email && (
+                            <p className='text-sm text-text'>{aspiration.email}</p>
+                        )}
                     </div>
                     <span className='text-xs font-semibold px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 shrink-0'>
                         {aspiration.status}
@@ -197,21 +209,25 @@ export default function DetailPengaduanContent({ aspiration }) {
                     </span>
                 </div>
 
-                {/* Gambar */}
-                {aspiration.image_url ? (
-                    <div className='rounded-2xl overflow-hidden mb-5 border border-primary/20'>
-                        <Image
-                            src={aspiration.image_url}
-                            alt='Bukti pengaduan'
-                            width={800}
-                            height={400}
-                            className='w-full object-cover max-h-64'
-                        />
-                    </div>
-                ) : (
-                    <div className='rounded-2xl bg-primary flex items-center justify-center h-28 mb-5'>
-                        <span className='text-sm text-text'>Tidak ada gambar</span>
-                    </div>
+                {aspiration.image_url && (
+                    <a
+                        href={aspiration.image_url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='flex items-center justify-center gap-2 w-full rounded-2xl border border-dashed border-primary/40 bg-primary/5 text-primary text-sm font-semibold px-4 py-3 mb-5 hover:bg-primary/10 transition-colors'
+                    >
+                        <svg xmlns='http://www.w3.org/2000/svg' className='w-4 h-4 shrink-0' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2} strokeLinecap='round' strokeLinejoin='round'>
+                            <rect x='3' y='3' width='18' height='18' rx='2' ry='2' />
+                            <circle cx='8.5' cy='8.5' r='1.5' />
+                            <polyline points='21 15 16 10 5 21' />
+                        </svg>
+                        Lihat bukti gambar pendukung
+                        <svg xmlns='http://www.w3.org/2000/svg' className='w-3.5 h-3.5 shrink-0' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth={2.5} strokeLinecap='round' strokeLinejoin='round'>
+                            <path d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' />
+                            <polyline points='15 3 21 3 21 9' />
+                            <line x1='10' y1='14' x2='21' y2='3' />
+                        </svg>
+                    </a>
                 )}
 
                 {/* Info row: Kategori + Tanggal */}

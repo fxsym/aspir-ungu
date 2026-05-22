@@ -193,7 +193,7 @@ export default function BuatPengaduanContent({ category }) {
 
             if (result.success) {
                 toast.success(
-                    `Pengaduan berhasil dikirim!\nTracking Code: ${result.data.tracking_code}\nSimpan kode ini untuk mengecek status.`,
+                    `Pengaduan berhasil dikirim!\nCek Email untuk mendapatkan tracking code`,
                     { id: toastId, duration: 8000 }
                 )
             } else {

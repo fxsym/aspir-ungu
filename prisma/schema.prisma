@@ -55,7 +55,7 @@ model AspirationCategory {
 model Aspiration {
   id                     Int                 @id @default(autoincrement())
   tracking_code          String              @unique
-  email                  String?             @unique
+  email                  String?             
   name                   String
   nim                    String
   content                String

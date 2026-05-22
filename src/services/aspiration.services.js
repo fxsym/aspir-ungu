@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma"
 
 export async function findAspirationByTrackingCode(trackingCode) {
+    console.log(trackingCode)
     const pengaduan = await prisma.aspiration.findUnique({
         where: { tracking_code: trackingCode },
         include: {
