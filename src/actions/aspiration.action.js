@@ -2,7 +2,7 @@
 
 import { analyzeSentiment } from "@/services/ai.services";
 import { createAspirationService, deleteAspiration, findAspirationByTrackingCode, getAllAspirations, updateAspiration } from "@/services/aspiration.services";
-import { sendTrackingCodeEmail } from "@/services/email.services";
+import { sendNotificationEmail, sendTrackingCodeEmail } from "@/services/email.services";
 import { generateTrackingCode } from "@/utils/generateTrackingCode";
 
 export async function searchPengaduanAction(trackingCode) {
@@ -65,8 +65,23 @@ export async function submitAspiration(submitData) {
     }
 }
 
-export async function editAspiration(id, data) {
-    return await updateAspiration(id, data)
+export async function editAspiration(id, data, email, name) {
+    const result = await updateAspiration(id, data)
+
+    if (result.success && email) {
+        const { statusChanged, oldStatus, newStatus } = result.changes.status
+        const { responChanged } = result.changes.response
+
+        if (statusChanged) {
+            await sendNotificationEmail(email, 'status', name, { oldStatus, newStatus })
+        }
+
+        if (responChanged) {
+            await sendNotificationEmail(email, 'response', name)
+        }
+    }
+
+    return result
 }
 
 export async function deleteAspirationAction(id) {

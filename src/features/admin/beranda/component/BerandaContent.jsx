@@ -8,8 +8,9 @@ import AspirationTimeline from '@/components/ui/card/dasboard-admin/AspirationTi
 import StatusDistributionChart from '@/components/ui/card/dasboard-admin/StatusDistributionChart'
 import SentimentChart from '@/components/ui/card/dasboard-admin/SentimentChart'
 import CategoryChart from '@/components/ui/card/dasboard-admin/CategoryChart'
+import WordCloudChart from '@/components/ui/card/dasboard-admin/WordCloudChart'  // <-- import baru
 
-export default function BerandaContent({ stats, timelineData, statusData, sentimentData, categoryData }) {
+export default function BerandaContent({ stats, timelineData, statusData, sentimentData, categoryData, categories }) {
     return (
         <>
             {/* Stat Cards */}
@@ -57,8 +58,10 @@ export default function BerandaContent({ stats, timelineData, statusData, sentim
                 </div>
 
                 <CategoryChart categoryData={categoryData} />
-            </div>
 
+                {/* Word Cloud — on-demand, filter per kategori */}
+                <WordCloudChart categories={categories} />
+            </div>
         </>
     )
 }

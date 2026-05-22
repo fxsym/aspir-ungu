@@ -25,7 +25,7 @@ export async function findAspirationById(id) {
             }
         })
 
-        return pengaduan 
+        return pengaduan
     } catch (error) {
         throw error
     }
@@ -196,6 +196,16 @@ export async function createAspirationService(payload) {
 
 export async function updateAspiration(id, data) {
     try {
+        const oldData = await prisma.aspiration.findUnique({
+            where: { id }
+        })
+
+        if (!oldData) {
+            throw new Error(
+                "Aspirasi tidak ditemukan"
+            )
+        }
+
         const updated = await prisma.aspiration.update({
             where: { id },
             data: {
@@ -206,7 +216,25 @@ export async function updateAspiration(id, data) {
             },
         })
 
-        return { success: true, data: updated }
+        const statusChanged = oldData.status !== updated.status
+        const responChanged = oldData.response !== updated.response
+
+        return {
+            success: true,
+            changes: {
+                response: {
+                    responChanged,
+                    oldResponse: oldData.response,
+                    newResponse: updated.response
+                },
+                status: {
+                    statusChanged,
+                    oldStatus: oldData.status,
+                    newStatus: updated.status
+                }
+
+            }
+        }
     } catch (error) {
         console.error('Error updating aspiration:', error)
 
@@ -236,3 +264,37 @@ export async function deleteAspiration(id) {
     }
 }
 
+// Tambahkan fungsi ini ke aspiration.services.js
+
+/**
+ * Ambil semua content aspiration untuk wordcloud
+ * Bisa difilter per category slug
+ * @param {string|null} categorySlug - slug kategori, null = semua
+ */
+export async function getAspirationContentsForWordcloud(categorySlug = null) {
+    const where = categorySlug
+        ? { category: { slug: categorySlug } }
+        : {}
+
+    const aspirations = await prisma.aspiration.findMany({
+        where,
+        select: {
+            content: true,
+            category: {
+                select: { slug: true, name: true }
+            }
+        },
+    })
+
+    return aspirations.map((a) => a.content)
+}
+
+/**
+ * Ambil semua kategori untuk dropdown filter wordcloud
+ */
+export async function getCategoriesForFilter() {
+    return await prisma.aspirationCategory.findMany({
+        select: { id: true, name: true, slug: true },
+        orderBy: { name: 'asc' },
+    })
+}

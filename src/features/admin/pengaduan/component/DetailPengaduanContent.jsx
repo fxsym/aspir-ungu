@@ -90,8 +90,7 @@ export default function DetailPengaduanContent({ aspiration }) {
         setLoadingUpdate(true)
         try {
             const payload = { id: aspiration.id, ...data }
-            console.log('Payload update:', payload)
-            const result = await editAspiration(aspiration.id, data)
+            const result = await editAspiration(aspiration.id, data, aspiration.email, aspiration.name)
             if (result.success) {
                 showNotification({ type: 'success', title: 'Berhasil', message: 'Aspirasi berhasil diperbarui.' })
             } else {
@@ -290,13 +289,13 @@ export default function DetailPengaduanContent({ aspiration }) {
                     />
 
                     <div className='flex gap-3 justify-end pt-1'>
-                        <button
+                        {/* <button
                             type='button'
                             onClick={onDelete}
                             className='px-5 py-2 rounded-xl border border-red-400 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors'
                         >
                             Hapus
-                        </button>
+                        </button> */}
                         <MainButton type='submit'>Update</MainButton>
                     </div>
                 </form>
