@@ -2,13 +2,19 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import AspirationTable from './PengaduanTable'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { getAllAspirationsAction } from '@/actions/aspiration.action'
 
-export default function PengaduanContent() {
+export default function PengaduanContent({ categories = [] }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const initialStatus    = searchParams.get('status')    ?? ''
+  const initialSentiment = searchParams.get('sentiment') ?? ''
+  const initialCategory  = searchParams.get('category')  ?? ''
+
   const [aspirations, setAspirations] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading]     = useState(true)
 
   useEffect(() => {
     getAllAspirationsAction()
@@ -20,6 +26,10 @@ export default function PengaduanContent() {
     <AspirationTable
       aspirations={aspirations}
       isLoading={isLoading}
+      categories={categories}
+      initialStatus={initialStatus}
+      initialSentiment={initialSentiment}
+      initialCategory={initialCategory}
       onDetail={(aspiration) => {
         router.push(`/admin/pengaduan/${aspiration.id}`)
       }}

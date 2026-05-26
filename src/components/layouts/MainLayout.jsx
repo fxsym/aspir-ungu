@@ -10,7 +10,7 @@ export default function MainLayout({ children, user }) {
 
     return (
         <section className="flex">
-            <Navmenu isOpen={showSidebar} onClose={() => setShowSidebar(false)} user={user} />
+            <Navmenu isOpen={showSidebar} onClose={() => setShowSidebar(false)} user={user} setShowSidebar={setShowSidebar}/>
 
             <div className="w-full transition-all duration-500">
                 <Navbar showSidebar={showSidebar} setShowSidebar={setShowSidebar} user={user} />

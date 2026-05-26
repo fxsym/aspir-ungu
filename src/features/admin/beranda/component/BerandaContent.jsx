@@ -22,24 +22,28 @@ export default function BerandaContent({ stats, timelineData, statusData, sentim
                         count={stats.total}
                         icon={<FiUsers size={22} />}
                         variant="primary"
+                        href="/admin/pengaduan"
                     />
                     <StatCard
                         title="Resolved"
                         count={stats.resolved}
                         icon={<FiCheckCircle size={22} />}
                         variant="primary"
+                        href="/admin/pengaduan?status=resolved"
                     />
                     <StatCard
                         title="In Progress"
                         count={stats.inProgress}
                         icon={<FiClock size={22} />}
                         variant="primary"
+                        href="/admin/pengaduan?status=in_progress"
                     />
                     <StatCard
                         title="Pending"
                         count={stats.pending}
                         icon={<FiAlertCircle size={22} />}
                         variant="primary"
+                        href="/admin/pengaduan?status=pending"
                     />
                 </div>
             </div>

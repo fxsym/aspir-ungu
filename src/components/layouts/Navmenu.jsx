@@ -4,7 +4,7 @@ import { IoClose } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
 import LogoutButton from "../ui/button/LogoutButton";
 
-export default function Navmenu({ isOpen, onClose }) {
+export default function Navmenu({ isOpen, onClose, setShowSidebar }) {
 
 
     return (
@@ -30,12 +30,12 @@ export default function Navmenu({ isOpen, onClose }) {
                     {/* Menu */}
                     <div className="flex flex-col gap-4 p-6 text-lg font-semibold">
 
-                        <Link href="/admin/beranda" className="flex items-center gap-3 hover:text-secondary">
+                        <Link href="/admin/beranda" className="flex items-center gap-3 hover:text-secondary" onClick={() => setShowSidebar(!isOpen)}>
                             <MdDashboard size={24} />
                             <p>Dashboard</p>
                         </Link>
 
-                        <Link href="/admin/pengaduan" className="flex items-center gap-3 hover:text-secondary">
+                        <Link href="/admin/pengaduan" className="flex items-center gap-3 hover:text-secondary" onClick={() => setShowSidebar(!isOpen)}>
                             <MdDashboard size={24} />
                             <p>Lihat Pengaduan</p>
                         </Link>

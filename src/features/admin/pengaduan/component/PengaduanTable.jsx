@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const STATUS_CONFIG = {
     pending: {
@@ -61,7 +61,6 @@ function SentimentBadge({ sentiment }) {
 function Skeleton() {
     return (
         <div className="animate-pulse">
-            {/* Desktop skeleton */}
             <div className="hidden md:block">
                 {Array.from({ length: 5 }).map((_, i) => (
                     <div key={i} className="flex gap-4 px-6 py-4 border-b border-[var(--border)]">
@@ -71,7 +70,6 @@ function Skeleton() {
                     </div>
                 ))}
             </div>
-            {/* Mobile skeleton */}
             <div className="md:hidden flex flex-col gap-3 p-4">
                 {Array.from({ length: 3 }).map((_, i) => (
                     <div key={i} className="rounded-xl border border-[var(--border)] p-4 flex flex-col gap-3">
@@ -86,11 +84,9 @@ function Skeleton() {
     )
 }
 
-// ── Mobile Card ──────────────────────────────────────────────────────────
 function MobileCard({ a, idx, onDetail }) {
     return (
         <div className={`rounded-xl border border-[var(--border)] p-4 flex flex-col gap-3 ${idx % 2 === 0 ? "bg-white" : "bg-[var(--card)]"}`}>
-            {/* Top row: kode + tanggal */}
             <div className="flex items-center justify-between gap-2">
                 <span className="font-mono text-xs font-semibold text-[var(--primary)] bg-[var(--primary-light)] px-2 py-1 rounded">
                     {a.tracking_code}
@@ -103,8 +99,6 @@ function MobileCard({ a, idx, onDetail }) {
                         : "—"}
                 </span>
             </div>
-
-            {/* Nama / NIM */}
             <div>
                 <p className="font-medium text-sm text-[var(--foreground)]">
                     {a.is_anonymous ? (
@@ -115,20 +109,14 @@ function MobileCard({ a, idx, onDetail }) {
                     <p className="text-xs text-[var(--muted)] mt-0.5">{a.nim}</p>
                 )}
             </div>
-
-            {/* Kategori */}
             <div>
                 <span className="text-xs font-medium text-[var(--secondary-hover)] bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">
                     {a.category?.name ?? "—"}
                 </span>
             </div>
-
-            {/* Isi Singkat */}
             <p className="text-xs text-[var(--foreground)] leading-relaxed line-clamp-3">
                 {a.content}
             </p>
-
-            {/* Bottom row: sentimen + status + tombol */}
             <div className="flex items-center justify-between gap-2 pt-1 border-t border-[var(--border)]">
                 <div className="flex items-center gap-2 flex-wrap">
                     <SentimentBadge sentiment={a.sentiment} />
@@ -148,6 +136,132 @@ function MobileCard({ a, idx, onDetail }) {
     )
 }
 
+// ── Filter Bar ───────────────────────────────────────────────────────────
+function FilterBar({ filters, onChange, categories }) {
+    const statusOptions = [
+        { value: "", label: "Semua Status" },
+        { value: "pending",     label: "Pending" },
+        { value: "in_progress", label: "In Progress" },
+        { value: "resolved",    label: "Resolved" },
+        { value: "verified",    label: "Verified" },
+        { value: "rejected",    label: "Rejected" },
+    ]
+
+    const sentimentOptions = [
+        { value: "",         label: "Semua Sentimen" },
+        { value: "positive", label: "Positive" },
+        { value: "neutral",  label: "Neutral" },
+        { value: "negative", label: "Negative" },
+    ]
+
+    const hasActive = filters.status || filters.sentiment || filters.category
+
+    return (
+        <div className="flex flex-wrap items-center gap-2">
+            {/* Status */}
+            <select
+                value={filters.status}
+                onChange={(e) => onChange({ ...filters, status: e.target.value })}
+                className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                    ${filters.status
+                        ? "border-[var(--primary)] text-[var(--primary)]"
+                        : "border-[var(--border)] text-[var(--muted)]"
+                    }`}
+            >
+                {statusOptions.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+            </select>
+
+            {/* Sentimen */}
+            <select
+                value={filters.sentiment}
+                onChange={(e) => onChange({ ...filters, sentiment: e.target.value })}
+                className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                    ${filters.sentiment
+                        ? "border-[var(--primary)] text-[var(--primary)]"
+                        : "border-[var(--border)] text-[var(--muted)]"
+                    }`}
+            >
+                {sentimentOptions.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+            </select>
+
+            {/* Kategori */}
+            {categories?.length > 0 && (
+                <select
+                    value={filters.category}
+                    onChange={(e) => onChange({ ...filters, category: e.target.value })}
+                    className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                        ${filters.category
+                            ? "border-[var(--primary)] text-[var(--primary)]"
+                            : "border-[var(--border)] text-[var(--muted)]"
+                        }`}
+                >
+                    <option value="">Semua Kategori</option>
+                    {categories.map((c) => (
+                        <option key={c.id} value={c.slug}>{c.name}</option>
+                    ))}
+                </select>
+            )}
+
+            {/* Reset */}
+            {hasActive && (
+                <button
+                    onClick={() => onChange({ status: "", sentiment: "", category: "" })}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition active:scale-95"
+                >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Reset Filter
+                </button>
+            )}
+        </div>
+    )
+}
+
+// ── Active Filter Chips ──────────────────────────────────────────────────
+function ActiveChips({ filters, onChange }) {
+    const labels = {
+        status: {
+            pending: "Pending", in_progress: "In Progress",
+            resolved: "Resolved", verified: "Verified", rejected: "Rejected",
+        },
+        sentiment: { positive: "Positive", neutral: "Neutral", negative: "Negative" },
+    }
+
+    const chips = []
+    if (filters.status)    chips.push({ key: "status",    label: `Status: ${labels.status[filters.status] ?? filters.status}` })
+    if (filters.sentiment) chips.push({ key: "sentiment", label: `Sentimen: ${labels.sentiment[filters.sentiment] ?? filters.sentiment}` })
+    if (filters.category)  chips.push({ key: "category",  label: `Kategori: ${filters.category}` })
+
+    if (chips.length === 0) return null
+
+    return (
+        <div className="flex flex-wrap gap-1.5">
+            {chips.map((chip) => (
+                <span
+                    key={chip.key}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--primary-light)] text-[var(--primary)] border border-purple-200"
+                >
+                    {chip.label}
+                    <button
+                        onClick={() => onChange({ ...filters, [chip.key]: "" })}
+                        className="hover:text-red-500 transition ml-0.5"
+                        aria-label={`Hapus filter ${chip.key}`}
+                    >
+                        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </span>
+            ))}
+        </div>
+    )
+}
+
 // -----------------------------------------------------------------------
 // Main Component
 // -----------------------------------------------------------------------
@@ -155,28 +269,53 @@ export default function AspirationTable({
     aspirations = [],
     isLoading = false,
     onDetail,
+    categories = [],       // [{ id, slug, name }] — opsional, untuk filter kategori
+    initialStatus = "",    // pre-fill filter status dari URL/parent
+    initialSentiment = "", // pre-fill filter sentimen
+    initialCategory = "",  // pre-fill filter kategori
 }) {
     const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25]
 
-    const [pageSize, setPageSize] = useState(10)
+    const [pageSize, setPageSize]     = useState(10)
     const [currentPage, setCurrentPage] = useState(1)
-    const [search, setSearch] = useState("")
+    const [search, setSearch]         = useState("")
+    const [filters, setFilters]       = useState({
+        status:    initialStatus,
+        sentiment: initialSentiment,
+        category:  initialCategory,
+    })
 
-    // ── Filter ──────────────────────────────────────────────────────────
+    // Sync kalau prop initialStatus berubah (misal dari URL)
+    useEffect(() => {
+        setFilters({
+            status:    initialStatus,
+            sentiment: initialSentiment,
+            category:  initialCategory,
+        })
+        setCurrentPage(1)
+    }, [initialStatus, initialSentiment, initialCategory])
+
+    // ── Filter + Search ─────────────────────────────────────────────────
     const filtered = aspirations.filter((a) => {
         const q = search.toLowerCase()
-        return (
+        const matchSearch =
+            !q ||
             a.tracking_code?.toLowerCase().includes(q) ||
             a.name?.toLowerCase().includes(q) ||
             a.nim?.toLowerCase().includes(q) ||
             a.category?.name?.toLowerCase().includes(q) ||
             a.content?.toLowerCase().includes(q)
-        )
+
+        const matchStatus    = !filters.status    || a.status === filters.status
+        const matchSentiment = !filters.sentiment || a.sentiment?.toLowerCase() === filters.sentiment
+        const matchCategory  = !filters.category  || a.category?.slug === filters.category
+
+        return matchSearch && matchStatus && matchSentiment && matchCategory
     })
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-    const safePage = Math.min(currentPage, totalPages)
-    const paged = filtered.slice((safePage - 1) * pageSize, safePage * pageSize)
+    const safePage   = Math.min(currentPage, totalPages)
+    const paged      = filtered.slice((safePage - 1) * pageSize, safePage * pageSize)
 
     function handlePageSize(val) {
         setPageSize(Number(val))
@@ -188,9 +327,14 @@ export default function AspirationTable({
         setCurrentPage(1)
     }
 
+    function handleFilters(next) {
+        setFilters(next)
+        setCurrentPage(1)
+    }
+
     const pageNumbers = (() => {
         const pages = []
-        const delta = 1 // lebih kecil di mobile
+        const delta = 1
         for (let i = 1; i <= totalPages; i++) {
             if (i === 1 || i === totalPages || (i >= safePage - delta && i <= safePage + delta)) {
                 pages.push(i)
@@ -209,40 +353,47 @@ export default function AspirationTable({
     return (
         <div className="flex flex-col gap-4">
 
-            {/* ── Toolbar ──────────────────────────────────────────────── */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            {/* ── Toolbar ────────────────────────────────────────────── */}
+            <div className="flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    {/* Search */}
+                    <div className="relative w-full sm:w-72">
+                        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+                        </svg>
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => handleSearch(e.target.value)}
+                            placeholder="Cari kode, nama, NIM…"
+                            className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-[var(--border)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent placeholder:text-[var(--muted)] text-[var(--foreground)] transition"
+                        />
+                    </div>
 
-                {/* Search */}
-                <div className="relative w-full sm:w-72">
-                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-                    </svg>
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => handleSearch(e.target.value)}
-                        placeholder="Cari kode, nama, NIM…"
-                        className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-[var(--border)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent placeholder:text-[var(--muted)] text-[var(--foreground)] transition"
-                    />
+                    {/* Page-size */}
+                    <div className="flex items-center gap-2 text-sm text-[var(--muted)] shrink-0">
+                        <span>Tampilkan</span>
+                        <select
+                            value={pageSize}
+                            onChange={(e) => handlePageSize(e.target.value)}
+                            className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm text-[var(--foreground)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer"
+                        >
+                            {PAGE_SIZE_OPTIONS.map((n) => (
+                                <option key={n} value={n}>{n}</option>
+                            ))}
+                        </select>
+                        <span>data</span>
+                    </div>
                 </div>
 
-                {/* Page-size selector */}
-                <div className="flex items-center gap-2 text-sm text-[var(--muted)] shrink-0">
-                    <span>Tampilkan</span>
-                    <select
-                        value={pageSize}
-                        onChange={(e) => handlePageSize(e.target.value)}
-                        className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm text-[var(--foreground)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer"
-                    >
-                        {PAGE_SIZE_OPTIONS.map((n) => (
-                            <option key={n} value={n}>{n}</option>
-                        ))}
-                    </select>
-                    <span>data</span>
-                </div>
+                {/* Filter Bar */}
+                <FilterBar filters={filters} onChange={handleFilters} categories={categories} />
+
+                {/* Active Chips */}
+                <ActiveChips filters={filters} onChange={handleFilters} />
             </div>
 
-            {/* ── DESKTOP: Table ────────────────────────────────────────── */}
+            {/* ── DESKTOP: Table ─────────────────────────────────────── */}
             <div className="hidden md:block rounded-xl border border-[var(--border)] overflow-hidden bg-white shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -258,14 +409,9 @@ export default function AspirationTable({
                                 ))}
                             </tr>
                         </thead>
-
                         <tbody>
                             {isLoading ? (
-                                <tr>
-                                    <td colSpan={8}>
-                                        <Skeleton />
-                                    </td>
-                                </tr>
+                                <tr><td colSpan={8}><Skeleton /></td></tr>
                             ) : paged.length === 0 ? (
                                 <tr>
                                     <td colSpan={8} className="text-center py-16 text-[var(--muted)]">
@@ -283,14 +429,11 @@ export default function AspirationTable({
                                         key={a.id}
                                         className={`border-b border-[var(--border)] transition-colors hover:bg-[var(--primary-light)]/40 ${idx % 2 === 0 ? "bg-white" : "bg-[var(--card)]"}`}
                                     >
-                                        {/* Kode */}
                                         <td className="px-4 py-3.5 pl-6 whitespace-nowrap">
                                             <span className="font-mono text-xs font-semibold text-[var(--primary)] bg-[var(--primary-light)] px-2 py-1 rounded">
                                                 {a.tracking_code}
                                             </span>
                                         </td>
-
-                                        {/* Nama / NIM */}
                                         <td className="px-4 py-3.5 whitespace-nowrap">
                                             <p className="font-medium text-[var(--foreground)]">
                                                 {a.is_anonymous ? (
@@ -301,32 +444,20 @@ export default function AspirationTable({
                                                 <p className="text-xs text-[var(--muted)] mt-0.5">{a.nim}</p>
                                             )}
                                         </td>
-
-                                        {/* Kategori */}
                                         <td className="px-4 py-3.5 whitespace-nowrap">
                                             <span className="text-xs font-medium text-[var(--secondary-hover)] bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">
                                                 {a.category?.name ?? "—"}
                                             </span>
                                         </td>
-
-                                        {/* Isi Singkat */}
                                         <td className="px-4 py-3.5 max-w-[220px]">
-                                            <p className="text-[var(--foreground)] line-clamp-2 text-xs leading-relaxed">
-                                                {a.content}
-                                            </p>
+                                            <p className="text-[var(--foreground)] line-clamp-2 text-xs leading-relaxed">{a.content}</p>
                                         </td>
-
-                                        {/* Sentimen */}
                                         <td className="px-4 py-3.5 whitespace-nowrap">
                                             <SentimentBadge sentiment={a.sentiment} />
                                         </td>
-
-                                        {/* Status */}
                                         <td className="px-4 py-3.5 whitespace-nowrap">
                                             <StatusBadge status={a.status} />
                                         </td>
-
-                                        {/* Tanggal */}
                                         <td className="px-4 py-3.5 whitespace-nowrap text-xs text-[var(--muted)]">
                                             {a.created_at
                                                 ? new Date(a.created_at).toLocaleDateString("id-ID", {
@@ -334,8 +465,6 @@ export default function AspirationTable({
                                                 })
                                                 : "—"}
                                         </td>
-
-                                        {/* Action */}
                                         <td className="px-4 py-3.5 pr-6 whitespace-nowrap">
                                             <button
                                                 onClick={() => onDetail?.(a)}
@@ -353,8 +482,6 @@ export default function AspirationTable({
                         </tbody>
                     </table>
                 </div>
-
-                {/* ── Desktop Footer / Pagination ─────────────────────── */}
                 <TableFooter
                     filtered={filtered}
                     safePage={safePage}
@@ -365,7 +492,7 @@ export default function AspirationTable({
                 />
             </div>
 
-            {/* ── MOBILE: Card List ─────────────────────────────────────── */}
+            {/* ── MOBILE: Card List ───────────────────────────────────── */}
             <div className="md:hidden flex flex-col gap-3">
                 {isLoading ? (
                     <Skeleton />
@@ -381,8 +508,6 @@ export default function AspirationTable({
                         <MobileCard key={a.id} a={a} idx={idx} onDetail={onDetail} />
                     ))
                 )}
-
-                {/* Mobile Pagination */}
                 <div className="flex flex-col items-center gap-3 py-2">
                     <p className="text-xs text-[var(--muted)]">
                         Menampilkan{" "}
@@ -394,35 +519,19 @@ export default function AspirationTable({
                         data
                     </p>
                     <div className="flex items-center gap-1">
-                        <PaginationBtn
-                            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                            disabled={safePage === 1}
-                            aria-label="Prev"
-                        >
+                        <PaginationBtn onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={safePage === 1} aria-label="Prev">
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                             </svg>
                         </PaginationBtn>
-
                         {pageNumbers.map((p, i) =>
                             p === "…" ? (
                                 <span key={`ellipsis-${i}`} className="px-1.5 text-[var(--muted)] text-sm select-none">…</span>
                             ) : (
-                                <PaginationBtn
-                                    key={p}
-                                    active={p === safePage}
-                                    onClick={() => setCurrentPage(p)}
-                                >
-                                    {p}
-                                </PaginationBtn>
+                                <PaginationBtn key={p} active={p === safePage} onClick={() => setCurrentPage(p)}>{p}</PaginationBtn>
                             )
                         )}
-
-                        <PaginationBtn
-                            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                            disabled={safePage === totalPages}
-                            aria-label="Next"
-                        >
+                        <PaginationBtn onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={safePage === totalPages} aria-label="Next">
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                             </svg>
@@ -434,7 +543,6 @@ export default function AspirationTable({
     )
 }
 
-// ── Table Footer (desktop only) ─────────────────────────────────────────
 function TableFooter({ filtered, safePage, pageSize, totalPages, pageNumbers, setCurrentPage }) {
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-3 bg-[var(--card)] border-t border-[var(--border)]">
@@ -447,37 +555,20 @@ function TableFooter({ filtered, safePage, pageSize, totalPages, pageNumbers, se
                 <span className="font-semibold text-[var(--foreground)]">{filtered.length}</span>{" "}
                 data
             </p>
-
             <div className="flex items-center gap-1">
-                <PaginationBtn
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    disabled={safePage === 1}
-                    aria-label="Prev"
-                >
+                <PaginationBtn onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={safePage === 1} aria-label="Prev">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                     </svg>
                 </PaginationBtn>
-
                 {pageNumbers.map((p, i) =>
                     p === "…" ? (
                         <span key={`ellipsis-${i}`} className="px-1.5 text-[var(--muted)] text-sm select-none">…</span>
                     ) : (
-                        <PaginationBtn
-                            key={p}
-                            active={p === safePage}
-                            onClick={() => setCurrentPage(p)}
-                        >
-                            {p}
-                        </PaginationBtn>
+                        <PaginationBtn key={p} active={p === safePage} onClick={() => setCurrentPage(p)}>{p}</PaginationBtn>
                     )
                 )}
-
-                <PaginationBtn
-                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={safePage === totalPages}
-                    aria-label="Next"
-                >
+                <PaginationBtn onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={safePage === totalPages} aria-label="Next">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                     </svg>
@@ -487,7 +578,6 @@ function TableFooter({ filtered, safePage, pageSize, totalPages, pageNumbers, se
     )
 }
 
-// ── Small helper ────────────────────────────────────────────────────────
 function PaginationBtn({ children, active, disabled, onClick, ...props }) {
     return (
         <button

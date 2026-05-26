@@ -8,7 +8,7 @@ import SectionThree from "./sections/SectionThree";
 import Hero from "@/components/ui/layout/Hero";
 import HeroText from "@/components/ui/layout/HeroText";
 
-export default function HomeContent() {
+export default function HomeContent({ totalIn = 0, totalResolved = 0, timelineData=[]}) {
     const [current, setCurrent] = useState(0)
 
     const next = () => {
@@ -18,7 +18,7 @@ export default function HomeContent() {
     }
 
     const steps = [
-        <SectionOne next={next} />,
+        <SectionOne next={next} totalIn={totalIn} totalResolved={totalResolved} timelineData={timelineData} />,
         <SectionTwo next={next} />,
         <SectionThree next={next} />,
     ]

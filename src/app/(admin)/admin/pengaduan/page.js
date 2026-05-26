@@ -1,7 +1,13 @@
 // page.jsx
+import { Suspense } from 'react'
 import PengaduanContent from '@/features/admin/pengaduan/component/PengaduanContent'
 import React from 'react'
 
-export default function AdminPengaduan() {
-  return <PengaduanContent />
+export default async function PengaduanPage() {
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PengaduanContent  />
+    </Suspense>
+  )
 }
