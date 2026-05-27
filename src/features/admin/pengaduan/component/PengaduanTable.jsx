@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from "react"
+import * as XLSX from "xlsx"
 
 const STATUS_CONFIG = {
     pending: {
@@ -154,70 +155,117 @@ function FilterBar({ filters, onChange, categories }) {
         { value: "negative", label: "Negative" },
     ]
 
-    const hasActive = filters.status || filters.sentiment || filters.category
+    const hasActive = filters.status || filters.sentiment || filters.category || filters.dateFrom || filters.dateTo
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
-            {/* Status */}
-            <select
-                value={filters.status}
-                onChange={(e) => onChange({ ...filters, status: e.target.value })}
-                className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
-                    ${filters.status
-                        ? "border-[var(--primary)] text-[var(--primary)]"
-                        : "border-[var(--border)] text-[var(--muted)]"
-                    }`}
-            >
-                {statusOptions.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
-            </select>
-
-            {/* Sentimen */}
-            <select
-                value={filters.sentiment}
-                onChange={(e) => onChange({ ...filters, sentiment: e.target.value })}
-                className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
-                    ${filters.sentiment
-                        ? "border-[var(--primary)] text-[var(--primary)]"
-                        : "border-[var(--border)] text-[var(--muted)]"
-                    }`}
-            >
-                {sentimentOptions.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
-            </select>
-
-            {/* Kategori */}
-            {categories?.length > 0 && (
+        <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+                {/* Status */}
                 <select
-                    value={filters.category}
-                    onChange={(e) => onChange({ ...filters, category: e.target.value })}
+                    value={filters.status}
+                    onChange={(e) => onChange({ ...filters, status: e.target.value })}
                     className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
-                        ${filters.category
+                        ${filters.status
                             ? "border-[var(--primary)] text-[var(--primary)]"
                             : "border-[var(--border)] text-[var(--muted)]"
                         }`}
                 >
-                    <option value="">Semua Kategori</option>
-                    {categories.map((c) => (
-                        <option key={c.id} value={c.slug}>{c.name}</option>
+                    {statusOptions.map((o) => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
                     ))}
                 </select>
-            )}
 
-            {/* Reset */}
-            {hasActive && (
-                <button
-                    onClick={() => onChange({ status: "", sentiment: "", category: "" })}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition active:scale-95"
+                {/* Sentimen */}
+                <select
+                    value={filters.sentiment}
+                    onChange={(e) => onChange({ ...filters, sentiment: e.target.value })}
+                    className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                        ${filters.sentiment
+                            ? "border-[var(--primary)] text-[var(--primary)]"
+                            : "border-[var(--border)] text-[var(--muted)]"
+                        }`}
                 >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    {sentimentOptions.map((o) => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                    ))}
+                </select>
+
+                {/* Kategori */}
+                {categories?.length > 0 && (
+                    <select
+                        value={filters.category}
+                        onChange={(e) => onChange({ ...filters, category: e.target.value })}
+                        className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                            ${filters.category
+                                ? "border-[var(--primary)] text-[var(--primary)]"
+                                : "border-[var(--border)] text-[var(--muted)]"
+                            }`}
+                    >
+                        <option value="">Semua Kategori</option>
+                        {categories.map((c) => (
+                            <option key={c.id} value={c.slug}>{c.name}</option>
+                        ))}
+                    </select>
+                )}
+
+                {/* Reset */}
+                {hasActive && (
+                    <button
+                        onClick={() => onChange({ status: "", sentiment: "", category: "", dateFrom: "", dateTo: "" })}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition active:scale-95"
+                    >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Reset Filter
+                    </button>
+                )}
+            </div>
+
+            {/* Date Range Filter */}
+            <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5 text-[var(--muted)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Reset Filter
-                </button>
-            )}
+                    <span className="text-xs text-[var(--muted)] font-medium">Periode:</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <input
+                        type="date"
+                        value={filters.dateFrom}
+                        onChange={(e) => onChange({ ...filters, dateFrom: e.target.value })}
+                        className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                            ${filters.dateFrom
+                                ? "border-[var(--primary)] text-[var(--primary)]"
+                                : "border-[var(--border)] text-[var(--muted)]"
+                            }`}
+                    />
+                    <span className="text-xs text-[var(--muted)]">s/d</span>
+                    <input
+                        type="date"
+                        value={filters.dateTo}
+                        min={filters.dateFrom || undefined}
+                        onChange={(e) => onChange({ ...filters, dateTo: e.target.value })}
+                        className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                            ${filters.dateTo
+                                ? "border-[var(--primary)] text-[var(--primary)]"
+                                : "border-[var(--border)] text-[var(--muted)]"
+                            }`}
+                    />
+                    {(filters.dateFrom || filters.dateTo) && (
+                        <button
+                            onClick={() => onChange({ ...filters, dateFrom: "", dateTo: "" })}
+                            className="p-1 rounded text-[var(--muted)] hover:text-red-500 hover:bg-red-50 transition"
+                            title="Hapus filter tanggal"
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    )}
+                </div>
+            </div>
         </div>
     )
 }
@@ -236,6 +284,8 @@ function ActiveChips({ filters, onChange }) {
     if (filters.status)    chips.push({ key: "status",    label: `Status: ${labels.status[filters.status] ?? filters.status}` })
     if (filters.sentiment) chips.push({ key: "sentiment", label: `Sentimen: ${labels.sentiment[filters.sentiment] ?? filters.sentiment}` })
     if (filters.category)  chips.push({ key: "category",  label: `Kategori: ${filters.category}` })
+    if (filters.dateFrom)  chips.push({ key: "dateFrom",  label: `Dari: ${filters.dateFrom}` })
+    if (filters.dateTo)    chips.push({ key: "dateTo",    label: `s/d: ${filters.dateTo}` })
 
     if (chips.length === 0) return null
 
@@ -262,6 +312,116 @@ function ActiveChips({ filters, onChange }) {
     )
 }
 
+// ── Download Laporan ─────────────────────────────────────────────────────
+function useDownloadLaporan() {
+    const [isDownloading, setIsDownloading] = useState(false)
+
+    const download = (filtered, filters, categories) => {
+        setIsDownloading(true)
+        try {
+            const wb = XLSX.utils.book_new()
+
+            // ── Sheet 1: Data Aspirasi ─────────────────────────────────
+            const statusLabel = (s) => STATUS_CONFIG[s]?.label ?? s ?? "—"
+
+            const rows = filtered.map((a) => ({
+                "Kode Tracking":  a.tracking_code ?? "—",
+                "Nama":           a.is_anonymous ? "Anonim" : (a.name ?? "—"),
+                "NIM":            a.is_anonymous ? "—" : (a.nim ?? "—"),
+                "Anonim":         a.is_anonymous ? "Ya" : "Tidak",
+                "Kategori":       a.category?.name ?? "—",
+                "Isi Aspirasi":   a.content ?? "—",
+                "Sentimen":       a.sentiment
+                                    ? a.sentiment.charAt(0).toUpperCase() + a.sentiment.slice(1).toLowerCase()
+                                    : "—",
+                "Status":         statusLabel(a.status),
+                "Tanggal Dibuat": a.created_at
+                                    ? new Date(a.created_at).toLocaleDateString("id-ID", {
+                                        day: "2-digit", month: "long", year: "numeric",
+                                      })
+                                    : "—",
+            }))
+
+            const ws = XLSX.utils.json_to_sheet(rows)
+
+            // Column widths
+            ws["!cols"] = [
+                { wch: 18 }, // Kode Tracking
+                { wch: 24 }, // Nama
+                { wch: 14 }, // NIM
+                { wch: 8  }, // Anonim
+                { wch: 18 }, // Kategori
+                { wch: 60 }, // Isi Aspirasi
+                { wch: 12 }, // Sentimen
+                { wch: 14 }, // Status
+                { wch: 20 }, // Tanggal
+            ]
+
+            XLSX.utils.book_append_sheet(wb, ws, "Data Aspirasi")
+
+            // ── Sheet 2: Ringkasan ─────────────────────────────────────
+            const statusCounts = {}
+            const sentimentCounts = {}
+            const categoryCounts = {}
+
+            for (const a of filtered) {
+                const s = statusLabel(a.status)
+                statusCounts[s] = (statusCounts[s] ?? 0) + 1
+
+                const sent = a.sentiment
+                    ? a.sentiment.charAt(0).toUpperCase() + a.sentiment.slice(1).toLowerCase()
+                    : "Tidak Diketahui"
+                sentimentCounts[sent] = (sentimentCounts[sent] ?? 0) + 1
+
+                const cat = a.category?.name ?? "Tidak Berkategori"
+                categoryCounts[cat] = (categoryCounts[cat] ?? 0) + 1
+            }
+
+            const summaryData = [
+                ["RINGKASAN LAPORAN ASPIRASI", ""],
+                ["", ""],
+                ["Tanggal Ekspor", new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" })],
+                ["Total Aspirasi (Filter Aktif)", filtered.length],
+                ["", ""],
+                // Applied filters info
+                ["FILTER YANG DITERAPKAN", ""],
+                ["Status", filters.status ? (STATUS_CONFIG[filters.status]?.label ?? filters.status) : "Semua"],
+                ["Sentimen", filters.sentiment || "Semua"],
+                ["Kategori", filters.category || "Semua"],
+                ["Periode Dari", filters.dateFrom || "—"],
+                ["Periode s/d", filters.dateTo || "—"],
+                ["", ""],
+                // Status breakdown
+                ["REKAPITULASI PER STATUS", "Jumlah"],
+                ...Object.entries(statusCounts).map(([k, v]) => [k, v]),
+                ["", ""],
+                // Sentiment breakdown
+                ["REKAPITULASI PER SENTIMEN", "Jumlah"],
+                ...Object.entries(sentimentCounts).map(([k, v]) => [k, v]),
+                ["", ""],
+                // Category breakdown
+                ["REKAPITULASI PER KATEGORI", "Jumlah"],
+                ...Object.entries(categoryCounts).map(([k, v]) => [k, v]),
+            ]
+
+            const wsSummary = XLSX.utils.aoa_to_sheet(summaryData)
+            wsSummary["!cols"] = [{ wch: 36 }, { wch: 20 }]
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Ringkasan")
+
+            // ── Generate filename ──────────────────────────────────────
+            const now = new Date()
+            const dateStr = now.toISOString().slice(0, 10)
+            const filename = `Laporan_Aspirasi_${dateStr}.xlsx`
+
+            XLSX.writeFile(wb, filename)
+        } finally {
+            setIsDownloading(false)
+        }
+    }
+
+    return { download, isDownloading }
+}
+
 // -----------------------------------------------------------------------
 // Main Component
 // -----------------------------------------------------------------------
@@ -269,29 +429,33 @@ export default function AspirationTable({
     aspirations = [],
     isLoading = false,
     onDetail,
-    categories = [],       // [{ id, slug, name }] — opsional, untuk filter kategori
-    initialStatus = "",    // pre-fill filter status dari URL/parent
-    initialSentiment = "", // pre-fill filter sentimen
-    initialCategory = "",  // pre-fill filter kategori
+    categories = [],
+    initialStatus = "",
+    initialSentiment = "",
+    initialCategory = "",
 }) {
     const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25]
 
-    const [pageSize, setPageSize]     = useState(10)
+    const [pageSize, setPageSize]       = useState(10)
     const [currentPage, setCurrentPage] = useState(1)
-    const [search, setSearch]         = useState("")
-    const [filters, setFilters]       = useState({
+    const [search, setSearch]           = useState("")
+    const [filters, setFilters]         = useState({
         status:    initialStatus,
         sentiment: initialSentiment,
         category:  initialCategory,
+        dateFrom:  "",
+        dateTo:    "",
     })
 
-    // Sync kalau prop initialStatus berubah (misal dari URL)
+    const { download, isDownloading } = useDownloadLaporan()
+
     useEffect(() => {
-        setFilters({
+        setFilters((prev) => ({
+            ...prev,
             status:    initialStatus,
             sentiment: initialSentiment,
             category:  initialCategory,
-        })
+        }))
         setCurrentPage(1)
     }, [initialStatus, initialSentiment, initialCategory])
 
@@ -310,7 +474,24 @@ export default function AspirationTable({
         const matchSentiment = !filters.sentiment || a.sentiment?.toLowerCase() === filters.sentiment
         const matchCategory  = !filters.category  || a.category?.slug === filters.category
 
-        return matchSearch && matchStatus && matchSentiment && matchCategory
+        // Date range filter
+        let matchDate = true
+        if (a.created_at && (filters.dateFrom || filters.dateTo)) {
+            const created = new Date(a.created_at)
+            created.setHours(0, 0, 0, 0)
+            if (filters.dateFrom) {
+                const from = new Date(filters.dateFrom)
+                from.setHours(0, 0, 0, 0)
+                if (created < from) matchDate = false
+            }
+            if (matchDate && filters.dateTo) {
+                const to = new Date(filters.dateTo)
+                to.setHours(23, 59, 59, 999)
+                if (created > to) matchDate = false
+            }
+        }
+
+        return matchSearch && matchStatus && matchSentiment && matchCategory && matchDate
     })
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
@@ -370,19 +551,51 @@ export default function AspirationTable({
                         />
                     </div>
 
-                    {/* Page-size */}
-                    <div className="flex items-center gap-2 text-sm text-[var(--muted)] shrink-0">
-                        <span>Tampilkan</span>
-                        <select
-                            value={pageSize}
-                            onChange={(e) => handlePageSize(e.target.value)}
-                            className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm text-[var(--foreground)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer"
+                    <div className="flex items-center gap-3 shrink-0">
+                        {/* Page-size */}
+                        <div className="flex items-center gap-2 text-sm text-[var(--muted)]">
+                            <span>Tampilkan</span>
+                            <select
+                                value={pageSize}
+                                onChange={(e) => handlePageSize(e.target.value)}
+                                className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm text-[var(--foreground)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer"
+                            >
+                                {PAGE_SIZE_OPTIONS.map((n) => (
+                                    <option key={n} value={n}>{n}</option>
+                                ))}
+                            </select>
+                            <span>data</span>
+                        </div>
+
+                        {/* Download Laporan */}
+                        <button
+                            onClick={() => download(filtered, filters, categories)}
+                            disabled={isDownloading || filtered.length === 0}
+                            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-green-300 bg-green-50 text-green-700 hover:bg-green-100 hover:border-green-400 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
+                            title={filtered.length === 0 ? "Tidak ada data untuk diunduh" : `Unduh ${filtered.length} data sebagai Excel`}
                         >
-                            {PAGE_SIZE_OPTIONS.map((n) => (
-                                <option key={n} value={n}>{n}</option>
-                            ))}
-                        </select>
-                        <span>data</span>
+                            {isDownloading ? (
+                                <>
+                                    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                    </svg>
+                                    Menyiapkan…
+                                </>
+                            ) : (
+                                <>
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M3 7V4a1 1 0 011-1h4l2 2h8a1 1 0 011 1v3" />
+                                    </svg>
+                                    Download Laporan
+                                    {filtered.length > 0 && (
+                                        <span className="ml-0.5 px-1.5 py-0.5 rounded-full bg-green-200 text-green-800 text-[10px] font-bold leading-none">
+                                            {filtered.length}
+                                        </span>
+                                    )}
+                                </>
+                            )}
+                        </button>
                     </div>
                 </div>
 

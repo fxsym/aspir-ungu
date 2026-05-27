@@ -17,7 +17,7 @@ export default function AspiratonCategoryCard() {
         const loadData = async () => {
             setLoading(true)
             try {
-                const response = await getAspirationCategories()
+                const response = await getAspirationCategorieps()
                 setAspirationCategories(response.data)
             } catch (error) {
                 setError("Data tidak ditemukan")
