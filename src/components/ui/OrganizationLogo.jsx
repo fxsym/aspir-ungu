@@ -7,15 +7,16 @@ export default function OrganizationLogo() {
     const images = [
         "/images/LogoAmikom.png",
         "/images/LogoKabinet.png",
+        "/images/LogoBem.png",
         "/images/LogoAmikom.png",
         "/images/LogoKabinet.png",
-
+        "/images/LogoBem.png",
     ];
 
     const duplicatedImages = [...images, ...images];
 
     return (
-        <div className="w-100 overflow-hidden py-6">
+        <div className="w-100 md:w-150 xl:w-180 overflow-hidden py-6">
             <motion.div
                 className="flex w-max"
                 animate={{ x: ["0%", "-50%"] }}
