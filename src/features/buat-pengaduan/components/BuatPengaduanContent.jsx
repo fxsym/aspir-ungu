@@ -395,13 +395,13 @@ export default function BuatPengaduanContent({ category }) {
                                 errors={errors}
                             />
 
-                            <FormCheckbox
+                            {/* <FormCheckbox
                                 register={register}
                                 name="is_anonymous"
                                 label="Kirim sebagai Anonim"
                                 description="Nama dan NIM kamu tidak akan ditampilkan ke publik"
                                 errors={errors}
-                            />
+                            /> */}
                         </div>
 
                         <FormImage register={register} name="image_url" />
