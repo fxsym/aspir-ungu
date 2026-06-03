@@ -11,7 +11,7 @@ import Hero from '@/components/ui/layout/Hero'
 import HeroText from '@/components/ui/layout/HeroText'
 import Text from '@/components/ui/typography/Text'
 import { uploadToCloudinary } from '@/services/cloudinary.services'
-import { submitAspirationSchema } from '@/utils/validator'
+import { emailSchema, otpSchema, submitAspirationSchema } from '@/utils/validator'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -85,12 +85,14 @@ export default function BuatPengaduanContent({ category }) {
 
     // --- Step 1: Email form ---
     const emailForm = useForm({
+        resolver: zodResolver(emailSchema),
         defaultValues: { email: '' },
     })
     const emailValue = emailForm.watch('email')
 
     // --- Step 2: OTP form ---
     const otpForm = useForm({
+        resolver: zodResolver(otpSchema),
         defaultValues: { otp: '' },
     })
     const otpValue = otpForm.watch('otp')

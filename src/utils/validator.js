@@ -30,10 +30,11 @@ export const searchPengaduanSchema = z.object({
     .min(1, "Harap masukan tracking code")
     .max(20, "Tracking code terlalu panjang")
     .transform((val) => val.toUpperCase())
-  // .refine(
-  //   (val) => /^ASP-\d{4}-\d{4}$/.test(val),
-  //   "Format tracking code tidak valid (contoh: ASP-2403-0001)"
-  // )
+    .refine(
+      (val) =>
+        /^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])\d{4}-\d{3}-[A-Z]{4}$/.test(val),
+      "Format tracking code tidak valid (contoh: 02062026-001-XGLN)"
+    )
 });
 
 export const submitAspirationSchema = z
@@ -82,3 +83,18 @@ export const submitAspirationSchema = z
       });
     }
   });
+
+export const emailSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "Wajib mengisi alamat email")
+    .email("Format email tidak valid")
+})
+
+export const otpSchema = z.object({
+  otp: z
+    .string()
+    .trim()
+    .regex(/^\d{6}$/, "OTP harus terdiri dari 6 digit angka")
+})
