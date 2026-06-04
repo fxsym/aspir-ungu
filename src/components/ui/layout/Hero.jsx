@@ -14,7 +14,7 @@ export default function Hero({ children, className }) {
           className="w-full h-full object-cover"
           style={{ objectPosition: "30% center" }}
         />
-        <div className="absolute inset-0 bg-accent/80"></div>
+        <div className="absolute inset-0 bg-accent/85"></div>
       </div>
 
       {/* Konten: bisa scroll, background tetap di belakang */}

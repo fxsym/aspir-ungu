@@ -1,6 +1,6 @@
 import AspirationTimeline from "@/components/ui/card/dasboard-admin/AspirationTimeline"
 
-export default function SectionOne({ next, totalIn = 0, totalResolved = 0, timelineData = [] }) {
+export default function SectionOne({ totalIn = 0, totalResolved = 0, timelineData = [] }) {
     const resolveRate = totalIn > 0 ? Math.round((totalResolved / totalIn) * 100) : 0
 
     const stats = [
@@ -9,9 +9,25 @@ export default function SectionOne({ next, totalIn = 0, totalResolved = 0, timel
         ["24h", "Respons rata-rata"],
     ]
 
+    const scrollToLayanan = () => {
+        const element = document.getElementById('layanan');
+        if (element) {
+            const offset = 80;
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = element.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+            });
+        }
+    };
+
     return (
-        <div className="py-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div>
+        <div className="flex items-center py-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="text-left">
                 <span className="inline-flex items-center gap-2 bg-primary-light text-primary text-xs font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                     Platform Aspirasi Mahasiswa
@@ -28,8 +44,8 @@ export default function SectionOne({ next, totalIn = 0, totalResolved = 0, timel
                 </p>
 
                 <button
-                    onClick={next}
-                    className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold text-sm px-6 py-3 rounded-full transition-all"
+                    onClick={scrollToLayanan}
+                    className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold text-sm px-6 py-3 rounded-full transition-all shadow-lg shadow-primary/25"
                 >
                     Mulai Sekarang →
                 </button>

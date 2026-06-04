@@ -49,7 +49,7 @@ export default function AspiratonCategoryCard() {
                 </div>
             )}
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
                 {aspirationCategories?.map((data, i) => (
                     <Link
                         href={`/buat-pengaduan/${data?.slug}`}
@@ -57,33 +57,20 @@ export default function AspiratonCategoryCard() {
                         onClick={() => setLoadingCard(i)} 
                         onMouseEnter={() => setHovered(i)}
                         onMouseLeave={() => setHovered(null)}
-                        className="relative rounded overflow-hidden cursor-pointer aspect-square transition-all duration-500"
-                        style={{
-                            transform: hovered === i ? "translateY(-8px)" : "translateY(0)",
-                            boxShadow: hovered === i
-                                ? "0 32px 64px rgba(0,0,0,0.7)"
-                                : "0 8px 24px rgba(0,0,0,0.4)",
-                        }}
+                        className="group relative bg-card border border-border rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full"
                     >
-                        {/* Image */}
-                        <Image
-                            src={data?.image_url}
-                            alt={data?.name}
-                            fill
-                            sizes="(max-width: 768px) 33vw, 300px"
-                            className="object-cover transition-transform duration-700"
-                            style={{ transform: hovered === i ? "scale(1.07)" : "scale(1)" }}
-                        />
-
-                        {/* Overlay */}
-                        <div
-                            className="absolute inset-0 transition-all duration-500"
-                            style={{
-                                background: hovered === i
-                                    ? "linear-gradient(to top, rgba(124,58,237,0.85) 0%, rgba(124,58,237,0.2) 50%, transparent 100%)"
-                                    : "linear-gradient(to top, rgba(124,58,237,0.6) 0%, transparent 65%)",
-                            }}
-                        />
+                        {/* Image Container */}
+                        <div className="relative aspect-video overflow-hidden bg-primary-light/30 flex items-center justify-center p-4">
+                            <div className="relative w-full h-full">
+                                <Image
+                                    src={data?.image_url}
+                                    alt={data?.name}
+                                    fill
+                                    className="object-contain transition-transform duration-700 group-hover:scale-105"
+                                />
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+                        </div>
 
                         {/* Loading overlay saat card diklik */}
                         {loadingCard === i && (
@@ -92,17 +79,21 @@ export default function AspiratonCategoryCard() {
                             </div>
                         )}
 
-                        {/* Bottom content */}
-                        <div
-                            className="absolute bottom-0 left-0 right-0 md:p-6 transition-transform duration-500"
-                            style={{ transform: hovered === i ? "translateY(0)" : "translateY(4px)" }}
-                        >
-                            <div
-                                className="h-px bg-background mb-3 transition-all duration-500"
-                                style={{ width: hovered === i ? "48px" : "32px" }}
-                            />
-                            <Text className={"font-bold text-background text-xs sm:text-sm md:text-xl mb-2"}>{data?.name}</Text>
+                        {/* Content */}
+                        <div className="p-6 flex flex-col flex-grow">
+                            <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                                {data?.name}
+                            </h3>
+                            <p className="text-muted text-xs leading-relaxed mb-4 flex-grow">
+                                {data?.description || "Sampaikan aspirasi Anda untuk kategori ini."}
+                            </p>
+                            <div className="flex items-center gap-2 text-primary font-semibold text-xs group-hover:gap-3 transition-all">
+                                Pilih Kategori <span className="text-lg">→</span>
+                            </div>
                         </div>
+                        
+                        {/* Decorative background element */}
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:bg-primary/10 transition-colors" />
                     </Link>
                 ))}
             </div>

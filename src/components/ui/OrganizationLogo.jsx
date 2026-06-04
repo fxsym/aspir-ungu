@@ -1,46 +1,29 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 export default function OrganizationLogo() {
     const images = [
         "/images/LogoAmikom.png",
         "/images/LogoKabinet.png",
         "/images/LogoBem.png",
-        "/images/LogoAmikom.png",
-        "/images/LogoKabinet.png",
-        "/images/LogoBem.png",
     ];
 
-    const duplicatedImages = [...images, ...images];
-
     return (
-        <div className="w-100 md:w-150 xl:w-180 overflow-hidden py-6">
-            <motion.div
-                className="flex w-max"
-                animate={{ x: ["0%", "-50%"] }}
-                transition={{
-                    ease: "linear",
-                    duration: 20,
-                    repeat: Infinity,
-                }}
-                whileHover={{ animationPlayState: "paused" }}
-            >
-                {duplicatedImages.map((image, index) => (
-                    <div
-                        key={index}
-                        className="relative w-20 h-15 md:w-30 md:h-20 shrink-0"
-                    >
-                        <Image
-                            src={image}
-                            alt="organization logo"
-                            fill
-                            className="object-contain"
-                        />
-                    </div>
-                ))}
-            </motion.div>
+        <div className="w-full py-4 flex justify-center items-center gap-8 md:gap-16">
+            {images.map((image, index) => (
+                <div
+                    key={index}
+                    className="relative w-16 h-12 md:w-24 md:h-16 lg:w-32 lg:h-24 hover:scale-105 transition-transform duration-300"
+                >
+                    <Image
+                        src={image}
+                        alt="organization logo"
+                        fill
+                        className="object-contain"
+                    />
+                </div>
+            ))}
         </div>
     );
 }

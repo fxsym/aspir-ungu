@@ -1,8 +1,8 @@
 'use client'
 import { useState } from "react";
-import Navmenu from "./Navmenu";
-import Navbar from "./Navbar";
 import Hero from "../ui/layout/Hero";
+import Navmenu from "../ui/navbar/admin/Navmenu";
+import Navbar from "../ui/navbar/admin/Navbar";
 
 
 export default function MainLayout({ children, user }) {

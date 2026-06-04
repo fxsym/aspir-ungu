@@ -108,7 +108,7 @@ function MiniAreaChart({ data, width = 400, height = 120 }) {
           </p>
           <p className="flex items-center gap-1.5">
             <span className="inline-block w-2 h-2 rounded-full" style={{ background: '#22c55e' }} />
-            Resolved: <span className="font-bold">{tooltip.resolved}</span>
+            Terselesaikan: <span className="font-bold">{tooltip.resolved}</span>
           </p>
         </div>
       )}
@@ -155,7 +155,7 @@ export default function AspirationTimeline({ timelineData = [], totalIn = 0, tot
             <p className="text-lg font-bold" style={{ color: 'var(--primary)' }}>{totalIn}</p>
           </div>
           <div className="text-center">
-            <p className="text-xs" style={{ color: 'var(--muted)' }}>Resolved</p>
+            <p className="text-xs" style={{ color: 'var(--muted)' }}>Terselesaikan</p>
             <p className="text-lg font-bold" style={{ color: '#22c55e' }}>{totalResolved}</p>
           </div>
           <div className="text-center">

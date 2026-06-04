@@ -2,10 +2,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
-import LogoutButton from "../ui/button/LogoutButton";
+import LogoutButton from "../../button/LogoutButton";
 
 export default function Navmenu({ isOpen, onClose, setShowSidebar }) {
-
 
     return (
         <AnimatePresence mode="wait">

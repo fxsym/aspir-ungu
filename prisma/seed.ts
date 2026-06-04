@@ -21,12 +21,12 @@ const userData: Prisma.UserCreateInput[] = [
 ];
 
 const categoryData: Prisma.AspirationCategoryCreateInput[] = [
-    { slug: "akademik", name: "Akademik", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
-    { slug: "fasilitas-kampus", name: "Fasilitas Kampus", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
-    { slug: "pelayanan-administrasi", name: "Pelayanan Administrasi", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
-    { slug: "keuangan", name: "Keuangan", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
-    { slug: "pelecehan-seksual", name: "Pelecehan Seksual", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
-    { slug: "lainnya", name: "Lainnya", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
+    { slug: "akademik", name: "Akademik", description: "Pengaduan terkait dosen, jadwal perkuliahan, nilai, atau proses belajar mengajar.", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
+    { slug: "fasilitas-kampus", name: "Fasilitas Kampus", description: "Keluhan tentang ruang kelas, toilet, WiFi, parkir, atau sarana dan prasarana lainnya.", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
+    { slug: "pelayanan-administrasi", name: "Pelayanan Administrasi", description: "Masalah terkait pelayanan birokrasi, pendaftaran, surat-menyurat, atau pelayanan staf.", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
+    { slug: "keuangan", name: "Keuangan", description: "Pertanyaan atau keluhan seputar pembayaran SPP, denda, beasiswa, atau transaksi kampus lainnya.", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
+    { slug: "pelecehan-seksual", name: "Pelecehan Seksual", description: "Laporan rahasia mengenai tindak pelecehan atau kekerasan seksual di lingkungan kampus.", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
+    { slug: "lainnya", name: "Lainnya", description: "Aspirasi, kritik, atau saran yang tidak termasuk dalam kategori-kategori di atas.", image_url: "https://res.cloudinary.com/djfxfwzin/image/upload/v1777539050/toa_jzy2o5.webp" },
 ];
 
 // mapping status string dari dummy data ke enum Status

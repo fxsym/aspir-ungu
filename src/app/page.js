@@ -1,3 +1,4 @@
+import NavigationBar from "@/components/ui/navbar/user/NavigationBar";
 import HomeContent from "@/features/home/components/HomeContent";
 import { getDashboardStats, getTimelineData } from "@/services/aspiration.services";
 
@@ -8,10 +9,13 @@ export default async function Home() {
     ])
 
     return (
-        <HomeContent
-            totalIn={total}
-            totalResolved={resolved}
-            timelineData={timelineData}
-        />
+        <>
+            <NavigationBar />
+            <HomeContent
+                totalIn={total}
+                totalResolved={resolved}
+                timelineData={timelineData}
+            />
+        </>
     )
 }
