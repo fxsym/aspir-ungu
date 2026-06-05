@@ -78,72 +78,6 @@ export async function getTimelineData() {
     )
 }
 
-/**
- * Data untuk StatusDistributionChart:
- * Hitung jumlah aspiration per status
- */
-export async function getStatusDistribution() {
-    const groups = await prisma.aspiration.groupBy({
-        by: ['status'],
-        _count: { status: true },
-    })
-
-    return groups.map((g) => ({
-        status: g.status,
-        count: g._count.status,
-    }))
-}
-
-/**
- * Data untuk SentimentChart:
- * Hitung jumlah aspiration per sentiment (positive/negative/neutral)
- */
-export async function getSentimentDistribution() {
-    const groups = await prisma.aspiration.groupBy({
-        by: ['sentiment'],
-        _count: { sentiment: true },
-    })
-
-    const result = { positive: 0, negative: 0, neutral: 0 }
-
-    groups.forEach(({ sentiment, _count }) => {
-        const key = sentiment?.toLowerCase()
-        if (key && key in result) {
-            result[key] = _count.sentiment
-        }
-    })
-
-    return result
-}
-
-/**
- * Data untuk CategoryChart:
- * Hitung total & resolved per kategori
- */
-export async function getCategoryDistribution() {
-    const categories = await prisma.aspirationCategory.findMany({
-        select: {
-            id: true,
-            name: true,
-            slug: true,
-            aspirations: {
-                select: { status: true },
-            },
-        },
-    })
-
-    return categories
-        .map((cat) => ({
-            id: cat.id,
-            label: cat.name,
-            slug: cat.slug,
-            total: cat.aspirations.length,
-            resolved: cat.aspirations.filter((a) => a.status === 'resolved').length,
-        }))
-        .filter((c) => c.total > 0)
-        .sort((a, b) => b.total - a.total)
-}
-
 export async function getAllAspirations() {
     const aspirations = await prisma.aspiration.findMany({
         orderBy: { created_at: "desc" },
@@ -297,4 +231,89 @@ export async function getCategoriesForFilter() {
         select: { id: true, name: true, slug: true },
         orderBy: { name: 'asc' },
     })
+}
+
+/**
+ * Optimasi query untuk dashboard beranda:
+ * Fetch data sekali dan manipulasi di memory untuk meminimalkan beban database
+ */
+export async function getBerandaDashboardData() {
+    const [aspirations, categories] = await Promise.all([
+        prisma.aspiration.findMany({
+            select: { created_at: true, status: true, sentiment: true, aspiration_category_id: true }
+        }),
+        prisma.aspirationCategory.findMany({
+            select: { id: true, name: true, slug: true },
+            orderBy: { name: 'asc' },
+        })
+    ])
+
+    let total = 0, resolved = 0, inProgress = 0, pending = 0
+    const timelineMap = {}
+    const statusMap = {}
+    const sentimentResult = { positive: 0, negative: 0, neutral: 0 }
+    const categoryStats = {}
+
+    categories.forEach(cat => {
+        categoryStats[cat.id] = {
+            id: cat.id,
+            label: cat.name,
+            slug: cat.slug,
+            total: 0,
+            resolved: 0
+        }
+    })
+
+    aspirations.forEach(a => {
+        // Stats
+        total++
+        if (a.status === 'resolved') resolved++
+        if (a.status === 'in_progress') inProgress++
+        if (a.status === 'pending') pending++
+
+        // Timeline
+        const key = new Date(a.created_at).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short',
+        })
+        if (!timelineMap[key]) {
+            timelineMap[key] = { date: key, total: 0, resolved: 0, pending: 0, _raw: a.created_at }
+        }
+        timelineMap[key].total++
+        if (a.status === 'resolved') timelineMap[key].resolved++
+        if (a.status === 'pending') timelineMap[key].pending++
+
+        // Status
+        statusMap[a.status] = (statusMap[a.status] || 0) + 1
+
+        // Sentiment
+        const sentKey = a.sentiment?.toLowerCase()
+        if (sentKey && sentKey in sentimentResult) {
+            sentimentResult[sentKey]++
+        }
+
+        // Category
+        if (categoryStats[a.aspiration_category_id]) {
+            categoryStats[a.aspiration_category_id].total++
+            if (a.status === 'resolved') {
+                categoryStats[a.aspiration_category_id].resolved++
+            }
+        }
+    })
+
+    const stats = { total, resolved, inProgress, pending }
+    const timelineData = Object.values(timelineMap).sort((a, b) => new Date(a._raw) - new Date(b._raw))
+    const statusData = Object.entries(statusMap).map(([status, count]) => ({ status, count }))
+    const categoryData = Object.values(categoryStats)
+        .filter(c => c.total > 0)
+        .sort((a, b) => b.total - a.total)
+
+    return {
+        stats,
+        timelineData,
+        statusData,
+        sentimentData: sentimentResult,
+        categoryData,
+        categories
+    }
 }

@@ -17,7 +17,7 @@ export default function LogoutButton({ children = "Logout", className }) {
             disabled={loading}
             className={`bg-primary p-3 rounded-full hover:cursor-pointer ${className}`}
         >
-            <Text>
+            <Text className={"text-white"}>
                 {loading ? "Logging out..." : children}
             </Text>
         </button>

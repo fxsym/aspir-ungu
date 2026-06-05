@@ -176,7 +176,7 @@ export default function DetailPengaduanContent({ aspiration }) {
                 Kembali
             </Link>
 
-            <div className='sm:w-90 md:w-100 lg:w-180 bg-secondary/40 backdrop-blur-xs border-4 border-primary shadow-4xl px-4 py-8 rounded-4xl relative'>
+            <div className='sm:w-90 md:w-100 lg:w-180 bg-white/70 backdrop-blur-xs border-4 border-primary shadow-4xl px-4 py-8 rounded-4xl relative'>
                 {(loadingUpdate || loadingAnalysis) && <LoadingOverlay />}
 
                 {/* Header: Avatar + Nama + Badge Status */}

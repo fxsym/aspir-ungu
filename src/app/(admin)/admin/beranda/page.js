@@ -1,26 +1,19 @@
-// features/admin/beranda/Beranda.jsx  (atau sesuai path kamu)
+// features/admin/beranda/Beranda.jsx
 
 import React from 'react'
-import {
-    getDashboardStats,
-    getTimelineData,
-    getStatusDistribution,
-    getSentimentDistribution,
-    getCategoryDistribution,
-    getCategoriesForFilter,          // <-- tambah import ini
-} from '@/services/aspiration.services'
+import { getBerandaDashboardData } from '@/services/aspiration.services'
 import BerandaContent from '@/features/admin/beranda/component/BerandaContent'
 
 export default async function Beranda() {
 
-    const [stats, timelineData, statusData, sentimentData, categoryData, categories] = await Promise.all([
-        getDashboardStats(),
-        getTimelineData(),
-        getStatusDistribution(),
-        getSentimentDistribution(),
-        getCategoryDistribution(),
-        getCategoriesForFilter(),     // <-- tambah fetch ini
-    ])
+    const {
+        stats,
+        timelineData,
+        statusData,
+        sentimentData,
+        categoryData,
+        categories
+    } = await getBerandaDashboardData()
 
     return (
         <BerandaContent
@@ -29,7 +22,7 @@ export default async function Beranda() {
             statusData={statusData}
             sentimentData={sentimentData}
             categoryData={categoryData}
-            categories={categories}   // <-- pass ke BerandaContent
+            categories={categories}
         />
     )
 }

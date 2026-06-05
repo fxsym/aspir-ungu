@@ -34,14 +34,14 @@ export default function LoginContent() {
 
             if (!result.success) {
                 setError(result.error);
+                setLoading(false);
                 return;
             }
+            // Biarkan loading tetap true saat pindah halaman agar tombol tetap memutar spinner
             router.push("/admin/beranda");
-            console.log(result)
         } catch (error) {
             setError(error)
-        } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
