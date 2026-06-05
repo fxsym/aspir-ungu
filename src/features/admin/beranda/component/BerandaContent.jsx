@@ -14,8 +14,11 @@ export default function BerandaContent({ stats, timelineData, statusData, sentim
     return (
         <>
             {/* Stat Cards */}
-            <div className="bg-primary/80 w-full rounded-2xl items-start flex flex-col py-4 px-6 gap-4">
-                <Text className="font-bold text-2xl">Status Pengaduan</Text>
+            <div className="bg-primary/50 border border-primary/10 w-full rounded-3xl items-start flex flex-col py-6 px-6 gap-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-2 h-8 bg-primary rounded-full" />
+                    <Text className="font-bold text-2xl text-foreground">Status Pengaduan</Text>
+                </div>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <StatCard
                         title="Total Pengaduan"
@@ -28,21 +31,21 @@ export default function BerandaContent({ stats, timelineData, statusData, sentim
                         title="Resolved"
                         count={stats.resolved}
                         icon={<FiCheckCircle size={22} />}
-                        variant="primary"
+                        variant="success"
                         href="/admin/pengaduan?status=resolved"
                     />
                     <StatCard
                         title="In Progress"
                         count={stats.inProgress}
                         icon={<FiClock size={22} />}
-                        variant="primary"
+                        variant="warning"
                         href="/admin/pengaduan?status=in_progress"
                     />
                     <StatCard
                         title="Pending"
                         count={stats.pending}
                         icon={<FiAlertCircle size={22} />}
-                        variant="primary"
+                        variant="danger"
                         href="/admin/pengaduan?status=pending"
                     />
                 </div>
