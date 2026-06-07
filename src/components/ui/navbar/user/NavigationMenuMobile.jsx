@@ -2,9 +2,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import NavigationMenu from "./NavigationMenu";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
-import { useState } from "react";
 
-export default function NavigationMenuMobile({ open, setOpen, navItems, activeSection, scrollToSection }) {
+export default function NavigationMenuMobile({ open, setOpen, navItems, pathname }) {
     return (
         <AnimatePresence>
             {open && (
@@ -16,14 +15,12 @@ export default function NavigationMenuMobile({ open, setOpen, navItems, activeSe
                     className="md:hidden min-h-screen flex flex-col items-center justify-center gap-2 bg-background absolute left-0 right-0 top-22 pt-10 pb-20 rounded-xl shadow-xl"
                 >
                     {navItems.map((item) => (
-                        <li key={item.id} className="list-none text-foreground">
+                        <li key={item.label} className="list-none text-foreground">
                             <NavigationMenu
                                 label={item.label}
-                                active={activeSection === item.id}
-                                onClick={() => {
-                                    scrollToSection(item.id);
-                                    setOpen(false);
-                                }}
+                                active={pathname === item.href}
+                                href={item.href}
+                                onClick={() => setOpen(false)}
                             />
                         </li>
                     ))}
@@ -38,6 +35,8 @@ export default function NavigationMenuMobile({ open, setOpen, navItems, activeSe
                         </a>
                         <a
                             href="#"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="p-3 rounded-full hover:bg-primary-light transition-colors duration-300"
                         >
                             <FaTiktok className="w-8 h-8 text-primary" />

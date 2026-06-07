@@ -12,60 +12,22 @@ export default function NavigationBar() {
     const router = useRouter();
     const [open, setOpen] = useState(false)
     const [hidden, setHidden] = useState(false);
-    const [activeSection, setActiveSection] = useState("home");
 
     const navItems = [
-        { id: "home", label: "Beranda" },
-        { id: "tentang", label: "Tentang" },
-        { id: "cara-kerja", label: "Cara Kerja" },
-        { id: "layanan", label: "Layanan" },
+        { label: "Beranda", href: "/" },
+        { label: "Buat Pengaduan", href: "/buat-pengaduan" },
+        { label: "Cek Pengaduan", href: "/cek-pengaduan" },
     ]
 
     useEffect(() => {
         const handleScroll = () => {
             const currentScroll = window.scrollY;
             setHidden(currentScroll > 0);
-
-            // Active section detection
-            const sections = navItems.map(item => document.getElementById(item.id));
-            const scrollPosition = window.scrollY + 100;
-
-            sections.forEach(section => {
-                if (section) {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.offsetHeight;
-                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                        setActiveSection(section.id);
-                    }
-                }
-            });
         };
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [navItems]);
-
-    const scrollToSection = (sectionId) => {
-        if (pathname !== '/') {
-            router.push(`/#${sectionId}`);
-            return;
-        }
-
-        const element = document.getElementById(sectionId);
-        if (element) {
-            const offset = 80; // offset for fixed navbar
-            const bodyRect = document.body.getBoundingClientRect().top;
-            const elementRect = element.getBoundingClientRect().top;
-            const elementPosition = elementRect - bodyRect;
-            const offsetPosition = elementPosition - offset;
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth"
-            });
-            setActiveSection(sectionId);
-        }
-    };
+    }, []);
 
     return (
         <nav
@@ -88,11 +50,11 @@ export default function NavigationBar() {
                 <div className="hidden md:flex md:items-center flex-2 justify-center">
                     <ul className="flex gap-4 font-semibold text-[16px] text-foreground">
                         {navItems.map((item) => (
-                            <li key={item.id}>
+                            <li key={item.label}>
                                 <NavigationMenu
                                     label={item.label}
-                                    active={activeSection === item.id}
-                                    onClick={() => scrollToSection(item.id)}
+                                    active={pathname === item.href}
+                                    href={item.href}
                                 />
                             </li>
                         ))}
@@ -113,8 +75,6 @@ export default function NavigationBar() {
                 setOpen={setOpen} 
                 navItems={navItems} 
                 pathname={pathname}
-                activeSection={activeSection}
-                scrollToSection={scrollToSection}
             />
 
         </nav>
