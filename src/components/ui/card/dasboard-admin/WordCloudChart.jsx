@@ -200,7 +200,7 @@ export default function WordCloudChart({ categories = [] }) {
                 defer
             />
 
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-white rounded-2xl border border-zinc-200  p-6">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
@@ -223,7 +223,7 @@ export default function WordCloudChart({ categories = [] }) {
                         >
                             <option value="all">Semua Kategori</option>
                             {categories.map(cat => (
-                                <option key={cat.slug} value={cat.slug}>
+                                <option key={cat.slug} dar={cat.slug}>
                                     {cat.name}
                                 </option>
                             ))}
@@ -258,7 +258,7 @@ export default function WordCloudChart({ categories = [] }) {
                 {/* Canvas Area */}
                 <div
                     ref={containerRef}
-                    className="w-full min-h-[400px] rounded-xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-center overflow-hidden"
+                    className="w-full min-h-100 rounded-xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-center overflow-hidden"
                 >
                     {/* Empty State */}
                     {!hasGenerated && !loading && (

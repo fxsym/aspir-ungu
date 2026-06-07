@@ -26,7 +26,7 @@ export default function SectionOne({ totalIn = 0, totalResolved = 0, timelineDat
     };
 
     return (
-        <div className="flex items-center py-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div className="py-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="text-left">
                 <span className="inline-flex items-center gap-2 bg-primary-light text-primary text-xs font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
@@ -35,7 +35,7 @@ export default function SectionOne({ totalIn = 0, totalResolved = 0, timelineDat
 
                 <h1 className="font-serif text-4xl md:text-5xl font-light leading-tight text-foreground mb-3">
                     Jangan Dipendam,<br />
-                    Yuk <em className="italic text-primary not-italic">Sampaikan.</em>
+                    Yuk <em className="text-primary not-italic">Sampaikan.</em>
                 </h1>
 
                 <p className="text-muted text-base leading-relaxed mb-6 max-w-md">

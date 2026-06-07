@@ -1,3 +1,4 @@
+'use client'
 import { getAspirationCategories } from '@/actions/aspirationCategory.action';
 import MainLoading from '@/components/ui/MainLoading';
 import Text from '@/components/ui/typography/Text'
@@ -69,7 +70,7 @@ export default function AspiratonCategoryCard() {
                                     className="object-contain transition-transform duration-700 group-hover:scale-105"
                                 />
                             </div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-linear-to-t from-background/90 via-transparent to-transparent" />
                         </div>
 
                         {/* Loading overlay saat card diklik */}
@@ -80,11 +81,11 @@ export default function AspiratonCategoryCard() {
                         )}
 
                         {/* Content */}
-                        <div className="p-6 flex flex-col flex-grow">
+                        <div className="p-6 flex flex-col grow">
                             <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                                 {data?.name}
                             </h3>
-                            <p className="text-muted text-xs leading-relaxed mb-4 flex-grow">
+                            <p className="text-muted text-xs leading-relaxed mb-4 grow">
                                 {data?.description || "Sampaikan aspirasi Anda untuk kategori ini."}
                             </p>
                             <div className="flex items-center gap-2 text-primary font-semibold text-xs group-hover:gap-3 transition-all">

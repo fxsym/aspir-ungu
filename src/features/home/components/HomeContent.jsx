@@ -1,6 +1,5 @@
 "use client"
 import SectionOne from "./sections/SectionOne";
-import OrganizationLogo from "@/components/ui/OrganizationLogo";
 import { motion } from "framer-motion";
 import SectionTwo from "./sections/SectionTwo";
 import SectionThree from "./sections/SectionThree";
@@ -61,17 +60,7 @@ export default function HomeContent({ totalIn = 0, totalResolved = 0, timelineDa
                 >
                     <SectionThree />
                 </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1 }}
-                    className="py-20 flex justify-center"
-                >
-                    <OrganizationLogo />
-                </motion.div>
-            </div>
-        </Hero>
-    )
-}
+                </div>
+                </Hero>
+                )
+                }

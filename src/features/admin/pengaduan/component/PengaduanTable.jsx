@@ -44,28 +44,13 @@ function StatusBadge({ status }) {
     )
 }
 
-function SentimentBadge({ sentiment }) {
-    if (!sentiment) return <span className="text-muted text-xs">—</span>
-    const map = {
-        positive: "text-[var(--success)] bg-green-50 border border-green-200",
-        negative: "text-[var(--danger)] bg-red-50 border border-red-200",
-        neutral: "text-[var(--muted)] bg-gray-100 border border-gray-200",
-    }
-    const lower = sentiment.toLowerCase()
-    return (
-        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize ${map[lower] ?? "bg-gray-100 text-gray-600 border border-gray-200"}`}>
-            {sentiment}
-        </span>
-    )
-}
-
 function Skeleton() {
     return (
         <div className="animate-pulse">
             <div className="hidden md:block">
                 {Array.from({ length: 5 }).map((_, i) => (
                     <div key={i} className="flex gap-4 px-6 py-4 border-b border-[var(--border)]">
-                        {Array.from({ length: 6 }).map((_, j) => (
+                        {Array.from({ length: 7 }).map((_, j) => (
                             <div key={j} className="h-4 bg-gray-200 rounded flex-1" />
                         ))}
                     </div>
@@ -120,7 +105,6 @@ function MobileCard({ a, idx, onDetail }) {
             </p>
             <div className="flex items-center justify-between gap-2 pt-1 border-t border-[var(--border)]">
                 <div className="flex items-center gap-2 flex-wrap">
-                    <SentimentBadge sentiment={a.sentiment} />
                     <StatusBadge status={a.status} />
                 </div>
                 <button
@@ -148,14 +132,7 @@ function FilterBar({ filters, onChange, categories }) {
         { value: "rejected",    label: "Rejected" },
     ]
 
-    const sentimentOptions = [
-        { value: "",         label: "Semua Sentimen" },
-        { value: "positive", label: "Positive" },
-        { value: "neutral",  label: "Neutral" },
-        { value: "negative", label: "Negative" },
-    ]
-
-    const hasActive = filters.status || filters.sentiment || filters.category || filters.dateFrom || filters.dateTo
+    const hasActive = filters.status || filters.category || filters.dateFrom || filters.dateTo
 
     return (
         <div className="flex flex-col gap-2">
@@ -171,21 +148,6 @@ function FilterBar({ filters, onChange, categories }) {
                         }`}
                 >
                     {statusOptions.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                    ))}
-                </select>
-
-                {/* Sentimen */}
-                <select
-                    value={filters.sentiment}
-                    onChange={(e) => onChange({ ...filters, sentiment: e.target.value })}
-                    className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
-                        ${filters.sentiment
-                            ? "border-[var(--primary)] text-[var(--primary)]"
-                            : "border-[var(--border)] text-[var(--muted)]"
-                        }`}
-                >
-                    {sentimentOptions.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                     ))}
                 </select>
@@ -211,7 +173,7 @@ function FilterBar({ filters, onChange, categories }) {
                 {/* Reset */}
                 {hasActive && (
                     <button
-                        onClick={() => onChange({ status: "", sentiment: "", category: "", dateFrom: "", dateTo: "" })}
+                        onClick={() => onChange({ status: "", category: "", dateFrom: "", dateTo: "" })}
                         className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition active:scale-95"
                     >
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -277,12 +239,10 @@ function ActiveChips({ filters, onChange }) {
             pending: "Pending", in_progress: "In Progress",
             resolved: "Resolved", verified: "Verified", rejected: "Rejected",
         },
-        sentiment: { positive: "Positive", neutral: "Neutral", negative: "Negative" },
     }
 
     const chips = []
     if (filters.status)    chips.push({ key: "status",    label: `Status: ${labels.status[filters.status] ?? filters.status}` })
-    if (filters.sentiment) chips.push({ key: "sentiment", label: `Sentimen: ${labels.sentiment[filters.sentiment] ?? filters.sentiment}` })
     if (filters.category)  chips.push({ key: "category",  label: `Kategori: ${filters.category}` })
     if (filters.dateFrom)  chips.push({ key: "dateFrom",  label: `Dari: ${filters.dateFrom}` })
     if (filters.dateTo)    chips.push({ key: "dateTo",    label: `s/d: ${filters.dateTo}` })
@@ -331,9 +291,6 @@ function useDownloadLaporan() {
                 "Anonim":         a.is_anonymous ? "Ya" : "Tidak",
                 "Kategori":       a.category?.name ?? "—",
                 "Isi Aspirasi":   a.content ?? "—",
-                "Sentimen":       a.sentiment
-                                    ? a.sentiment.charAt(0).toUpperCase() + a.sentiment.slice(1).toLowerCase()
-                                    : "—",
                 "Status":         statusLabel(a.status),
                 "Tanggal Dibuat": a.created_at
                                     ? new Date(a.created_at).toLocaleDateString("id-ID", {
@@ -352,7 +309,6 @@ function useDownloadLaporan() {
                 { wch: 8  }, // Anonim
                 { wch: 18 }, // Kategori
                 { wch: 60 }, // Isi Aspirasi
-                { wch: 12 }, // Sentimen
                 { wch: 14 }, // Status
                 { wch: 20 }, // Tanggal
             ]
@@ -361,17 +317,11 @@ function useDownloadLaporan() {
 
             // ── Sheet 2: Ringkasan ─────────────────────────────────────
             const statusCounts = {}
-            const sentimentCounts = {}
             const categoryCounts = {}
 
             for (const a of filtered) {
                 const s = statusLabel(a.status)
                 statusCounts[s] = (statusCounts[s] ?? 0) + 1
-
-                const sent = a.sentiment
-                    ? a.sentiment.charAt(0).toUpperCase() + a.sentiment.slice(1).toLowerCase()
-                    : "Tidak Diketahui"
-                sentimentCounts[sent] = (sentimentCounts[sent] ?? 0) + 1
 
                 const cat = a.category?.name ?? "Tidak Berkategori"
                 categoryCounts[cat] = (categoryCounts[cat] ?? 0) + 1
@@ -386,7 +336,6 @@ function useDownloadLaporan() {
                 // Applied filters info
                 ["FILTER YANG DITERAPKAN", ""],
                 ["Status", filters.status ? (STATUS_CONFIG[filters.status]?.label ?? filters.status) : "Semua"],
-                ["Sentimen", filters.sentiment || "Semua"],
                 ["Kategori", filters.category || "Semua"],
                 ["Periode Dari", filters.dateFrom || "—"],
                 ["Periode s/d", filters.dateTo || "—"],
@@ -394,10 +343,6 @@ function useDownloadLaporan() {
                 // Status breakdown
                 ["REKAPITULASI PER STATUS", "Jumlah"],
                 ...Object.entries(statusCounts).map(([k, v]) => [k, v]),
-                ["", ""],
-                // Sentiment breakdown
-                ["REKAPITULASI PER SENTIMEN", "Jumlah"],
-                ...Object.entries(sentimentCounts).map(([k, v]) => [k, v]),
                 ["", ""],
                 // Category breakdown
                 ["REKAPITULASI PER KATEGORI", "Jumlah"],
@@ -431,7 +376,6 @@ export default function AspirationTable({
     onDetail,
     categories = [],
     initialStatus = "",
-    initialSentiment = "",
     initialCategory = "",
 }) {
     const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25]
@@ -441,7 +385,6 @@ export default function AspirationTable({
     const [search, setSearch]           = useState("")
     const [filters, setFilters]         = useState({
         status:    initialStatus,
-        sentiment: initialSentiment,
         category:  initialCategory,
         dateFrom:  "",
         dateTo:    "",
@@ -453,11 +396,10 @@ export default function AspirationTable({
         setFilters((prev) => ({
             ...prev,
             status:    initialStatus,
-            sentiment: initialSentiment,
             category:  initialCategory,
         }))
         setCurrentPage(1)
-    }, [initialStatus, initialSentiment, initialCategory])
+    }, [initialStatus, initialCategory])
 
     // ── Filter + Search ─────────────────────────────────────────────────
     const filtered = aspirations.filter((a) => {
@@ -471,7 +413,6 @@ export default function AspirationTable({
             a.content?.toLowerCase().includes(q)
 
         const matchStatus    = !filters.status    || a.status === filters.status
-        const matchSentiment = !filters.sentiment || a.sentiment?.toLowerCase() === filters.sentiment
         const matchCategory  = !filters.category  || a.category?.slug === filters.category
 
         // Date range filter
@@ -491,7 +432,7 @@ export default function AspirationTable({
             }
         }
 
-        return matchSearch && matchStatus && matchSentiment && matchCategory && matchDate
+        return matchSearch && matchStatus && matchCategory && matchDate
     })
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
@@ -587,7 +528,7 @@ export default function AspirationTable({
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M3 7V4a1 1 0 011-1h4l2 2h8a1 1 0 011 1v3" />
                                     </svg>
-                                    Download Laporan
+                                    Download Data Pengaduan Dalam Bentuk xlsx
                                     {filtered.length > 0 && (
                                         <span className="ml-0.5 px-1.5 py-0.5 rounded-full bg-green-200 text-green-800 text-[10px] font-bold leading-none">
                                             {filtered.length}
@@ -612,7 +553,7 @@ export default function AspirationTable({
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="bg-[var(--primary-light)] border-b border-[var(--border)]">
-                                {["Kode", "Nama / NIM", "Kategori", "Isi Singkat", "Sentimen", "Status", "Tanggal", ""].map((h) => (
+                                {["Kode", "Nama / NIM", "Kategori", "Isi Singkat", "Status", "Tanggal", ""].map((h) => (
                                     <th
                                         key={h}
                                         className="text-left px-4 py-3 font-semibold text-[var(--primary)] text-xs uppercase tracking-wide whitespace-nowrap first:pl-6 last:pr-6"
@@ -624,10 +565,10 @@ export default function AspirationTable({
                         </thead>
                         <tbody>
                             {isLoading ? (
-                                <tr><td colSpan={8}><Skeleton /></td></tr>
+                                <tr><td colSpan={7}><Skeleton /></td></tr>
                             ) : paged.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="text-center py-16 text-[var(--muted)]">
+                                    <td colSpan={7} className="text-center py-16 text-[var(--muted)]">
                                         <div className="flex flex-col items-center gap-3">
                                             <svg className="w-10 h-10 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414A1 1 0 0 1 19 9.414V19a2 2 0 0 1-2 2z" />
@@ -664,9 +605,6 @@ export default function AspirationTable({
                                         </td>
                                         <td className="px-4 py-3.5 max-w-[220px]">
                                             <p className="text-[var(--foreground)] line-clamp-2 text-xs leading-relaxed">{a.content}</p>
-                                        </td>
-                                        <td className="px-4 py-3.5 whitespace-nowrap">
-                                            <SentimentBadge sentiment={a.sentiment} />
                                         </td>
                                         <td className="px-4 py-3.5 whitespace-nowrap">
                                             <StatusBadge status={a.status} />

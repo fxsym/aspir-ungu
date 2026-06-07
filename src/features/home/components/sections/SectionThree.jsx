@@ -1,4 +1,3 @@
-import Text from '@/components/ui/typography/Text'
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react'
@@ -9,21 +8,23 @@ export default function SectionThree() {
             menu: "buat-pengaduan",
             url: "/images/GambarBuatPengaduan.png",
             name: "Buat Pengaduan",
-            description: "Sampaikan aspirasi, keluhan, atau saran Anda secara langsung kepada BEM. Kami menjamin keamanan identitas Anda."
+            description: "Sampaikan aspirasi, keluhan, atau saran Anda secara langsung kepada BEM. Kami menjamin keamanan identitas Anda.",
+            imgBg: "bg-primary-light/40",
+            linkColor: "text-primary",
         },
         {
             menu: "cek-pengaduan",
             url: "/images/GambarCekPengaduan.png",
             name: "Cek Pengaduan",
-            description: "Pantau sejauh mana aspirasi Anda telah diproses oleh BEM dengan memasukkan kode tracking yang Anda miliki."
+            description: "Pantau sejauh mana aspirasi Anda telah diproses oleh BEM dengan memasukkan kode tracking yang Anda miliki.",
+            imgBg: "bg-emerald-50",
+            linkColor: "text-emerald-700",
         }
     ]
 
-    const [hovered, setHovered] = useState(null);
-
     return (
         <section id="layanan" className="py-10 w-full">
-            <div className="text-center mb-16">
+            <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
                     Pilih <span className="italic text-primary">Layanan</span>
                 </h2>
@@ -32,43 +33,47 @@ export default function SectionThree() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto px-4">
+            {/* Grid: 1 kolom di mobile, 2 kolom di md+ */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto px-4">
                 {menuOptions.map((data, i) => (
                     <Link
                         href={`/${data.menu}`}
                         key={i}
-                        onMouseEnter={() => setHovered(i)}
-                        onMouseLeave={() => setHovered(null)}
-                        className="group relative bg-card border border-border rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 flex flex-col h-full"
+                        className="group bg-card border border-border rounded-2xl overflow-hidden
+                                   flex flex-row md:flex-col
+                                   h-50 md:h-auto
+                                   hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
                     >
-                        {/* Image Container */}
-                        <div className="relative aspect-square overflow-hidden bg-primary-light/30 p-6 flex items-center justify-center">
-                            <div className="relative w-full h-full">
+                        {/* Gambar: kiri di mobile, atas di desktop */}
+                        <div className={`
+                            ${data.imgBg}
+                            flex items-center justify-center shrink-0
+                            w-28 md:w-full
+                            h-full md:h-44
+                            border-r md:border-r-0 md:border-b border-border
+                        `}>
+                            <div className="relative w-16 h-16 md:w-24 md:h-24">
                                 <Image
                                     src={data.url}
                                     alt={data.name}
                                     fill
-                                    className="object-contain transition-transform duration-700 group-hover:scale-105"
+                                    className="object-contain transition-transform duration-500 group-hover:scale-105"
                                 />
                             </div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
                         </div>
 
-                        {/* Content */}
-                        <div className="p-8 flex flex-col flex-grow">
-                            <h3 className="text-2xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                        {/* Konten: kanan di mobile, bawah di desktop */}
+                        <div className="flex flex-col justify-center px-4 py-3 md:p-6 flex-1 min-w-0">
+                            <h3 className=" text-sm md:text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors truncate md:whitespace-normal">
                                 {data.name}
                             </h3>
-                            <p className="text-muted text-sm leading-relaxed mb-6 flex-grow">
+                            <p className="text-muted text-xs leading-relaxed mb-2 md:mb-4 line-clamp-5 md:line-clamp-none">
                                 {data.description}
                             </p>
-                            <div className="flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-4 transition-all">
-                                Pilih Layanan ini <span className="text-xl">→</span>
+                            <div className={`flex items-center gap-1 text-xs font-semibold ${data.linkColor} group-hover:gap-3 transition-all duration-300`}>
+                                Pilih Layanan ini <span>→</span>
                             </div>
                         </div>
-                        
-                        {/* Decorative background element */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:bg-primary/10 transition-colors" />
                     </Link>
                 ))}
             </div>

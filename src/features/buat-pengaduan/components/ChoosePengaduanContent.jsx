@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import OrganizationLogo from "@/components/ui/OrganizationLogo";
 import { motion } from "framer-motion";
 import Hero from "@/components/ui/layout/Hero";
 import HeroText from "@/components/ui/layout/HeroText";
@@ -31,15 +30,6 @@ export default function ChoosePengaduanContent() {
                 className="w-full flex justify-center"
             >
                 <AspiratonCategoryCard />
-            </motion.div>
-
-            <motion.div
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.4 }}
-            >
-                <OrganizationLogo />
             </motion.div>
         </Hero>
     )

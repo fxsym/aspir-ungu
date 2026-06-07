@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationMenu from "./NavigationMenu";
 import NavigationMenuMobile from "./NavigationMenuMobile";
@@ -9,6 +9,7 @@ import NavigationHamburger from "./NavigationHamburger";
 
 export default function NavigationBar() {
     const pathname = usePathname();
+    const router = useRouter();
     const [open, setOpen] = useState(false)
     const [hidden, setHidden] = useState(false);
     const [activeSection, setActiveSection] = useState("home");
@@ -45,6 +46,11 @@ export default function NavigationBar() {
     }, [navItems]);
 
     const scrollToSection = (sectionId) => {
+        if (pathname !== '/') {
+            router.push(`/#${sectionId}`);
+            return;
+        }
+
         const element = document.getElementById(sectionId);
         if (element) {
             const offset = 80; // offset for fixed navbar

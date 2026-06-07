@@ -53,18 +53,18 @@ export default function BerandaContent({ stats, timelineData, statusData, sentim
 
             {/* Charts */}
             <div className="w-full mt-6 flex flex-col gap-4">
-                <AspirationTimeline
-                    timelineData={timelineData}
-                    totalIn={stats.total}
-                    totalResolved={stats.resolved}
-                />
+                {/* <SentimentChart sentimentData={sentimentData} total={stats.total} /> */}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <AspirationTimeline
+                        timelineData={timelineData}
+                        totalIn={stats.total}
+                        totalResolved={stats.resolved}
+                    />
                     <StatusDistributionChart statusData={statusData} total={stats.total} />
-                    <SentimentChart sentimentData={sentimentData} total={stats.total} />
                 </div>
-
                 <CategoryChart categoryData={categoryData} />
+
 
                 {/* Word Cloud — on-demand, filter per kategori */}
                 <WordCloudChart categories={categories} />
