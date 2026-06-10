@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from "react"
 import * as XLSX from "xlsx"
+import useNotification from "@/hooks/useNotification"
 
 const STATUS_CONFIG = {
     pending: {
@@ -125,11 +126,11 @@ function MobileCard({ a, idx, onDetail }) {
 function FilterBar({ filters, onChange, categories }) {
     const statusOptions = [
         { value: "", label: "Semua Status" },
-        { value: "pending",     label: "Pending" },
+        { value: "pending", label: "Pending" },
         { value: "in_progress", label: "In Progress" },
-        { value: "resolved",    label: "Resolved" },
-        { value: "verified",    label: "Verified" },
-        { value: "rejected",    label: "Rejected" },
+        { value: "resolved", label: "Resolved" },
+        { value: "verified", label: "Verified" },
+        { value: "rejected", label: "Rejected" },
     ]
 
     const hasActive = filters.status || filters.category || filters.dateFrom || filters.dateTo
@@ -242,10 +243,10 @@ function ActiveChips({ filters, onChange }) {
     }
 
     const chips = []
-    if (filters.status)    chips.push({ key: "status",    label: `Status: ${labels.status[filters.status] ?? filters.status}` })
-    if (filters.category)  chips.push({ key: "category",  label: `Kategori: ${filters.category}` })
-    if (filters.dateFrom)  chips.push({ key: "dateFrom",  label: `Dari: ${filters.dateFrom}` })
-    if (filters.dateTo)    chips.push({ key: "dateTo",    label: `s/d: ${filters.dateTo}` })
+    if (filters.status) chips.push({ key: "status", label: `Status: ${labels.status[filters.status] ?? filters.status}` })
+    if (filters.category) chips.push({ key: "category", label: `Kategori: ${filters.category}` })
+    if (filters.dateFrom) chips.push({ key: "dateFrom", label: `Dari: ${filters.dateFrom}` })
+    if (filters.dateTo) chips.push({ key: "dateTo", label: `s/d: ${filters.dateTo}` })
 
     if (chips.length === 0) return null
 
@@ -285,18 +286,18 @@ function useDownloadLaporan() {
             const statusLabel = (s) => STATUS_CONFIG[s]?.label ?? s ?? "—"
 
             const rows = filtered.map((a) => ({
-                "Kode Tracking":  a.tracking_code ?? "—",
-                "Nama":           a.is_anonymous ? "Anonim" : (a.name ?? "—"),
-                "NIM":            a.is_anonymous ? "—" : (a.nim ?? "—"),
-                "Anonim":         a.is_anonymous ? "Ya" : "Tidak",
-                "Kategori":       a.category?.name ?? "—",
-                "Isi Aspirasi":   a.content ?? "—",
-                "Status":         statusLabel(a.status),
+                "Kode Tracking": a.tracking_code ?? "—",
+                "Nama": a.is_anonymous ? "Anonim" : (a.name ?? "—"),
+                "NIM": a.is_anonymous ? "—" : (a.nim ?? "—"),
+                "Anonim": a.is_anonymous ? "Ya" : "Tidak",
+                "Kategori": a.category?.name ?? "—",
+                "Isi Aspirasi": a.content ?? "—",
+                "Status": statusLabel(a.status),
                 "Tanggal Dibuat": a.created_at
-                                    ? new Date(a.created_at).toLocaleDateString("id-ID", {
-                                        day: "2-digit", month: "long", year: "numeric",
-                                      })
-                                    : "—",
+                    ? new Date(a.created_at).toLocaleDateString("id-ID", {
+                        day: "2-digit", month: "long", year: "numeric",
+                    })
+                    : "—",
             }))
 
             const ws = XLSX.utils.json_to_sheet(rows)
@@ -306,7 +307,7 @@ function useDownloadLaporan() {
                 { wch: 18 }, // Kode Tracking
                 { wch: 24 }, // Nama
                 { wch: 14 }, // NIM
-                { wch: 8  }, // Anonim
+                { wch: 8 }, // Anonim
                 { wch: 18 }, // Kategori
                 { wch: 60 }, // Isi Aspirasi
                 { wch: 14 }, // Status
@@ -380,23 +381,243 @@ export default function AspirationTable({
 }) {
     const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25]
 
-    const [pageSize, setPageSize]       = useState(10)
+    const [pageSize, setPageSize] = useState(10)
     const [currentPage, setCurrentPage] = useState(1)
-    const [search, setSearch]           = useState("")
-    const [filters, setFilters]         = useState({
-        status:    initialStatus,
-        category:  initialCategory,
-        dateFrom:  "",
-        dateTo:    "",
+    const [search, setSearch] = useState("")
+    const [filters, setFilters] = useState({
+        status: initialStatus,
+        category: initialCategory,
+        dateFrom: "",
+        dateTo: "",
     })
 
     const { download, isDownloading } = useDownloadLaporan()
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
+    const showNotification = useNotification()
+
+    // Helper: load image dari URL → base64
+    async function loadImageAsBase64(url) {
+        const res = await fetch(url)
+        const blob = await res.blob()
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onloadend = () => resolve(reader.result) // "data:image/png;base64,..."
+            reader.onerror = reject
+            reader.readAsDataURL(blob)
+        })
+    }
+
+    const handleDownloadPdf = async () => {
+        setIsGeneratingPdf(true)
+        try {
+            const { default: jsPDF } = await import('jspdf')
+            const { default: autoTable } = await import('jspdf-autotable')
+
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+            const pageW = doc.internal.pageSize.getWidth()  // A4 = 210mm
+            const pageH = doc.internal.pageSize.getHeight() // A4 = 297mm
+            const margin = 20 // ← SETTING: jarak kiri/kanan halaman (mm)
+
+            // ── SETTING FONT ──────────────────────────────────────────
+            // Ganti 'times' ke 'helvetica' kalau mau sans-serif
+            // Style: 'normal' | 'bold' | 'italic' | 'bolditalic'
+            const FONT = 'times'
+
+            // ════════════════════════════════════════════════════════
+            // HALAMAN 1: COVER
+            // ════════════════════════════════════════════════════════
+
+            // ── Judul (posisi Y dari atas halaman, satuan mm) ─────────
+            const JUDUL_Y = 40 // ← SETTING: naikkan angka = turun, turunkan = naik
+
+            doc.setFont(FONT, 'bold')
+            doc.setFontSize(18) // ← SETTING: ukuran font judul utama
+            doc.text('LAPORAN DATA PENGADUAN', pageW / 2, JUDUL_Y, { align: 'center' })
+
+            doc.setFont(FONT, 'normal')
+            doc.setFontSize(12) // ← SETTING: ukuran font subjudul
+            doc.text('Sistem Pengaduan Mahasiswa Berbasis Website', pageW / 2, JUDUL_Y + 10, { align: 'center' })
+            // JUDUL_Y + 10 = 10mm di bawah judul utama ← SETTING: jarak antar baris judul
+
+            doc.setFont(FONT, 'normal')
+            doc.setFontSize(13)
+            doc.text('Aspir Ungu', pageW / 2, JUDUL_Y + 18, { align: 'center' })
+            // JUDUL_Y + 18 = 18mm di bawah judul utama ← SETTING: jarak ke nama sistem
+
+            // ── Logo (posisi tengah halaman) ───────────────────────────
+            const LOGO_Y = 70 // ← SETTING: posisi Y logo dari atas (mm)
+            const LOGO_SIZE = 130 // ← SETTING: ukuran logo (mm, persegi)
+
+            try {
+                const logoBase64 = await loadImageAsBase64('/images/LogoKabinet.png')
+                doc.addImage(
+                    logoBase64,
+                    'PNG',
+                    (pageW - LOGO_SIZE) / 2, // otomatis center horizontal
+                    LOGO_Y,
+                    LOGO_SIZE,
+                    LOGO_SIZE
+                )
+            } catch (e) {
+                console.warn('Logo tidak bisa dimuat:', e)
+            }
+
+            // ── Identitas BEM (posisi Y jauh di bawah logo) ────────────
+            const IDENTITAS_Y = 230 // ← SETTING: naikkan untuk ke atas, turunkan untuk ke bawah
+            // Rentang aman: 160–230 tergantung ukuran logo
+
+            doc.setFont(FONT, 'bold')
+            doc.setFontSize(12) // ← SETTING: ukuran font identitas
+
+            const LINE_H = 8 // ← SETTING: jarak antar baris identitas (mm)
+            doc.text('BADAN EKSEKUTIF MAHASISWA', pageW / 2, IDENTITAS_Y, { align: 'center' })
+            doc.text('KABINET NISKALA JUANG', pageW / 2, IDENTITAS_Y + LINE_H, { align: 'center' })
+            doc.text('UNIVERSITAS AMIKOM PURWOKERTO', pageW / 2, IDENTITAS_Y + LINE_H * 2, { align: 'center' })
+            doc.text(String(new Date().getFullYear()), pageW / 2, IDENTITAS_Y + LINE_H * 3, { align: 'center' })
+
+            
+            // + 3 = sedikit jarak ekstra sebelum tahun ← SETTING
+
+            // ════════════════════════════════════════════════════════
+            // HALAMAN 2: DATA
+            // ════════════════════════════════════════════════════════
+            doc.addPage()
+
+            // ── Header halaman data ────────────────────────────────────
+            doc.setFont(FONT, 'bold')
+            doc.setFontSize(13)
+            doc.text('LAPORAN DATA PENGADUAN', pageW / 2, margin + 6, { align: 'center' })
+
+            const periodeFrom = filters.dateFrom
+                ? new Date(filters.dateFrom).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+                : 'Awal'
+            const periodeTo = filters.dateTo
+                ? new Date(filters.dateTo).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+                : 'Sekarang'
+
+            doc.setFont(FONT, 'normal')
+            doc.setFontSize(10)
+            doc.text(`Periode: ${periodeFrom} s/d ${periodeTo}`, pageW / 2, margin + 14, { align: 'center' })
+
+            // Garis pemisah
+            doc.setLineWidth(0.5)
+            doc.line(margin, margin + 18, pageW - margin, margin + 18)
+
+            // Intro paragraph
+            doc.setFont(FONT, 'normal')
+            doc.setFontSize(10) // ← SETTING: ukuran teks paragraf
+            const intro = 'Berikut adalah daftar rekapitulasi data pengaduan dan aspirasi mahasiswa yang masuk melalui platform layanan digital Aspir Ungu. Laporan ini dicetak langsung dari sistem dan merupakan data yang valid.'
+            const introLines = doc.splitTextToSize(intro, pageW - margin * 2)
+            doc.text(introLines, margin, margin + 25)
+
+            const tableStartY = margin + 25 + introLines.length * 5.5
+            // 5.5 = jarak antar baris teks (mm) ← SETTING: sesuaikan dengan fontSize
+
+            // ── Tabel ──────────────────────────────────────────────────
+            const tableRows = filtered.map((a, i) => [
+                i + 1,
+                a.created_at
+                    ? new Date(a.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                    : '—',
+                a.is_anonymous
+                    ? 'Anonim'
+                    : `${a.name || '-'}\n${a.nim || '-'}\n${a.email || '-'}`,
+                a.custom_category ?? a.category?.name ?? '—',
+                a.content ?? '—',
+            ])
+
+            autoTable(doc, {
+                startY: tableStartY,
+                head: [['No', 'Tanggal', 'Pelapor', 'Kategori', 'Isi Pengaduan']],
+                body: tableRows,
+                margin: { left: margin, right: margin },
+                styles: {
+                    font: FONT,          // ← times new roman di seluruh tabel
+                    fontSize: 9,         // ← SETTING: ukuran font isi tabel
+                    cellPadding: 3,      // ← SETTING: padding dalam sel (mm)
+                    valign: 'top',
+                    lineColor: [0, 0, 0],
+                    lineWidth: 0.3,
+                    textColor: [0, 0, 0],
+                },
+                headStyles: {
+                    font: FONT,
+                    fontStyle: 'bold',
+                    fontSize: 9,         // ← SETTING: ukuran font header tabel
+                    fillColor: [220, 220, 240], // ← SETTING: warna bg header [R,G,B]
+                    textColor: [0, 0, 0],
+                    halign: 'center',
+                },
+                columnStyles: {
+                    0: { cellWidth: 12, halign: 'center' }, // No ← SETTING: naikkan angka = lebih lebar
+                    1: { cellWidth: 24, halign: 'center' }, // Tanggal ← SETTING
+                    2: { cellWidth: 44 },                   // Pelapor ← SETTING
+                    3: { cellWidth: 28 },                   // Kategori ← SETTING
+                    4: { cellWidth: 'auto' },               // Isi Pengaduan (sisa lebar otomatis)
+                },
+                alternateRowStyles: {
+                    fillColor: [248, 248, 255], // ← SETTING: warna baris selang-seling [R,G,B]
+                },
+            })
+
+            // ── Penutup ────────────────────────────────────────────────
+            const finalY = (doc.lastAutoTable?.finalY ?? 180) + 12
+            const outro = 'Demikian laporan pengaduan ini dibuat secara otomatis oleh sistem informasi Aspir Ungu sebagai bentuk transparansi dan bahan evaluasi guna tindak lanjut lebih lanjut oleh pihak terkait.'
+            const outroLines = doc.splitTextToSize(outro, pageW - margin * 2)
+
+            const spaceNeeded = outroLines.length * 5.5 + 55
+            const startY = finalY + spaceNeeded > pageH
+                ? (doc.addPage(), margin)
+                : finalY
+
+            doc.setFont(FONT, 'normal')
+            doc.setFontSize(10)
+            doc.text(outroLines, margin, startY)
+
+            // ── TTD ────────────────────────────────────────────────────
+            const TTD_GAP = 12  // ← SETTING: jarak teks penutup ke TTD (mm)
+            const TTD_SPACE = 28 // ← SETTING: ruang tanda tangan (mm)
+            const ttdY = startY + outroLines.length * 5.5 + TTD_GAP
+
+            doc.setFont(FONT, 'normal')
+            doc.setFontSize(10)
+            doc.text('Mengetahui,', margin, ttdY)
+            doc.text('Mengesahkan,', pageW - margin - 35, ttdY)
+
+            doc.setFont(FONT, 'bold')
+            doc.text('Admin BEM Amikom', margin, ttdY + TTD_SPACE)
+            doc.text('Aspir Ungu Platform', margin, ttdY + TTD_SPACE + 6)
+            doc.text('Ketua BEM Amikom', pageW - margin - 35, ttdY + TTD_SPACE)
+            doc.text('Kabinet Niskala Juang', pageW - margin - 35, ttdY + TTD_SPACE + 6)
+
+            // // ── Nomor halaman (semua halaman) ──────────────────────────
+            // const totalPagesCount = doc.internal.getNumberOfPages()
+            // for (let i = 1; i <= totalPagesCount; i++) {
+            //     doc.setPage(i)
+            //     doc.setFont(FONT, 'italic')
+            //     doc.setFontSize(8)
+            //     doc.setTextColor(120) // ← SETTING: warna teks nomor halaman (0=hitam, 255=putih)
+            //     doc.text(`Halaman ${i} dari ${totalPagesCount}`, pageW / 2, pageH - 8, { align: 'center' })
+            //     doc.setTextColor(0)
+            // }
+
+            const filename = `Laporan_Aspirasi_${new Date().toISOString().slice(0, 10)}.pdf`
+            doc.save(filename)
+
+            if (showNotification) showNotification({ type: 'success', title: 'Download Berhasil', message: 'Laporan PDF sedang diunduh.' })
+        } catch (error) {
+            console.error('PDF Generation Error:', error)
+            if (showNotification) showNotification({ type: 'error', title: 'Gagal Download', message: 'Terjadi kesalahan saat membuat file PDF.' })
+        } finally {
+            setIsGeneratingPdf(false)
+        }
+    }
 
     useEffect(() => {
         setFilters((prev) => ({
             ...prev,
-            status:    initialStatus,
-            category:  initialCategory,
+            status: initialStatus,
+            category: initialCategory,
         }))
         setCurrentPage(1)
     }, [initialStatus, initialCategory])
@@ -412,8 +633,8 @@ export default function AspirationTable({
             a.category?.name?.toLowerCase().includes(q) ||
             a.content?.toLowerCase().includes(q)
 
-        const matchStatus    = !filters.status    || a.status === filters.status
-        const matchCategory  = !filters.category  || a.category?.slug === filters.category
+        const matchStatus = !filters.status || a.status === filters.status
+        const matchCategory = !filters.category || a.category?.slug === filters.category
 
         // Date range filter
         let matchDate = true
@@ -436,8 +657,8 @@ export default function AspirationTable({
     })
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-    const safePage   = Math.min(currentPage, totalPages)
-    const paged      = filtered.slice((safePage - 1) * pageSize, safePage * pageSize)
+    const safePage = Math.min(currentPage, totalPages)
+    const paged = filtered.slice((safePage - 1) * pageSize, safePage * pageSize)
 
     function handlePageSize(val) {
         setPageSize(Number(val))
@@ -473,7 +694,7 @@ export default function AspirationTable({
     })()
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 relative">
 
             {/* ── Toolbar ────────────────────────────────────────────── */}
             <div className="flex flex-col gap-3">
@@ -508,7 +729,32 @@ export default function AspirationTable({
                             <span>data</span>
                         </div>
 
-                        {/* Download Laporan */}
+                        {/* Download Laporan PDF */}
+                        <button
+                            onClick={handleDownloadPdf}
+                            disabled={isGeneratingPdf || filtered.length === 0}
+                            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 hover:border-red-400 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
+                            title={filtered.length === 0 ? "Tidak ada data untuk diunduh" : `Unduh ${filtered.length} data sebagai PDF`}
+                        >
+                            {isGeneratingPdf ? (
+                                <>
+                                    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                    </svg>
+                                    Menyiapkan PDF…
+                                </>
+                            ) : (
+                                <>
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M3 7V4a1 1 0 011-1h4l2 2h8a1 1 0 011 1v3" />
+                                    </svg>
+                                    Download Laporan PDF
+                                </>
+                            )}
+                        </button>
+
+                        {/* Download Laporan Excel */}
                         <button
                             onClick={() => download(filtered, filters, categories)}
                             disabled={isDownloading || filtered.length === 0}
