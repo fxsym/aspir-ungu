@@ -204,10 +204,10 @@ export default function WordCloudChart({ categories = [] }) {
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                        <h3 className="text-lg font-semibold text-zinc-900 ">
                             Word Cloud Aspirasi
                         </h3>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+                        <p className="text-sm text-zinc-500  mt-0.5">
                             Kata-kata paling sering muncul dari konten aspirasi
                         </p>
                     </div>
@@ -218,7 +218,7 @@ export default function WordCloudChart({ categories = [] }) {
                         <select
                             value={selectedCategory}
                             onChange={e => setSelectedCategory(e.target.value)}
-                            className="text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                            className="text-sm border border-zinc-200  rounded-lg px-3 py-2 bg-white  text-zinc-700  focus:outline-none focus:ring-2 focus:ring-primary/40"
                             disabled={loading}
                         >
                             <option value="all">Semua Kategori</option>
@@ -258,19 +258,19 @@ export default function WordCloudChart({ categories = [] }) {
                 {/* Canvas Area */}
                 <div
                     ref={containerRef}
-                    className="w-full min-h-100 rounded-xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-center overflow-hidden"
+                    className="w-full min-h-100 rounded-xl border border-zinc-100 bg-zinc-300  flex items-center justify-center overflow-hidden"
                 >
                     {/* Empty State */}
                     {!hasGenerated && !loading && (
                         <div className="flex flex-col items-center gap-3 text-center px-8">
-                            <div className="w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-2xl bg-zinc-100  flex items-center justify-center">
                                 <svg className="w-8 h-8 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                     <path d="M7 8h10M7 12h6m-6 4h4" strokeLinecap="round" />
                                     <rect x="3" y="3" width="18" height="18" rx="4" />
                                 </svg>
                             </div>
-                            <p className="text-zinc-500 dark:text-zinc-400 text-sm max-w-xs">
-                                Klik <span className="font-medium text-zinc-700 dark:text-zinc-300">Generate Word Cloud</span> untuk memvisualisasikan kata-kata dari aspirasi mahasiswa
+                            <p className="text-zinc-500  text-sm max-w-xs">
+                                Klik <span className="font-medium text-zinc-700 ">Generate Word Cloud</span> untuk memvisualisasikan kata-kata dari aspirasi mahasiswa
                             </p>
                         </div>
                     )}
@@ -287,7 +287,7 @@ export default function WordCloudChart({ categories = [] }) {
                                     />
                                 ))}
                             </div>
-                            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                            <p className="text-sm text-zinc-500 ">
                                 AI sedang menganalisis aspirasi...
                             </p>
                         </div>
@@ -296,13 +296,13 @@ export default function WordCloudChart({ categories = [] }) {
                     {/* Error State */}
                     {error && !loading && (
                         <div className="flex flex-col items-center gap-2 text-center px-8">
-                            <div className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-red-50  flex items-center justify-center">
                                 <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <circle cx="12" cy="12" r="9" />
                                     <path d="M12 8v4m0 4h.01" strokeLinecap="round" />
                                 </svg>
                             </div>
-                            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                            <p className="text-sm text-red-600 ">{error}</p>
                             <button
                                 onClick={handleGenerate}
                                 className="text-xs text-primary underline hover:no-underline"
@@ -326,7 +326,7 @@ export default function WordCloudChart({ categories = [] }) {
 
                 {/* Footer info */}
                 {hasGenerated && words.length > 0 && !loading && (
-                    <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-3 text-right">
+                    <p className="text-xs text-zinc-400  mt-3 text-right">
                         {words.length} kata teridentifikasi · {selectedLabel}
                     </p>
                 )}
