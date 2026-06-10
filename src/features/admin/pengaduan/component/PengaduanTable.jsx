@@ -73,12 +73,12 @@ function Skeleton() {
 
 function MobileCard({ a, idx, onDetail }) {
     return (
-        <div className={`rounded-xl border border-[var(--border)] p-4 flex flex-col gap-3 ${idx % 2 === 0 ? "bg-white" : "bg-[var(--card)]"}`}>
+        <div className={`rounded-xl border border-[var(--border)] p-4 flex flex-col gap-3 ${idx % 2 === 0 ? "bg-white" : "bg-[var(--card)]"} hover:shadow-sm transition-shadow`}>
             <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-xs font-semibold text-[var(--primary)] bg-[var(--primary-light)] px-2 py-1 rounded">
+                <span className="font-mono text-[10px] sm:text-xs font-semibold text-[var(--primary)] bg-[var(--primary-light)] px-2 py-1 rounded">
                     {a.tracking_code}
                 </span>
-                <span className="text-xs text-[var(--muted)]">
+                <span className="text-[10px] sm:text-xs text-[var(--muted)]">
                     {a.created_at
                         ? new Date(a.created_at).toLocaleDateString("id-ID", {
                             day: "2-digit", month: "short", year: "numeric",
@@ -87,33 +87,31 @@ function MobileCard({ a, idx, onDetail }) {
                 </span>
             </div>
             <div>
-                <p className="font-medium text-sm text-[var(--foreground)]">
+                <p className="font-semibold text-sm text-[var(--foreground)]">
                     {a.is_anonymous ? (
-                        <span className="italic text-[var(--muted)]">Anonim</span>
+                        <span className="italic text-[var(--muted)] font-normal">Anonim</span>
                     ) : a.name}
                 </p>
                 {!a.is_anonymous && a.nim && (
-                    <p className="text-xs text-[var(--muted)] mt-0.5">{a.nim}</p>
+                    <p className="text-[11px] text-[var(--muted)] mt-0.5">{a.nim}</p>
                 )}
             </div>
-            <div>
-                <span className="text-xs font-medium text-[var(--secondary-hover)] bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">
+            <div className="flex flex-wrap gap-2 items-center">
+                <span className="text-[10px] sm:text-xs font-medium text-[var(--secondary-hover)] bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">
                     {a.category?.name ?? "—"}
                 </span>
+                <StatusBadge status={a.status} />
             </div>
-            <p className="text-xs text-[var(--foreground)] leading-relaxed line-clamp-3">
+            <p className="text-xs text-[var(--foreground)] leading-relaxed line-clamp-3 bg-gray-50/50 p-2 rounded-lg border border-gray-100/50">
                 {a.content}
             </p>
-            <div className="flex items-center justify-between gap-2 pt-1 border-t border-[var(--border)]">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <StatusBadge status={a.status} />
-                </div>
+            <div className="flex items-center justify-end pt-2">
                 <button
                     onClick={() => onDetail?.(a)}
-                    className="hover:cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] active:scale-95 transition-all shadow-sm shrink-0"
+                    className="hover:cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] active:scale-95 transition-all shadow-md w-full sm:w-auto justify-center"
                 >
-                    Detail
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    Lihat Detail
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
@@ -136,13 +134,13 @@ function FilterBar({ filters, onChange, categories }) {
     const hasActive = filters.status || filters.category || filters.dateFrom || filters.dateTo
 
     return (
-        <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 lg:flex lg:flex-wrap items-center gap-2">
                 {/* Status */}
                 <select
                     value={filters.status}
                     onChange={(e) => onChange({ ...filters, status: e.target.value })}
-                    className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                    className={`border rounded-lg px-3 py-2 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition w-full lg:w-auto
                         ${filters.status
                             ? "border-[var(--primary)] text-[var(--primary)]"
                             : "border-[var(--border)] text-[var(--muted)]"
@@ -158,7 +156,7 @@ function FilterBar({ filters, onChange, categories }) {
                     <select
                         value={filters.category}
                         onChange={(e) => onChange({ ...filters, category: e.target.value })}
-                        className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                        className={`border rounded-lg px-3 py-2 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition w-full lg:w-auto
                             ${filters.category
                                 ? "border-[var(--primary)] text-[var(--primary)]"
                                 : "border-[var(--border)] text-[var(--muted)]"
@@ -175,7 +173,7 @@ function FilterBar({ filters, onChange, categories }) {
                 {hasActive && (
                     <button
                         onClick={() => onChange({ status: "", category: "", dateFrom: "", dateTo: "" })}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition active:scale-95"
+                        className="col-span-2 lg:col-auto inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium rounded-lg border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition active:scale-95"
                     >
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -186,31 +184,31 @@ function FilterBar({ filters, onChange, categories }) {
             </div>
 
             {/* Date Range Filter */}
-            <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-1.5">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <div className="flex items-center gap-1.5 shrink-0">
                     <svg className="w-3.5 h-3.5 text-[var(--muted)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span className="text-xs text-[var(--muted)] font-medium">Periode:</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full">
                     <input
                         type="date"
                         value={filters.dateFrom}
                         onChange={(e) => onChange({ ...filters, dateFrom: e.target.value })}
-                        className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                        className={`border rounded-lg px-3 py-2 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition flex-1
                             ${filters.dateFrom
                                 ? "border-[var(--primary)] text-[var(--primary)]"
                                 : "border-[var(--border)] text-[var(--muted)]"
                             }`}
                     />
-                    <span className="text-xs text-[var(--muted)]">s/d</span>
+                    <span className="text-xs text-[var(--muted)] shrink-0">s/d</span>
                     <input
                         type="date"
                         value={filters.dateTo}
                         min={filters.dateFrom || undefined}
                         onChange={(e) => onChange({ ...filters, dateTo: e.target.value })}
-                        className={`border rounded-lg px-3 py-1.5 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition
+                        className={`border rounded-lg px-3 py-2 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer transition flex-1
                             ${filters.dateTo
                                 ? "border-[var(--primary)] text-[var(--primary)]"
                                 : "border-[var(--border)] text-[var(--muted)]"
@@ -219,10 +217,10 @@ function FilterBar({ filters, onChange, categories }) {
                     {(filters.dateFrom || filters.dateTo) && (
                         <button
                             onClick={() => onChange({ ...filters, dateFrom: "", dateTo: "" })}
-                            className="p-1 rounded text-[var(--muted)] hover:text-red-500 hover:bg-red-50 transition"
+                            className="p-2 rounded text-[var(--muted)] hover:text-red-500 hover:bg-red-50 transition shrink-0"
                             title="Hapus filter tanggal"
                         >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
@@ -697,10 +695,10 @@ export default function AspirationTable({
         <div className="flex flex-col gap-4 relative">
 
             {/* ── Toolbar ────────────────────────────────────────────── */}
-            <div className="flex flex-col gap-3">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-4">
                     {/* Search */}
-                    <div className="relative w-full sm:w-72">
+                    <div className="relative w-full xl:w-80">
                         <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
                         </svg>
@@ -709,80 +707,71 @@ export default function AspirationTable({
                             value={search}
                             onChange={(e) => handleSearch(e.target.value)}
                             placeholder="Cari kode, nama, NIM…"
-                            className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-[var(--border)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent placeholder:text-[var(--muted)] text-[var(--foreground)] transition"
+                            className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-[var(--border)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent placeholder:text-[var(--muted)] text-[var(--foreground)] transition shadow-sm"
                         />
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                         {/* Page-size */}
-                        <div className="flex items-center gap-2 text-sm text-[var(--muted)]">
-                            <span>Tampilkan</span>
+                        <div className="flex items-center justify-between sm:justify-start gap-3 px-3 py-2 rounded-xl bg-gray-50 border border-gray-100 sm:bg-transparent sm:border-0 sm:p-0">
+                            <span className="text-xs font-medium text-[var(--muted)]">Tampilkan:</span>
                             <select
                                 value={pageSize}
                                 onChange={(e) => handlePageSize(e.target.value)}
-                                className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm text-[var(--foreground)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer"
+                                className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-xs font-bold text-[var(--foreground)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer shadow-sm"
                             >
                                 {PAGE_SIZE_OPTIONS.map((n) => (
                                     <option key={n} value={n}>{n}</option>
                                 ))}
                             </select>
-                            <span>data</span>
                         </div>
 
-                        {/* Download Laporan PDF */}
-                        <button
-                            onClick={handleDownloadPdf}
-                            disabled={isGeneratingPdf || filtered.length === 0}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 hover:border-red-400 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
-                            title={filtered.length === 0 ? "Tidak ada data untuk diunduh" : `Unduh ${filtered.length} data sebagai PDF`}
-                        >
-                            {isGeneratingPdf ? (
-                                <>
-                                    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <div className="grid grid-cols-2 sm:flex items-center gap-2">
+                            {/* Download Laporan PDF */}
+                            <button
+                                onClick={handleDownloadPdf}
+                                disabled={isGeneratingPdf || filtered.length === 0}
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl border border-red-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-300 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
+                                title={filtered.length === 0 ? "Tidak ada data untuk diunduh" : `Unduh ${filtered.length} data sebagai PDF`}
+                            >
+                                {isGeneratingPdf ? (
+                                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                     </svg>
-                                    Menyiapkan PDF…
-                                </>
-                            ) : (
-                                <>
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M3 7V4a1 1 0 011-1h4l2 2h8a1 1 0 011 1v3" />
+                                ) : (
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
-                                    Download Laporan PDF
-                                </>
-                            )}
-                        </button>
+                                )}
+                                <span>PDF</span>
+                            </button>
 
-                        {/* Download Laporan Excel */}
-                        <button
-                            onClick={() => download(filtered, filters, categories)}
-                            disabled={isDownloading || filtered.length === 0}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-green-300 bg-green-50 text-green-700 hover:bg-green-100 hover:border-green-400 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
-                            title={filtered.length === 0 ? "Tidak ada data untuk diunduh" : `Unduh ${filtered.length} data sebagai Excel`}
-                        >
-                            {isDownloading ? (
-                                <>
-                                    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            {/* Download Laporan Excel */}
+                            <button
+                                onClick={() => download(filtered, filters, categories)}
+                                disabled={isDownloading || filtered.length === 0}
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl border border-green-200 bg-white text-green-600 hover:bg-green-50 hover:border-green-300 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
+                                title={filtered.length === 0 ? "Tidak ada data untuk diunduh" : `Unduh ${filtered.length} data sebagai Excel`}
+                            >
+                                {isDownloading ? (
+                                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                     </svg>
-                                    Menyiapkan…
-                                </>
-                            ) : (
-                                <>
-                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                ) : (
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M3 7V4a1 1 0 011-1h4l2 2h8a1 1 0 011 1v3" />
                                     </svg>
-                                    Download Data Pengaduan Dalam Bentuk xlsx
-                                    {filtered.length > 0 && (
-                                        <span className="ml-0.5 px-1.5 py-0.5 rounded-full bg-green-200 text-green-800 text-[10px] font-bold leading-none">
-                                            {filtered.length}
-                                        </span>
-                                    )}
-                                </>
-                            )}
-                        </button>
+                                )}
+                                <span>Excel</span>
+                                {filtered.length > 0 && (
+                                    <span className="ml-1 px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-black">
+                                        {filtered.length}
+                                    </span>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
 
