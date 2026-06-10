@@ -13,7 +13,6 @@ import { deleteAspirationAction, editAspiration } from '@/actions/aspiration.act
 import { useRouter } from 'next/navigation'
 import DeleteConfirmModal from '@/components/ui/DeleteConfirmModal'
 import Link from 'next/link'
-import Image from 'next/image'
 import { IoIosArrowBack } from 'react-icons/io'
 
 const updateAspirationSchema = z.object({
@@ -310,7 +309,7 @@ export default function DetailPengaduanContent({ aspiration }) {
             />
 
             {showPdfModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+                <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
                     <div className="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-md flex flex-col gap-5 my-auto transform transition-all animate-in fade-in zoom-in duration-300">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
