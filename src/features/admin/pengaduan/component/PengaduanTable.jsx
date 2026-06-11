@@ -88,12 +88,12 @@ function MobileCard({ a, idx, onDetail }) {
             </div>
             <div>
                 <p className="font-semibold text-sm text-[var(--foreground)]">
-                    {a.is_anonymous ? (
-                        <span className="italic text-[var(--muted)] font-normal">Anonim</span>
-                    ) : a.name}
+                    {a.name ?? (
+                        <span className="italic text-[var(--muted)]">Anonim</span>
+                    )}
                 </p>
-                {!a.is_anonymous && a.nim && (
-                    <p className="text-[11px] text-[var(--muted)] mt-0.5">{a.nim}</p>
+                {a.nim && (
+                    <p className="text-xs text-[var(--muted)] mt-0.5">{a.nim}</p>
                 )}
             </div>
             <div className="flex flex-wrap gap-2 items-center">
@@ -285,9 +285,8 @@ function useDownloadLaporan() {
 
             const rows = filtered.map((a) => ({
                 "Kode Tracking": a.tracking_code ?? "—",
-                "Nama": a.is_anonymous ? "Anonim" : (a.name ?? "—"),
-                "NIM": a.is_anonymous ? "—" : (a.nim ?? "—"),
-                "Anonim": a.is_anonymous ? "Ya" : "Tidak",
+                "Nama": a.name ?? "Anonim",
+                "NIM": a.nim ?? "—",
                 "Kategori": a.category?.name ?? "—",
                 "Isi Aspirasi": a.content ?? "—",
                 "Status": statusLabel(a.status),
@@ -473,7 +472,7 @@ export default function AspirationTable({
             doc.text('UNIVERSITAS AMIKOM PURWOKERTO', pageW / 2, IDENTITAS_Y + LINE_H * 2, { align: 'center' })
             doc.text(String(new Date().getFullYear()), pageW / 2, IDENTITAS_Y + LINE_H * 3, { align: 'center' })
 
-            
+
             // + 3 = sedikit jarak ekstra sebelum tahun ← SETTING
 
             // ════════════════════════════════════════════════════════
@@ -517,9 +516,9 @@ export default function AspirationTable({
                 a.created_at
                     ? new Date(a.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
                     : '—',
-                a.is_anonymous
-                    ? 'Anonim'
-                    : `${a.name || '-'}\n${a.nim || '-'}\n${a.email || '-'}`,
+                a.name
+                    ? `${a.name}\n${a.nim || '-'}\n${a.email || '-'}`
+                    : 'Anonim',
                 a.custom_category ?? a.category?.name ?? '—',
                 a.content ?? '—',
             ])
@@ -825,12 +824,12 @@ export default function AspirationTable({
                                         </td>
                                         <td className="px-4 py-3.5 whitespace-nowrap">
                                             <p className="font-medium text-[var(--foreground)]">
-                                                {a.is_anonymous ? (
-                                                    <span className="italic text-[var(--muted)]">Anonim</span>
+                                                {!a.name ? (
+                                                    <span className="italic text-[var(--muted)] font-normal">Anonim</span>
                                                 ) : a.name}
                                             </p>
-                                            {!a.is_anonymous && (
-                                                <p className="text-xs text-[var(--muted)] mt-0.5">{a.nim}</p>
+                                            {a.nim && (
+                                                <p className="text-[11px] text-[var(--muted)] mt-0.5">{a.nim}</p>
                                             )}
                                         </td>
                                         <td className="px-4 py-3.5 whitespace-nowrap">

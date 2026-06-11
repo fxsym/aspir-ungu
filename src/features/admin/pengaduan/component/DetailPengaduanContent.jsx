@@ -70,7 +70,7 @@ export default function DetailPengaduanContent({ aspiration }) {
     const [pdfConfig, setPdfConfig] = useState({
         nomorSurat: '',
         ditujukanKepada: '',
-        sembunyikanPelapor: aspiration.is_anonymous || false
+        sembunyikanPelapor: false
     })
     const router = useRouter()
     const printRef = useRef(null)
@@ -146,9 +146,9 @@ export default function DetailPengaduanContent({ aspiration }) {
         }
     }
 
-    const initials = aspiration.is_anonymous
-        ? '?'
-        : aspiration.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+    const initials = aspiration.name
+        ? aspiration.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+        : '?'
 
     const formattedDate = new Date(aspiration.created_at).toLocaleDateString('id-ID', {
         day: '2-digit', month: 'long', year: 'numeric'
@@ -219,7 +219,7 @@ export default function DetailPengaduanContent({ aspiration }) {
                                     </tr>
                                     <tr>
                                         <td className="py-1 w-36 font-semibold align-top">Nama Pelapor</td>
-                                        <td className="py-1 align-top">: {pdfConfig.sembunyikanPelapor ? 'Anonim (Dirahasiakan)' : aspiration.name}</td>
+                                        <td className="py-1 align-top">: {pdfConfig.sembunyikanPelapor ? 'Anonim (Dirahasiakan)' : (aspiration.name ?? 'Anonim')}</td>
                                     </tr>
                                     <tr>
                                         <td className="py-1 w-36 font-semibold align-top">Kategori</td>
@@ -391,11 +391,11 @@ export default function DetailPengaduanContent({ aspiration }) {
                     </div>
                     <div className='flex-1 min-w-0'>
                         <h2 className='text-xl font-black text-gray-900 leading-tight mb-1'>
-                            {aspiration.is_anonymous ? 'Anonim' : aspiration.name}
+                            {aspiration.name ?? 'Anonim'}
                         </h2>
                         <div className="flex flex-col gap-0.5">
                             <p className='text-sm font-bold text-gray-500'>
-                                {aspiration.is_anonymous ? 'Pelapor Rahasia' : aspiration.nim}
+                                {aspiration.nim ?? '-'}
                             </p>
                             {aspiration.email && (
                                 <p className='text-sm font-medium text-primary hover:underline'>{aspiration.email}</p>
