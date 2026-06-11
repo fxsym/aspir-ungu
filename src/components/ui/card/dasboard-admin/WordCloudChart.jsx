@@ -223,7 +223,7 @@ export default function WordCloudChart({ categories = [] }) {
                         >
                             <option value="all">Semua Kategori</option>
                             {categories.map(cat => (
-                                <option key={cat.slug} dar={cat.slug}>
+                                <option key={cat.slug} value={cat.slug}>
                                     {cat.name}
                                 </option>
                             ))}
