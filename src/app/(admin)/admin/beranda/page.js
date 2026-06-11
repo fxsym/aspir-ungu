@@ -10,7 +10,6 @@ export default async function Beranda() {
         stats,
         timelineData,
         statusData,
-        sentimentData,
         categoryData,
         categories
     } = await getBerandaDashboardData()
@@ -20,7 +19,6 @@ export default async function Beranda() {
             stats={stats}
             timelineData={timelineData}
             statusData={statusData}
-            sentimentData={sentimentData}
             categoryData={categoryData}
             categories={categories}
         />

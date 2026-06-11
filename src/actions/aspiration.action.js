@@ -1,6 +1,5 @@
 'use server'
 
-import { analyzeSentiment } from "@/services/ai.services";
 import { createAspirationService, deleteAspiration, findAspirationByTrackingCode, getAllAspirations, updateAspiration } from "@/services/aspiration.services";
 import { sendNotificationEmail, sendTrackingCodeEmail } from "@/services/email.services";
 import { generateTrackingCode } from "@/utils/generateTrackingCode";
@@ -31,14 +30,11 @@ export async function searchPengaduanAction(trackingCode) {
 export async function submitAspiration(submitData) {
     try {
         const trackingCode = await generateTrackingCode()
-        const { success, data } = await analyzeSentiment(submitData.content);
-        const sentiment = success ? data : null;
 
         const payload = {
             ...submitData,
             tracking_code: trackingCode,
             status: "pending",
-            sentiment: sentiment
         }
 
         console.log(payload)

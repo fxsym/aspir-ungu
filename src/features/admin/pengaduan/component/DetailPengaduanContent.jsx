@@ -4,7 +4,6 @@ import HeroText from '@/components/ui/layout/HeroText'
 import LoadingOverlay from '@/components/ui/loading/LoadingOverlay'
 import MainButton from '@/components/ui/button/MainButton'
 import useNotification from '@/hooks/useNotification'
-import { analyzeSentiment } from '@/services/ai.services'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
@@ -17,7 +16,6 @@ import { IoIosArrowBack } from 'react-icons/io'
 
 const updateAspirationSchema = z.object({
     response: z.string().optional(),
-    sentiment: z.enum(['positive', 'negative', '']).optional(),
     status: z.enum(['pending', 'resolved', 'in_progress', 'verified', 'rejected']),
 })
 
@@ -27,12 +25,6 @@ const STATUS_OPTIONS = [
     { value: 'verified', label: 'Verified' },
     { value: 'resolved', label: 'Resolved' },
     { value: 'rejected', label: 'Rejected' },
-]
-
-const SENTIMENT_OPTIONS = [
-    { value: '', label: '— Pilih Sentimen —' },
-    { value: 'positive', label: 'Positive' },
-    { value: 'negative', label: 'Negative' },
 ]
 
 function FormSelect({ register, name, label, options, errors }) {
@@ -72,7 +64,6 @@ function InfoValue({ children, className = '' }) {
 export default function DetailPengaduanContent({ aspiration }) {
     const showNotification = useNotification()
     const [loadingUpdate, setLoadingUpdate] = useState(false)
-    const [loadingAnalysis, setLoadingAnalysis] = useState(false)
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [showPdfModal, setShowPdfModal] = useState(false)
@@ -88,7 +79,6 @@ export default function DetailPengaduanContent({ aspiration }) {
         resolver: zodResolver(updateAspirationSchema),
         defaultValues: {
             response: aspiration.response ?? '',
-            sentiment: aspiration.sentiment ?? '',
             status: aspiration.status ?? 'pending',
         },
     })
@@ -113,34 +103,6 @@ export default function DetailPengaduanContent({ aspiration }) {
 
     const onDelete = () => {
         setShowDeleteModal(true)
-    }
-
-    const onAnalyzeSentiment = async () => {
-        if (!aspiration.content) {
-            showNotification({ type: 'error', title: 'Konten Kosong', message: 'Tidak ada teks pengaduan untuk dianalisis.' })
-            return
-        }
-
-        setLoadingAnalysis(true)
-        try {
-            const result = await analyzeSentiment(aspiration.content)
-
-            if (result.success) {
-                setValue('sentiment', result.data ?? '')
-                if (result.data) {
-                    showNotification({ type: 'success', title: 'Analisis Selesai', message: `Sentimen terdeteksi: ${result.data}` })
-                } else {
-                    showNotification({ type: 'error', title: 'Hasil Tidak Dikenali', message: 'AI tidak dapat menentukan sentimen dari teks ini.' })
-                }
-            } else {
-                showNotification({ type: 'error', title: 'Gagal Analisis Sentimen', message: result.message ?? 'Terjadi kesalahan, silahkan coba beberapa saat lagi' })
-            }
-        } catch (error) {
-            console.error(error)
-            showNotification({ type: 'error', title: 'Gagal Analisis Sentimen', message: 'Terjadi kesalahan, silahkan coba beberapa saat lagi' })
-        } finally {
-            setLoadingAnalysis(false)
-        }
     }
 
     const onConfirmDelete = async () => {
@@ -420,7 +382,7 @@ export default function DetailPengaduanContent({ aspiration }) {
             </div>
 
             <div className='w-full max-w-3xl bg-white/80 backdrop-blur-md border-[3px] border-primary shadow-2xl p-5 sm:p-10 rounded-[2.5rem] relative overflow-hidden mx-auto'>
-                {(loadingUpdate || loadingAnalysis || isGeneratingPdf) && <LoadingOverlay />}
+                {(loadingUpdate || isGeneratingPdf) && <LoadingOverlay />}
 
                 {/* Header: Avatar + Nama + Badge Status */}
                 <div className='flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-8 text-center sm:text-left'>

@@ -10,7 +10,6 @@ export default function PengaduanContent({ categories = [] }) {
   const searchParams = useSearchParams()
 
   const initialStatus    = searchParams.get('status')    ?? ''
-  const initialSentiment = searchParams.get('sentiment') ?? ''
   const initialCategory  = searchParams.get('category')  ?? ''
 
   const [aspirations, setAspirations] = useState([])
@@ -28,7 +27,6 @@ export default function PengaduanContent({ categories = [] }) {
       isLoading={isLoading}
       categories={categories}
       initialStatus={initialStatus}
-      initialSentiment={initialSentiment}
       initialCategory={initialCategory}
       onDetail={(aspiration) => {
         router.push(`/admin/pengaduan/${aspiration.id}`)

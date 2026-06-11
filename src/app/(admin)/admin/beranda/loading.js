@@ -21,9 +21,8 @@ export default function Loading() {
                 {/* Timeline Chart Skeleton */}
                 <div className="h-[350px] bg-background border border-border rounded-2xl w-full shadow-sm" />
                 
-                {/* Status & Sentiment Skeleton */}
+                {/* Status Skeleton */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="h-[350px] bg-background border border-border rounded-2xl w-full shadow-sm" />
                     <div className="h-[350px] bg-background border border-border rounded-2xl w-full shadow-sm" />
                 </div>
 

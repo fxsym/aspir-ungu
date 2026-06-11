@@ -69,12 +69,6 @@ const statusConfig = {
     },
 }
 
-const sentimentConfig = {
-    positive: { label: 'Positif', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200' },
-    negative: { label: 'Negatif', bg: 'bg-red-50', text: 'text-red-600', border: 'border-red-200' },
-    neutral:  { label: 'Netral',  bg: 'bg-gray-100',  text: 'text-gray-500',  border: 'border-gray-200'  },
-}
-
 function formatDate(dateStr) {
     return new Date(dateStr).toLocaleDateString('id-ID', {
         day: 'numeric',
@@ -97,8 +91,6 @@ export default function SearchResult({ data }) {
         border: 'border-gray-200',
         icon: null,
     }
-
-    const sentiment = data.sentiment ? sentimentConfig[data.sentiment] ?? null : null
 
     return (
         <div className="w-full max-w-2xl mx-auto mt-6 animate-fadeUp">

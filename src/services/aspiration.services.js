@@ -111,7 +111,6 @@ export async function createAspirationService(payload) {
                 content: payload.content,
                 aspiration_category_id: payload.aspiration_category_id,
                 custom_category: payload.custom_category,
-                sentiment: payload.sentiment,
                 status: payload.status,
                 is_anonymous: payload.is_anonymous,
                 image_url: payload.image_url || null,
@@ -144,7 +143,6 @@ export async function updateAspiration(id, data) {
             where: { id },
             data: {
                 ...(data.response !== undefined && { response: data.response }),
-                ...(data.sentiment !== undefined && { sentiment: data.sentiment || null }),
                 ...(data.status !== undefined && { status: data.status }),
                 updated_at: new Date(),
             },
@@ -198,12 +196,9 @@ export async function deleteAspiration(id) {
     }
 }
 
-// Tambahkan fungsi ini ke aspiration.services.js
-
 /**
- * Ambil semua content aspiration untuk wordcloud
+ * Ambil semua content aspiration for wordcloud
  * Bisa difilter per category slug
- * @param {string|null} categorySlug - slug kategori, null = semua
  */
 export async function getAspirationContentsForWordcloud(categorySlug = null) {
     const where = categorySlug
@@ -240,7 +235,7 @@ export async function getCategoriesForFilter() {
 export async function getBerandaDashboardData() {
     const [aspirations, categories] = await Promise.all([
         prisma.aspiration.findMany({
-            select: { created_at: true, status: true, sentiment: true, aspiration_category_id: true }
+            select: { created_at: true, status: true, aspiration_category_id: true }
         }),
         prisma.aspirationCategory.findMany({
             select: { id: true, name: true, slug: true },
@@ -251,7 +246,6 @@ export async function getBerandaDashboardData() {
     let total = 0, resolved = 0, inProgress = 0, pending = 0
     const timelineMap = {}
     const statusMap = {}
-    const sentimentResult = { positive: 0, negative: 0, neutral: 0 }
     const categoryStats = {}
 
     categories.forEach(cat => {
@@ -286,12 +280,6 @@ export async function getBerandaDashboardData() {
         // Status
         statusMap[a.status] = (statusMap[a.status] || 0) + 1
 
-        // Sentiment
-        const sentKey = a.sentiment?.toLowerCase()
-        if (sentKey && sentKey in sentimentResult) {
-            sentimentResult[sentKey]++
-        }
-
         // Category
         if (categoryStats[a.aspiration_category_id]) {
             categoryStats[a.aspiration_category_id].total++
@@ -312,7 +300,6 @@ export async function getBerandaDashboardData() {
         stats,
         timelineData,
         statusData,
-        sentimentData: sentimentResult,
         categoryData,
         categories
     }

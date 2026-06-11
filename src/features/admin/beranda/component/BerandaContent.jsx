@@ -6,11 +6,10 @@ import { FiUsers, FiCheckCircle, FiClock, FiAlertCircle } from 'react-icons/fi'
 import StatCard from '@/components/ui/card/dasboard-admin/StatCard'
 import AspirationTimeline from '@/components/ui/card/dasboard-admin/AspirationTimeline'
 import StatusDistributionChart from '@/components/ui/card/dasboard-admin/StatusDistributionChart'
-import SentimentChart from '@/components/ui/card/dasboard-admin/SentimentChart'
 import CategoryChart from '@/components/ui/card/dasboard-admin/CategoryChart'
-import WordCloudChart from '@/components/ui/card/dasboard-admin/WordCloudChart'  // <-- import baru
+import WordCloudChart from '@/components/ui/card/dasboard-admin/WordCloudChart'
 
-export default function BerandaContent({ stats, timelineData, statusData, sentimentData, categoryData, categories }) {
+export default function BerandaContent({ stats, timelineData, statusData, categoryData, categories }) {
     return (
         <>
             {/* Stat Cards */}
@@ -53,7 +52,6 @@ export default function BerandaContent({ stats, timelineData, statusData, sentim
 
             {/* Charts */}
             <div className="w-full mt-6 flex flex-col gap-4">
-                {/* <SentimentChart sentimentData={sentimentData} total={stats.total} /> */}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <AspirationTimeline
