@@ -112,7 +112,6 @@ export async function createAspirationService(payload) {
                 aspiration_category_id: payload.aspiration_category_id,
                 custom_category: payload.custom_category,
                 status: payload.status,
-                is_anonymous: payload.is_anonymous,
                 image_url: payload.image_url || null,
                 image_id: payload.image_id || null,
             },

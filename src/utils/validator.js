@@ -61,10 +61,6 @@ export const submitAspirationSchema = z
       .string()
       .min(10, "Isi pengaduan minimal 10 karakter"),
 
-    is_anonymous: z
-      .boolean()
-      .optional(),
-
     image_url: z
       .any()
       .optional(),

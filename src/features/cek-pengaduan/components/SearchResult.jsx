@@ -140,18 +140,11 @@ export default function SearchResult({ data }) {
                     </div>
                     <div className="flex flex-col items-start">
                         <p className="text-sm font-semibold text-gray-800">
-                            {data.is_anonymous ? 'Anonim' : data.name}
+                            {data.name ?? 'Anonim'}
                         </p>
-                        {!data.is_anonymous && (
-                            <>
-                                <p className="text-xs text-gray-400">{data.nim}</p>
-                                {data.email && (
-                                    <p className="text-xs text-gray-400">{data.email}</p>
-                                )}
-                            </>
-                        )}
-                        {data.is_anonymous && (
-                            <p className="text-xs text-gray-400">—</p>
+                        <p className="text-xs text-gray-400">{data.nim ?? '-'}</p>
+                        {data.email && (
+                            <p className="text-xs text-gray-400">{data.email}</p>
                         )}
                     </div>
                 </div>

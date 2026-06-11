@@ -3,7 +3,6 @@ import { submitAspiration } from '@/actions/aspiration.action'
 import { sendOtpAction } from '@/actions/email.action'
 import { verifyOtpAction } from '@/actions/otp.action'
 import MainButton from '@/components/ui/button/MainButton'
-import FormCheckbox from '@/components/ui/form/FormCheckbox'
 import FormImage from '@/components/ui/form/FormImage'
 import FormInput from '@/components/ui/form/FormInput'
 import FormTextArea from '@/components/ui/form/FormTextArea'
@@ -396,14 +395,6 @@ export default function BuatPengaduanContent({ category }) {
                                 className="h-25"
                                 errors={errors}
                             />
-
-                            {/* <FormCheckbox
-                                register={register}
-                                name="is_anonymous"
-                                label="Kirim sebagai Anonim"
-                                description="Nama dan NIM kamu tidak akan ditampilkan ke publik"
-                                errors={errors}
-                            /> */}
                         </div>
 
                         <FormImage register={register} name="image_url" />
