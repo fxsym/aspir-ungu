@@ -10,7 +10,7 @@ export default function OrganizationLogo() {
     ];
 
     return (
-        <div className="w-full py-4 flex justify-center items-center gap-8 md:gap-16">
+        <div className="w-full py-4 flex justify-center items-center gap-4 sm:gap-8 md:gap-16">
             {images.map((image, index) => (
                 <div
                     key={index}
